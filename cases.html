@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>MERS-CoV Cases</title>
+<style>
+
+body {
+  font-family: "Helvetica Neue";
+  margin: 40px auto;
+  width: 960px;
+/*  min-height: 2000px;*/
+}
+
+#body {
+  position: relative;
+}
+
+footer {
+  padding: 2em 0 1em 0;
+  font-size: 12px;
+}
+
+h1 {
+  font-size: 96px;
+  margin-top: .3em;
+  margin-bottom: 0;
+}
+
+h1 + h2 {
+  margin-top: 0;
+}
+
+h2 {
+  font-weight: 100;
+  font-size: 28px;
+}
+
+h1, h2 {
+  font-family: "Helvetica Neue";
+  text-rendering: optimizeLegibility;
+}
+
+#body > p {
+  line-height: 1.5em;
+  width: 640px;
+  text-rendering: optimizeLegibility;
+}
+
+#charts {
+  padding: 10px 0;
+}
+
+.chart {
+  display: inline-block;
+  height: 151px;
+  margin-bottom: 20px;
+}
+
+.controls {
+  vertical-align: top;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.reset {
+  padding-left: 1em;
+  font-size: smaller;
+  color: #ccc;
+}
+
+.background.bar {
+  fill: #ccc;
+}
+
+.foreground.bar {
+  fill: steelblue;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+
+.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+#age-chart {
+  width: 400px;
+}
+
+#age-chart .foreground.bar {
+  fill: GoldenRod;
+}
+
+#gender-controls {
+  width: 160px;
+}
+
+#gender-chart {
+  width: 260px;
+}
+
+#gender-chart .foreground.bar {
+  fill: steelBlue;
+}
+
+#death-chart {
+  width: 260px;
+}
+
+#death-controls {
+  width: 160px;
+}
+
+#death-chart .foreground.bar {
+  fill: GoldenRod;
+}
+
+#onset-chart {
+  width: 920px;
+}
+
+#onset-chart .foreground.bar {
+  fill: Teal;
+}
+
+/*
+#case-list {
+  min-height: 1024px;
+}
+*/
+
+#case-list .month {
+  margin-bottom: .4em;
+  font-size: 14px;
+}
+
+#case-list .individual {
+  margin-left: 100px;
+  padding-left: 10px;
+  line-height: 1.5em;
+  background: #eee;
+  width: 800px;
+  margin-bottom: 1px;
+  font-size: 12px;
+}
+
+#case-list-header .header {
+  margin-left: 100px;
+  padding-left: 10px;
+  line-height: 1.5em;
+  width: 800px;
+  margin-bottom: 1px;
+  font-size: 14px;
+}
+
+#case-list .individual div {
+  display: inline-block;
+}
+
+#case-list-header .header div {
+  display: inline-block;
+}
+
+div.onset,
+div.death {
+  width: 60px;
+  padding-right: 10px;
+  text-align: left;
+}
+
+div.age,
+div.gender {
+  width: 40px;
+  padding-right: 10px;
+  text-align: left;
+}
+
+div.country,
+div.city {
+  width: 100px;
+  padding-right: 10px;
+  text-align: left;
+}
+
+div.notes {
+  color: #999;
+  width: 320px;
+  padding-right: 10px;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+aside {
+/*  position: absolute; 
+  left: 740px;
+*/
+  text-align: right;
+  font-size: smaller;
+  width: 920px;
+}
+
+</style>
+
+<div id="body">
+
+<h2>Recorded cases</h2>
+
+<div id="charts">
+  <div id="onset-chart" class="chart">
+    <div class="title">Cases by Onset</div>
+  </div>
+  <div id="age-chart" class="chart">
+    <div class="title">Age</div>
+  </div>
+  <div id="gender-controls" class="controls">
+    <div>
+		<input type="checkbox" id="is-female" class="gender-check" checked>
+		<label for="is-female">Female</label>
+	</div>
+	<div>
+		<input type="checkbox" id="is-male" class="gender-check" checked>
+		<label for="is-male">Male</label>
+	</div>
+  </div>
+  <div id="death-controls" class="controls">
+		<div>
+			<input type="checkbox" id="is-alive" class="death-check" checked>
+			<label for="is-alive">Alive</label>
+		</div>
+		<div>
+			<input type="checkbox" id="is-dead" class="death-check" checked>
+			<label for="is-dead">Dead</label>
+		</div>
+	</div>
+</div>
+
+<aside id="totals"><span id="active">-</span> of <span id="total">-</span> cases selected.</aside>
+<p />
+
+<div id="lists">
+  <div id="case-list-header"><div class="header">
+  	<div class="onset">Onset</div>
+  	<div class="death">Death</div>
+  	<div class="age">Age</div>
+  	<div class="gender">Sex</div>
+  	<div class="country">Country</div>
+  	<div class="city">City</div>
+  </div></div>
+  <div id="case-list" class="list"></div>
+</div>
+
+<!--
+<footer>
+  <span style="float:right;">
+    Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>.
+  </span>
+  Uses <a href="http://squareup.com">Square, Inc.</a> 
+</footer>
+-->
+
+</div>
+<script src="jquery-1.10.1.js"></script>
+<script src="crossfilter.js"></script>
+<script src="d3.v3.js"></script>
+<!--
+<script src="crossfilter.v1.min.js"></script>
+<script src="d3.v3.min.js"></script>
+-->
+
+<script>
+
+  d3.csv("data/cases.csv", function(error, caseData) {
+
+  // Various formatters.
+  var formatNumber = d3.format(",d"),
+      formatDate = d3.time.format("%Y-%m-%d"),
+      formatPrettyDate = d3.time.format("%d %b"),
+	  formatMonth = d3.time.format("%b %Y");
+
+
+  var cases = [];
+
+  var nestByDate = d3.nest()
+      .key(function(d) { return d3.time.month(d.onset); });
+
+  // A little coercion, since the CSV is untyped.
+  caseData.forEach(function(d, i) {
+	d.index = i;
+	d.onset = formatDate.parse(d.onset);
+	d.death = formatDate.parse(d.death);
+	d.age = +d.age;
+	if (d.gender == 'F') {
+		d.genderCode = 1;
+	} else if (d.gender == 'M') {
+		d.genderCode = 2;
+	} else {
+		d.genderCode = 0;
+	}
+	    
+	if (d.onset != null && !isNaN(d.age) && d.gender != null) {
+		cases.push(d);
+//		console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.onset);
+	}
+  });
+
+  // Create the crossfilter for the relevant dimensions and groups.
+  var individual = crossfilter(cases),
+      all = individual.groupAll(),
+      onsetDate = individual.dimension(function(d) { return d.onset; }),
+      onsetDates = onsetDate.group(d3.time.week),
+      gender = individual.dimension(function(d) { return d.genderCode; }),
+      genders = gender.group(function(d) { return d; }),
+      death = individual.dimension(function(d) { return (d.death == null ? 1 : 2); }),
+      deathStates = death.group(function(d) { return d; }),
+      age = individual.dimension(function(d) { return d.age; }),
+      ageGroups = age.group(function(d) { return Math.floor(d / 5) * 5; });
+
+//      distance = flight.dimension(function(d) { return Math.min(1999, d.distance); }),
+//      distances = distance.group(function(d) { return Math.floor(d / 50) * 50; });
+
+  var charts = [
+
+       barChart()
+        .dimension(onsetDate)
+        .group(onsetDates)
+        .round(d3.time.day.round)
+      .x(d3.time.scale()
+        .domain([new Date(2012, 0, 1), new Date(2013, 7, 1)])
+        .rangeRound([0, 10 * 90]))
+        .filter([new Date(2012, 0, 1), new Date(2013, 7, 1)]),
+	
+	barChart()
+        .dimension(age)
+        .group(ageGroups)
+      .x(d3.scale.linear()
+        .domain([0, 100])
+        .rangeRound([0, 300])),
+/*
+   barChart()
+        .dimension(gender)
+        .group(genders)
+      .x(d3.scale.linear()
+        .domain([1, 3])
+        .rangeRound([0, 20])),
+
+   barChart()
+        .dimension(death)
+        .group(deathStates)
+      .x(d3.scale.linear()
+        .domain([1, 2])
+        .rangeRound([0, 20]))
+*/      
+  ];
+
+  // Given our array of charts, which we assume are in the same order as the
+  // .chart elements in the DOM, bind the charts to the DOM and render them.
+  // We also listen to the chart's brush events to update the display.
+  var chart = d3.selectAll(".chart")
+      .data(charts)
+      .each(function(chart) { chart.on("brush", renderAll).on("brushend", renderAll); });
+
+  // Render the initial lists.
+  var list = d3.selectAll(".list")
+      .data([caseList]);
+
+  // Render the total.
+  d3.selectAll("#total")
+      .text(formatNumber(individual.size()));
+
+  renderAll();
+
+  // Renders the specified chart or list.
+  function render(method) {
+    d3.select(this).call(method);
+  }
+
+  // Whenever the brush moves, re-rendering everything.
+  function renderAll() {
+    chart.each(render);
+    list.each(render);
+    d3.select("#active").text(formatNumber(all.value()));
+  }
+
+  // Like d3.time.format, but faster.
+  function parseDate(d) {
+    return new Date(2001,
+        d.substring(0, 2) - 1,
+        d.substring(2, 4),
+        d.substring(4, 6),
+        d.substring(6, 8));
+  }
+
+  window.filter = function(filters) {
+    filters.forEach(function(d, i) { charts[i].filter(d); });
+    renderAll();
+  };
+
+  window.reset = function(i) {
+    charts[i].filter(null);
+    renderAll();
+  };
+  
+  $(document).ready(function(){          
+   $('.death-check').click(function(){
+		var showAlive = $("#is-alive").is(':checked');
+    	var showDead = $("#is-dead").is(':checked');
+    	death.filterFunction(function(d) { 
+			return ((showAlive && d === 1) ||
+					(showDead && d === 2) || d === 0);
+		}); 
+
+		renderAll();
+   });
+    $('.gender-check').click(function() {
+    	var showFemale = $("#is-female").is(':checked');
+    	var showMale = $("#is-male").is(':checked');
+    	gender.filterFunction(function(d) { 
+			return ((showFemale && d === 1) ||
+					(showMale && d === 2) || d === 0);
+		}); 
+		
+		renderAll();
+   });
+ });
+
+
+  function caseList(div) {
+    var casesByDate = nestByDate.entries(onsetDate.top(100));
+    
+    div.each(function() {
+      var month = d3.select(this).selectAll(".month")
+		.data(casesByDate, function(d) { return d.key; });
+
+      month.enter().append("div")
+          .attr("class", "month")
+          .text(function(d) { return formatMonth(d.values[0].onset); });
+
+      month.exit().remove();
+
+      var individual = month.order().selectAll(".individual")
+          .data(function(d) { return d.values; }, function(d) { return d.index; });
+
+      var individualEnter = individual.enter().append("div")
+          .attr("class", "individual");
+
+      individualEnter.append("div")
+          .attr("class", "onset")
+          .text(function(d) { return formatPrettyDate(d.onset); });
+		
+      individualEnter.append("div")
+          .attr("class", "death")
+          .text(function(d) { return (d.death != null ? formatPrettyDate(d.death) : ""); });
+		
+      individualEnter.append("div")
+          .attr("class", "age")
+          .text(function(d) { return d.age; });
+
+	  individualEnter.append("div")
+          .attr("class", "gender")
+          .text(function(d) { return d.gender; });
+
+	  individualEnter.append("div")
+          .attr("class", "country")
+          .text(function(d) { return d.country; });
+
+	  individualEnter.append("div")
+          .attr("class", "city")
+          .text(function(d) { return d.city; });
+
+	  individualEnter.append("div")
+          .attr("class", "notes")
+          .text(function(d) { return d.notes; });
+
+/*
+      flightEnter.append("div")
+          .attr("class", "delay")
+          .classed("early", function(d) { return d.delay < 0; })
+          .text(function(d) { return formatChange(d.delay) + " min."; });
+*/
+      individual.exit().remove();
+
+      individual.order();
+    });
+  }
+
+  function barChart() {
+    if (!barChart.id) barChart.id = 0;
+
+    var margin = {top: 10, right: 10, bottom: 20, left: 10},
+        x,
+        y = d3.scale.linear().range([100, 0]),
+        id = barChart.id++,
+        axis = d3.svg.axis().orient("bottom"),
+        brush = d3.svg.brush(),
+        brushDirty,
+        dimension,
+        group,
+        round;
+
+    function chart(div) {
+      var width = x.range()[1],
+          height = y.range()[0];
+
+      y.domain([0, group.top(1)[0].value]);
+
+      div.each(function() {
+        var div = d3.select(this),
+            g = div.select("g");
+
+        // Create the skeletal chart.
+        if (g.empty()) {
+          div.select(".title").append("a")
+              .attr("href", "javascript:reset(" + id + ")")
+              .attr("class", "reset")
+              .text("reset")
+              .style("display", "none");
+
+          g = div.append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          g.append("clipPath")
+              .attr("id", "clip-" + id)
+            .append("rect")
+              .attr("width", width)
+              .attr("height", height);
+
+          g.selectAll(".bar")
+              .data(["background", "foreground"])
+            .enter().append("path")
+              .attr("class", function(d) { return d + " bar"; })
+              .datum(group.all());
+
+          g.selectAll(".foreground.bar")
+              .attr("clip-path", "url(#clip-" + id + ")");
+
+          g.append("g")
+              .attr("class", "axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(axis);
+
+          // Initialize the brush component with pretty resize handles.
+          var gBrush = g.append("g").attr("class", "brush").call(brush);
+          gBrush.selectAll("rect").attr("height", height);
+          gBrush.selectAll(".resize").append("path").attr("d", resizePath);
+        }
+
+        // Only redraw the brush if set externally.
+        if (brushDirty) {
+          brushDirty = false;
+          g.selectAll(".brush").call(brush);
+          div.select(".title a").style("display", brush.empty() ? "none" : null);
+          if (brush.empty()) {
+            g.selectAll("#clip-" + id + " rect")
+                .attr("x", 0)
+                .attr("width", width);
+          } else {
+            var extent = brush.extent();
+            g.selectAll("#clip-" + id + " rect")
+                .attr("x", x(extent[0]))
+                .attr("width", x(extent[1]) - x(extent[0]));
+          }
+        }
+
+        g.selectAll(".bar").attr("d", barPath);
+      });
+
+      function barPath(groups) {
+        var path = [],
+            i = -1,
+            n = groups.length,
+            d;
+        while (++i < n) {
+          d = groups[i];
+          path.push("M", x(d.key), ",", height, "V", y(d.value), "h9V", height);
+        }
+        return path.join("");
+      }
+
+      function resizePath(d) {
+        var e = +(d == "e"),
+            x = e ? 1 : -1,
+            y = height / 3;
+        return "M" + (.5 * x) + "," + y
+            + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
+            + "V" + (2 * y - 6)
+            + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
+            + "Z"
+            + "M" + (2.5 * x) + "," + (y + 8)
+            + "V" + (2 * y - 8)
+            + "M" + (4.5 * x) + "," + (y + 8)
+            + "V" + (2 * y - 8);
+      }
+    }
+
+    brush.on("brushstart.chart", function() {
+      var div = d3.select(this.parentNode.parentNode.parentNode);
+      div.select(".title a").style("display", null);
+    });
+
+    brush.on("brush.chart", function() {
+      var g = d3.select(this.parentNode),
+          extent = brush.extent();
+      if (round) g.select(".brush")
+          .call(brush.extent(extent = extent.map(round)))
+        .selectAll(".resize")
+          .style("display", null);
+      g.select("#clip-" + id + " rect")
+          .attr("x", x(extent[0]))
+          .attr("width", x(extent[1]) - x(extent[0]));
+      dimension.filterRange(extent);
+    });
+
+    brush.on("brushend.chart", function() {
+      if (brush.empty()) {
+        var div = d3.select(this.parentNode.parentNode.parentNode);
+        div.select(".title a").style("display", "none");
+        div.select("#clip-" + id + " rect").attr("x", null).attr("width", "100%");
+        dimension.filterAll();
+      }
+    });
+
+    chart.margin = function(_) {
+      if (!arguments.length) return margin;
+      margin = _;
+      return chart;
+    };
+
+    chart.x = function(_) {
+      if (!arguments.length) return x;
+      x = _;
+      axis.scale(x);
+      brush.x(x);
+      return chart;
+    };
+
+    chart.y = function(_) {
+      if (!arguments.length) return y;
+      y = _;
+      return chart;
+    };
+
+    chart.dimension = function(_) {
+      if (!arguments.length) return dimension;
+      dimension = _;
+      return chart;
+    };
+
+    chart.filter = function(_) {
+      if (_) {
+        brush.extent(_);
+        dimension.filterRange(_);
+      } else {
+        brush.clear();
+        dimension.filterAll();
+      }
+      brushDirty = true;
+      return chart;
+    };
+
+    chart.group = function(_) {
+      if (!arguments.length) return group;
+      group = _;
+      return chart;
+    };
+
+    chart.round = function(_) {
+      if (!arguments.length) return round;
+      round = _;
+      return chart;
+    };
+
+    return d3.rebind(chart, brush, "on");
+  }
+});
+
+</script>

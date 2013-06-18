@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="http://d3js.org/d3.v3.js"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+    <meta charset="utf-8">
+    <title>Novel Human Coronavirus Cases</title>
+    <style type="text/css">
+
+        body {
+            font-family: "Helvetica Neue";
+        }
+
+        #body {
+            position: relative;
+        }
+
+        footer {
+            padding: 2em 0 1em 0;
+            font-size: 12px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 100;
+            margin-top: .3em;
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-weight: 200;
+            font-size: 24px;
+        }
+
+    </style>
+    <style type="text/css">
+
+        svg {
+            display: block;
+        }
+
+        circle {
+            fill: brown;
+            fill-opacity: .5;
+            stroke: #fff;
+        }
+
+        circle:hover {
+            fill: red;
+            fill-opacity: 1;
+            stroke: #fff;
+        }
+
+        #province path {
+            fill: steelblue;
+            fill-opacity: 0.25;
+            stroke: #fff;
+            stroke-width: 1.5px;
+            vector-effect: non-scaling-stroke;
+        }
+
+        .info {
+            width: 200px;
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+
+        .legend {
+            width: 80px;
+            line-height: 18px;
+            color: #555;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        #map {
+            height: 600px;
+        }
+
+        .chart {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        #date-chart {
+            width: 600px;
+        }
+
+        .bar rect {
+            fill: steelblue;
+            shape-rendering: crispEdges;
+        }
+
+        .bar text {
+            fill: #fff;
+        }
+
+        .axis path, .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+    </style>
+
+    <!--
+    #map {
+      width: 600px;
+      height: 600px;
+    }
+
+     </style>
+    -->
+
+<body>
+<!--
+<h1>Flu Cases</h1>
+
+<h2>H7N9</h2>
+-->
+<div id="map"></div>
+<!--
+<h2>Human cases per month by date of onset</h2>
+<div id="date-chart" class="chart"></div>
+-->
+<script type="text/javascript">
+
+var map = L.map('map').setView([24.711667, 46.724167], 5);
+
+map.attributionControl.removeFrom(map);
+
+L.control.scale().addTo(map);
+
+L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+    key: "ffed45bc02bf40009f3d5c7e4dcf7f63",
+//    styleId: 92914
+    styleId: 80968
+}).addTo(map);
+
+queue()
+        .defer(d3.json, "data/cities.json")
+        .defer(d3.csv, "data/cases.csv")
+        .await(ready);
+
+
+function ready(error, cities, cases) {
+    if (error) return console.log("there was an error loading the data: " + error);
+
+//	console.log("provinces: " + provinces.features.length);
+//	console.log("cities: " + cities.length);
+//	console.log("cases: " + cases.length);
+
+    // A little coercion, since the CSV is untyped.
+    var formatDate = d3.time.format("%Y-%m-%d");
+    cases.forEach(function(individual) {
+        if (!(typeof individual.onset === "undefined")) {
+            individual.onset = formatDate.parse(individual.onset);
+        }
+    });
+
+    // First compute the number of cases per city and per province
+
+    cities.forEach(function(city) {
+        city['caseCount'] = 0;
+        city['isolateCount'] = 0;
+    });
+
+    cases.forEach(function(individual) {
+        var found = false;
+
+        if (individual.city.length > 0) {
+            cities.forEach(function(city) {
+                if (individual.city == city.name) {
+                    individual['city'] = city;
+                    individual['index'] = city.caseCount;
+                    city.caseCount++;
+                    found = true;
+                }
+            });
+            if (!found) console.log("City not found: " + individual.city);
+        }
+        if (!found) individual.city = null;
+
+        found = false;
+
+    });
+
+    // Create a layer for all the cities with circles scaled by the number of cases
+    var cityLayer = L.layerGroup();
+
+    cities.forEach(function(city) {
+        if (city.caseCount > 0) {
+//			console.log(city.name + ": " + city.caseCount + " [" + city.coordinates + "]");
+
+            var circle = L.circle(
+                    new L.LatLng(city.coordinates[1], city.coordinates[0]),
+                    Math.sqrt(city.caseCount) * 50000 +10000, {
+                        color: 'white',
+                        weight: 1,
+                        opacity: 1,
+                        fillColor: 'steelblue',
+                        fillOpacity: 0.5
+                    }).addTo(cityLayer);
+
+            circle['data'] = city;
+
+            circle.on({
+                mouseover: highlightCity,
+                mouseout: highlightCity,
+                dblclick: zoomToFeature
+            });
+        }
+    });
+
+    // Create a layer for all the cases
+    var caseLayer = L.layerGroup();
+
+    var locationJitter = 0.5;
+    cases.forEach(function(individual) {
+
+        if (!(typeof individual.city === "undefined") && individual.city != null) {
+            var n = Math.ceil(Math.sqrt(individual.city.caseCount));
+            var m = n * n;
+            var ix = Math.floor(individual.index / n);
+            var iy = individual.index % n;
+
+            var loc = new L.LatLng(
+                    individual.city.coordinates[1] + locationJitter * (ix - (0.5 * n)),
+                    individual.city.coordinates[0] + locationJitter * (iy - (0.5 * n)));
+
+            var circle = L.circle(loc, 20000, {
+                color: 'white',
+                weight: 0.5,
+                opacity: 1,
+                fillColor: 'brown',
+                fillOpacity: 0.75
+                // radius:6
+            }).addTo(caseLayer);
+
+            circle['data'] = individual;
+
+            circle.on({
+                mouseover: highlightCase,
+                mouseout: highlightCase
+            });
+        }
+    });
+
+    var geojson;
+
+    function style(feature) {
+        return {
+            fillColor: getColor(feature.properties.caseCount),
+            weight: 1,
+            opacity: 1,
+            color: 'white',
+            fillOpacity: 0.25
+        };
+    }
+
+    function highlightCase(e) {
+        var individual = e.target.data;
+
+        if (individual) {
+            e.target.setStyle({
+                fillOpacity: 0.7
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera) {
+                e.target.bringToFront();
+            }
+
+            info.update('Case', '<b>' + individual.age + " " + individual.gender + '</b><br /> onset: ' + formatDate(individual.onset) + '<br />' +
+                    (individual.city != null ? individual.city.name + ", " + individual.province : individual.province));
+        } else {
+            info.update();
+        }
+    }
+
+    function highlightCity(e) {
+        var city = e.target.data;
+        if (city) {
+            e.target.setStyle({
+                fillOpacity: 0.7
+            });
+
+//            if (!L.Browser.ie && !L.Browser.opera) {
+//                e.target.bringToFront();
+//            }
+
+            info.update('City: ' + city.name, '<b>' + city.province + ' province</b><br />' + city.caseCount + (city.caseCount == 1 ? ' human case' : ' human cases'));
+        } else {
+            info.update();
+        }
+    }
+
+    function highlightFeature(e) {
+        var layer = e.target;
+
+        layer.setStyle({
+            fillOpacity: 0.7
+        });
+
+//        if (!L.Browser.ie && !L.Browser.opera) {
+//            layer.bringToFront();
+//        }
+
+        var props = layer.feature.properties;
+        if (props) {
+            info.update('Province', '<b>' + props.name + '</b><br />' + props.caseCount + (props.caseCount == 1 ? ' human case' : ' human cases'));
+        }
+    }
+
+    function resetHighlightFeature(e) {
+        geojson.resetStyle(e.target);
+        info.update();
+    }
+
+    function zoomToFeature(e) {
+        map.fitBounds(e.target.getBounds());
+    }
+
+    function onEachFeature(feature, layer) {
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout: resetHighlightFeature,
+            dblclick: zoomToFeature
+        });
+    }
+
+    var info = L.control({position: 'bottomleft'});
+
+    info.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+        this.update();
+        return this._div;
+    };
+
+    // method that we will use to update the control based on feature properties passed
+    info.update = function (title, message) {
+        if (title) {
+            this._div.innerHTML = '<h4>' + title + '</h4>' + message;
+        } else {
+            this._div.innerHTML = '';
+        }
+    };
+
+    var legend = L.control({position: 'bottomright'});
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend'),
+                grades = [1, 5, 10, 15, 20, 25, 30, 35],
+                labels = [];
+
+        // loop through our density intervals and generate a label with a colored square for each interval
+        for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+
+        return div;
+    };
+
+	cityLayer.addTo(map);
+    caseLayer.addTo(map);
+//    isolateLayer.addTo(map);
+
+    var overlayMaps = {
+        "Cases": caseLayer,
+        "Cities": cityLayer,
+    };
+
+    var layerControl = L.control.layers(null, overlayMaps).addTo(map).set;
+    info.addTo(map);
+
+    // Add a time-series plot...
+
+    // A formatter for counts.
+    var formatCount = d3.format(",.0f");
+
+    var margin = {top: 10, right: 50, bottom: 30, left: 50},
+            width = 900 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom,
+            barWidth = 32;
+
+    onsetDates = [];
+    cases.forEach(function(individual) {
+        if (!(typeof individual.onset === "undefined") && individual.onset != null) {
+            onsetDates.push(individual.onset);
+        }
+    });
+
+    // get the extent of the time period
+    var onset_extent = d3.extent(onsetDates);
+    console.log(onset_extent);
+
+    var x = d3.time.scale()
+            .domain([new Date(2012, 3, 1), Date.now()])
+//		.domain([onset_extent[0], onset_extent[1]])
+            .range([0, width]);
+
+    console.log(x(onset_extent[0]) + ", " + x(onset_extent[1]));
+    /*
+
+    var data = d3.layout.histogram()
+            .bins(x.ticks(d3.time.months, 1))
+            (onsetDates);
+
+     ages = [];
+     cases.forEach(function(individual) {
+     if (!(typeof individual.age === "undefined") && individual.age > 0) {
+     ages.push(individual.age);
+     }
+     });
+
+     // get the extent of the time period
+     var ages_extent = d3.extent(ages);
+     console.log(ages_extent);
+
+     var x = d3.scale.linear()
+     .domain(ages_extent)
+     .range([0, width]);
+
+
+     // Generate a histogram using twenty uniformly-spaced bins.
+     var data = d3.layout.histogram()
+     .bins(x.ticks(10))
+     (ages);
+
+    var y = d3.scale.linear()
+            .domain([0, d3.max(data, function(d) { return d.y; })])
+            .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .orient("bottom")
+                    .ticks(d3.time.months, 2)
+                    .tickSubdivide(4)
+                    .tickFormat(d3.time.format('%d %b %y'))
+                    .tickSize(8, 4, 0)
+                    .tickPadding(8)
+            ;
+
+    var svg = d3.select(".chart").append("svg")
+            .attr('class', 'chart')
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var bar = svg.selectAll(".bar")
+            .data(data)
+            .enter().append("g")
+            .attr("class", "bar")
+            .attr("transform", function(d) {
+                return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+    bar.append("rect")
+            .attr("x", 1)
+            .attr("width", barWidth)
+            .attr("height", function(d) { return height - y(d.y); });
+
+    bar.append("text")
+            .attr("dy", ".75em")
+            .attr("y", 6)
+            .attr("x", barWidth / 2)
+            .attr("text-anchor", "middle")
+            .text(function(d) { return formatCount(d.y); });
+
+    svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+     */
+
+}
+
+function getColor(d) {
+    return d > 30  ? '#800026' :
+            d > 25  ? '#BD0026' :
+                    d > 20  ? '#E31A1C' :
+                            d > 15  ? '#FC4E2A' :
+                                    d > 10  ? '#FD8D3C' :
+                                            d > 5   ? '#FEB24C' :
+                                                    d > 1   ? '#FED976' :
+                                                            d > 0   ? '#FFEDA0' :
+                                                                    '#FFFFFF' ;
+}
+
+
+</script>
+<!--
+<p>Map coded using <a href="http://leafletjs.com/">Leaflet<a> and <a href="d3js.org">D3</a></p>
+-->
+</body>
+</html>
