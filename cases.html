@@ -267,10 +267,10 @@ div.notes {
 
 </div>
 
-<script src="js/jquery-1.10.1.js"></script>
-<script src="js/crossfilter.js"></script>
-<script src="js/d3.v3.js"></script>
-<script src="js/dc.js"></script>
+<script src="js/jquery-1.10.1.min.js"></script>
+<script src="js/crossfilter.min.js"></script>
+<script src="js/d3.v3.min.js"></script>
+<script src="js/dc.min.js"></script>
 <!--
 <script src="crossfilter.v1.min.js"></script>
 <script src="d3.v3.min.js"></script>
@@ -281,6 +281,8 @@ div.notes {
   var ageChart = dc.barChart("#age-chart");
   var genderChart = dc.rowChart("#gender-chart");
   var deathChart = dc.rowChart("#death-chart");
+
+	dc.constants.EVENT_DELAY = 5;
 
   d3.csv("data/cases.csv", function(error, caseData) {
 
