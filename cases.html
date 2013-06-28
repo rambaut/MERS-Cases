@@ -56,8 +56,6 @@ h1, h2 {
 }
 
 .dc-chart {
-  display: inline-block;
-  height: 151px;
   margin-bottom: 20px;
 }
 
@@ -81,6 +79,11 @@ h1, h2 {
   font: 10px sans-serif;
 }
 
+.title {
+  font-weight: 200;
+  font-size: 14px;
+}
+
 .brush rect.extent {
   fill: steelblue;
   fill-opacity: .125;
@@ -91,8 +94,18 @@ h1, h2 {
   stroke: #666;
 }
 
+#onset-chart {
+  width: 920px;
+  height: 151px;
+}
+
+#onset-chart .bar {
+  fill: teal;
+}
+
 #age-chart {
   width: 380px;
+  height: 151px;
 }
 
 #age-chart .bar {
@@ -101,18 +114,12 @@ h1, h2 {
 
 #gender-chart {
   width: 240px;
+  height: 151px;
 }
 
 #death-chart {
   width: 240px;
-}
-
-#onset-chart {
-  width: 920px;
-}
-
-#onset-chart .bar {
-  fill: teal;
+  height: 151px;
 }
 
 #case-list .month {
@@ -131,6 +138,8 @@ h1, h2 {
 }
 
 #case-list-header .header {
+  margin: 0px;
+  padding: 0px;
   margin-left: 100px;
   padding-left: 10px;
   width: 750px;
@@ -156,7 +165,6 @@ div.death {
   width: 60px;
   padding-right: 10px;
   text-align: left;
-  display: inline-block;
 }
 
 div.age,
@@ -164,7 +172,6 @@ div.gender {
   width: 40px;
   padding-right: 10px;
   text-align: left;
-  display: inline-block;
 }
 
 div.country,
@@ -172,7 +179,6 @@ div.city {
   width: 100px;
   padding-right: 10px;
   text-align: left;
-  display: inline-block;
 }
 
 div.notes {
@@ -180,28 +186,31 @@ div.notes {
   width: 260px;
   padding-right: 10px;
   text-align: left;
-  display: inline-block;
-  white-space: nowrap;
   font: 10px sans-serif;
 }
 
 #data-count {
 	text-align: right;
 	width: 850px;
-    margin-top: 30px;
+    margin-top: 10px;
     margin-right: 15px;
   font-size: 14px;
 }
 
 #data-count .filter-count {
     color: #3182bd;
-    font-weight: bold;
+  font-weight: 400;
 }
 
 #data-count .total-count {
     color: #3182bd;
-    font-weight: bold;
+  font-weight: 400;
 }
+
+.clearfix {
+  display: block;
+}
+
 
 </style>
 
@@ -209,43 +218,41 @@ div.notes {
 
 	<div id="charts">
 		<div id="onset-chart" class="dc-chart">
-			<span>Cases by Onset</span>
-			<a class="reset" href="javascript:onsetChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-			<div class="clearfix"></div>
+			<span class="title">Cases by Onset</span>
+			<a class="reset title" href="javascript:onsetChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 		</div>
 		<div id="age-chart" class="dc-chart">
-			<span>By Age</span>
-			<a class="reset" href="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-			<div class="clearfix"></div>
+			<span class="title">By Age</span>
+			<a class="reset title" href="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 		</div>
 		<div id="gender-chart" class="dc-chart">
-			<span>By Sex</span>
-			<a class="reset" href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-			<div class="clearfix"></div>
+			<span class="title">By Sex</span>
+			<a class="reset title" href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 		</div>
 		<div id="death-chart" class="dc-chart">
-			<span>By Outcome</span>
-			<a class="reset" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-			<div class="clearfix"></div>
+			<span class="title">By Outcome</span>
+			<a class="reset title" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 		</div>
 	</div>
 	<div>
-        <div id="data-count">
+        <div id="data-count" class="title">
             <span class="filter-count"></span> selected out of <span class="total-count"></span> cases | <a
-            	class="reset-all"
-                href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
+            	class="reset-all title"
+                href="javascript:dc.filterAll(); dc.renderAll();">reset all</a>
         </div>
     </div>
-
+	<div class="clearfix"></div>
 	<div id="lists">
-	  <div id="case-list-header"><div class="header">
-		<div class="onset">Onset</div>
-		<div class="death">Death</div>
-		<div class="age">Age</div>
-		<div class="gender">Sex</div>
-		<div class="country">Country</div>
-		<div class="city">City</div>
-	  </div></div>
+	  <div id="case-list-header">
+	    <div class="header title">
+			<div class="onset">Onset</div>
+			<div class="death">Death</div>
+			<div class="age">Age</div>
+			<div class="gender">Sex</div>
+			<div class="country">Country</div>
+			<div class="city">City</div>
+		  </div>
+		</div>
 	  <div id="case-list" class="list"></div>
 	</div>
 
@@ -344,7 +351,7 @@ div.notes {
 		.x(d3.time.scale().domain([new Date(2012, 0, 1), new Date(2013, 5, 31)]))
 		.round(d3.time.week.round)
 		.xUnits(d3.time.weeks)
-		.on("filtered", function(d) { renderAll(); });
+		.on("filtered", function(d) {     list.each(render); });
 
 	ageChart.width(440)
 		.transitionDuration(0)
@@ -358,7 +365,7 @@ div.notes {
 //			})
 		.gap(-10)
 		.x(d3.scale.linear().domain([0, 100]))
-		.on("filtered", function() { renderAll(); })
+		.on("filtered", function() { list.each(render); })
 		.xAxis().ticks(100 / ageGroupSize);
 
 
@@ -375,7 +382,7 @@ div.notes {
     // (optional) whether chart should render labels, :default = true
 		.title(function(d){return d.value;})
 		.elasticX(false)
-		.on("filtered", function() { renderAll(); })
+		.on("filtered", function() { list.each(render); })
 		.xAxis().ticks(5)
 
 	deathChart.width(280)
@@ -390,7 +397,7 @@ div.notes {
 		})
 		.title(function(d){return d.value;})
 		.elasticX(false)
-			.on("filtered", function() { renderAll(); })
+			.on("filtered", function() { list.each(render); })
 		.xAxis().ticks(5);
 
 	// Render the initial lists.
@@ -414,7 +421,6 @@ div.notes {
   function renderAll() {
     list.each(render);
 	dc.renderAll();
-    d3.select("#active").text(formatNumber(all.value()));
   }
 
   // Like d3.time.format, but faster.
@@ -444,7 +450,7 @@ div.notes {
 		.data(casesByDate, function(d) { return d.key; });
 
       month.enter().append("div")
-          .attr("class", "month")
+          .attr("class", "month title")
           .text(function(d) { return formatMonth(d.values[0].onset); });
 
       month.exit().remove();
