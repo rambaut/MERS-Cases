@@ -14,6 +14,6 @@
 { "name": "Eastern Province", "province": "KSA", "coordinates": [51.0000, 22.5000] },
 { "name": "Jeddah", "province": "KSA", "coordinates": [39.172989, 21.543489] },
 { "name": "Doha", "province": "Qatar", "coordinates": [51.522476, 25.280282] },
-{ "name": "Dubai", "province": "UAE", "coordinates": [55.3095, 25.2697] }
+{ "name": "Dubai", "province": "UAE", "coordinates": [55.3095, 25.2697] },
 { "name": "Abu Dhabi", "province": "UAE", "coordinates": [54.38, 24.47] }
 ]
