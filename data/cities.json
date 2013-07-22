@@ -9,7 +9,7 @@
 { "name": "Wadi al-Dawasir", "province": "KSA", "coordinates": [45.1994, 20.5042] },
 { "name": "Taif", "province": "KSA", "coordinates": [40.4167, 21.2667] },
 { "name": "Bisha", "province": "KSA", "coordinates": [42.6208, 19.9844] },
-{ "name": "Mecca", "province": "KSA", "coordinates": [39.816667, 21.416667] },
+{ "name": "Makkah", "province": "KSA", "coordinates": [39.816667, 21.416667] },
 { "name": "Riyadh", "province": "KSA", "coordinates": [46.724167, 24.711667] },
 { "name": "Eastern Province", "province": "KSA", "coordinates": [51.0000, 22.5000] },
 { "name": "Jeddah", "province": "KSA", "coordinates": [39.172989, 21.543489] },
