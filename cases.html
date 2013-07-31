@@ -5,14 +5,10 @@
 <style>
 
 body {
-  font-family: "Helvetica Neue";
+  font-family: "Helvetica";
   width: 960px;
-/*  min-height: 2000px;*/
 }
 
-#body {
-  position: relative;
-}
 
 footer {
   padding: 2em 0 1em 0;
@@ -35,7 +31,7 @@ h2 {
 }
 
 h1, h2 {
-  font-family: "Helvetica Neue";
+  font-family: "Helvetica";
   text-rendering: optimizeLegibility;
 }
 
@@ -47,6 +43,7 @@ h1, h2 {
 
 #charts {
   padding: 10px 0;
+  display: block;
 }
 
 .chart {
@@ -55,10 +52,19 @@ h1, h2 {
   margin-bottom: 20px;
 }
 
+#lists {
+  display: block;
+}
+
 .dc-chart {
   margin-bottom: 20px;
 }
 
+.dc-chart g.row text {
+    fill: black;
+    font-size: 12px;
+    cursor: pointer;
+}
 .reset {
   padding-left: 1em;
   font-size: smaller;
@@ -76,7 +82,7 @@ h1, h2 {
 }
 
 .axis text {
-  font: 10px sans-serif;
+  font: 10px;
 }
 
 .title {
@@ -103,8 +109,13 @@ h1, h2 {
   fill: teal;
 }
 
+#country-chart {
+  width: 220px;
+  height: 151px;
+}
+
 #age-chart {
-  width: 380px;
+  width: 240px;
   height: 151px;
 }
 
@@ -113,12 +124,17 @@ h1, h2 {
 }
 
 #gender-chart {
-  width: 240px;
+  width: 131px;
   height: 151px;
 }
 
 #death-chart {
-  width: 240px;
+  width: 131px;
+  height: 151px;
+}
+
+#cluster-chart {
+  width: 131px;
   height: 151px;
 }
 
@@ -221,6 +237,10 @@ div.notes {
 			<span class="title">Cases by Onset</span>
 			<a class="reset title" href="javascript:onsetChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 		</div>
+		<div id="country-chart" class="dc-chart">
+			<span class="title">By Country</span>
+			<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+		</div>
 		<div id="age-chart" class="dc-chart">
 			<span class="title">By Age</span>
 			<a class="reset title" href="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
@@ -233,6 +253,10 @@ div.notes {
 			<span class="title">By Outcome</span>
 			<a class="reset title" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 		</div>
+		<div id="cluster-chart" class="dc-chart">
+			<span class="title">By cluster</span>
+			<a class="reset title" href="javascript:clusterChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+		</div>
 	</div>
 	<div>
         <div id="data-count" class="title">
@@ -241,7 +265,7 @@ div.notes {
                 href="javascript:dc.filterAll(); dc.renderAll();">reset all</a>
         </div>
     </div>
-	<div class="clearfix"></div>
+	<div class="clear"></div><p />
 	<div id="lists">
 	  <div id="case-list-header">
 	    <div class="header title">
@@ -278,9 +302,11 @@ div.notes {
 
 <script>
   var onsetChart = dc.barChart("#onset-chart");
+  var countryChart = dc.rowChart("#country-chart");
   var ageChart = dc.barChart("#age-chart");
   var genderChart = dc.rowChart("#gender-chart");
   var deathChart = dc.rowChart("#death-chart");
+  var clusterChart = dc.rowChart("#cluster-chart");
 
 	dc.constants.EVENT_DELAY = 5;
 
@@ -324,9 +350,11 @@ div.notes {
 	    
 	if (d.onset != null && !isNaN(d.age) && d.gender != null) {
 		cases.push(d);
-//		console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.onset);
 	}
-  });
+	
+	d.cluster = (d.secondary === "TRUE" ? "secondary" : "primary")
+// 	console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.onset + ", " + d.secondary + ", " + d.cluster);
+ });
   
   var ageGroupSize = 5;
 
@@ -335,13 +363,17 @@ div.notes {
       all = individual.groupAll(),
       onsetDate = individual.dimension(function(d) { return d.onset; }),
       onsetDates = onsetDate.group(d3.time.week),
+      country = individual.dimension(function(d) { return d.country; }),
+      countries = country.group(function(d) { return d; }),
       gender = individual.dimension(function(d) { return d.genderCode; }),
       genders = gender.group(function(d) { return d; }),
       death = individual.dimension(function(d) { return d.outcome }),
       deathStates = death.group(function(d) { return d; }),
       age = individual.dimension(function(d) { return d.age; }),
-      ageGroups = age.group(function(d) { return Math.floor(d / ageGroupSize) * ageGroupSize; });
-  
+      ageGroups = age.group(function(d) { return Math.floor(d / ageGroupSize) * ageGroupSize; }),
+      cluster = individual.dimension(function(d) { return d.cluster; });
+      clusterType = cluster.group(function(d) { return d; });
+
 	onsetChart.width(900)
 		.transitionDuration(0)
 		.height(180)
@@ -355,26 +387,40 @@ div.notes {
 		.xUnits(d3.time.weeks)
 		.on("filtered", function(d) {     list.each(render); });
 
-	ageChart.width(440)
+	countryChart.width(200)
+		.transitionDuration(0)
+		.margins({top: 0, right: 0, bottom: 38, left: 20})
+		.group(countries)
+		.dimension(country)
+                .colors(['SlateGray'])
+		.label(function (d) {
+			return d.value + " " + d.key; 
+		})
+		.title(function(d) {return d.value;})
+		.elasticX(false)
+			.on("filtered", function() { list.each(render); })
+		.xAxis().ticks(5);
+
+	ageChart.width(240)
 		.transitionDuration(0)
 		.height(180)
-		.margins({top: 10, right: 50, bottom: 20, left: 40})
+		.margins({top: 10, right: 10, bottom: 20, left: 20})
 		.dimension(age)
 		.group(ageGroups)
 		.centerBar(false)
 //		.stack(genders, function(d) {
 //			return d.key;
 //			})
-		.gap(-10)
+		.gap(-8)
 		.x(d3.scale.linear().domain([0, 100]))
 		.on("filtered", function() { list.each(render); })
-		.xAxis().ticks(100 / ageGroupSize);
+		.xAxis().ticks(100 / (ageGroupSize * 2));
 
-
-	genderChart.width(280)
+	genderChart
 		.transitionDuration(0)
+		.width(120)
 		.height(120)
-		.margins({top: 10, right: 50, bottom: 20, left: 40})
+		.margins({top: 10, right: 0, bottom: 20, left: 10})
 		.group(genders)
 		.dimension(gender)
                 .colors(['#36648B', '#4F94CD', '#63B8FF'])
@@ -387,10 +433,11 @@ div.notes {
 		.on("filtered", function() { list.each(render); })
 		.xAxis().ticks(5)
 
-	deathChart.width(280)
+	deathChart
 		.transitionDuration(0)
+		.width(120)
 		.height(120)
-		.margins({top: 38, right: 50, bottom: 20, left: 40})
+		.margins({top: 38, right: 0, bottom: 20, left: 10})
 		.group(deathStates)
 		.dimension(death)
                 .colors(['#CD9B1D', '#FFC125'])
@@ -402,6 +449,22 @@ div.notes {
 			.on("filtered", function() { list.each(render); })
 		.xAxis().ticks(5);
 
+	clusterChart
+		.transitionDuration(0)
+		.width(120)
+		.height(120)
+		.margins({top: 38, right: 0, bottom: 20, left: 10})
+		.group(clusterType)
+		.dimension(cluster)
+                .colors(['#9B9A1D', '#C1BB25'])
+		.label(function (d) {
+			return d.value + " " + d.key; 
+		})
+		.title(function(d) {return d.value;})
+		.elasticX(false)
+			.on("filtered", function() { list.each(render); })
+		.xAxis().ticks(5);
+		
 	// Render the initial lists.
 	var list = d3.selectAll(".list")
 	  .data([caseList]);
