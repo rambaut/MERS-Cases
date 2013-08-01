@@ -607,7 +607,7 @@ function ready(error, cityData, caseData) {
     // Create a layer for all the cities with circles scaled by the number of cases
     	countries.all().forEach(function(country) {
 			var markers = L.markerClusterGroup({ 
-				maxClusterRadius: 100,
+				maxClusterRadius: 120,
 				spiderfyOnMaxZoom: true, 
 				showCoverageOnHover: false, 
 				zoomToBoundsOnClick: true, 
