@@ -2,14 +2,14 @@
 <meta charset="utf-8">
 <title>MERS-CoV Cases</title>
 <link rel="stylesheet" type="text/css" href="css/dc.css"/>
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+<link rel="stylesheet" href="css/leaflet.css" />
 <link rel="stylesheet" href="css/MarkerCluster.css" />
 <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
 <style>
 
 body {
   font-family: "Helvetica";
-  width: 1200px;
+  width: 920px;
 }
 
 
@@ -101,7 +101,7 @@ h1, h2 {
 
 #onset-chart {
   width: 920px;
-  height: 151px;
+  height: 150px;
 }
 
 #onset-chart .bar {
@@ -110,12 +110,12 @@ h1, h2 {
 
 #country-chart {
   width: 280px;
-  height: 151px;
+  height: 180px;
 }
 
 #age-chart {
-  width: 240px;
-  height: 151px;
+  width: 300px;
+  height: 180px;
 }
 
 #age-chart .bar {
@@ -123,18 +123,18 @@ h1, h2 {
 }
 
 #gender-chart {
-  width: 131px;
-  height: 151px;
+  width: 180px;
+  height: 180px;
 }
 
 #death-chart {
-  width: 131px;
-  height: 151px;
+  width: 180px;
+  height: 180px;
 }
 
 #cluster-chart {
-  width: 131px;
-  height: 151px;
+  width: 180px;
+  height: 180px;
 }
 
 #case-list .month {
@@ -226,6 +226,14 @@ div.notes {
   display: inline-block;
 }
 
+.align-top {
+  vertical-align: top;
+}
+
+.align-bottom {
+  vertical-align: bottom;
+}
+
 .block-div {
   display: block;
 }
@@ -299,30 +307,31 @@ div.notes {
 
 	<div id="charts">
 		<div>
-			<div id="map" class="inline-div"></div>
-			<div id="country-chart" class="dc-chart" class="inline-div">
-				<span class="title">By Country</span>
+			<div id="country-chart" class="dc-chart inline-div align-top">
+				<span class="title" class="inline-div">By Country</span>
 				<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
+			<div id="map" class="inline-div align-top"></div>
+			<!-- Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>. -->
 		</div>
 		<div id="onset-chart" class="dc-chart">
 			<span class="title">Cases by Onset</span>
 			<a class="reset title" href="javascript:onsetChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 		</div>
 		<div>
-			<div id="age-chart" class="dc-chart" class="inline-div">
+			<div id="age-chart" class="dc-chart inline-div align-bottom">
 				<span class="title">By Age</span>
 				<a class="reset title" href="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
-			<div id="gender-chart" class="dc-chart" class="inline-div">
+			<div id="gender-chart" class="dc-chart inline-div align-bottom">
 				<span class="title">By Sex</span>
 				<a class="reset title" href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
-			<div id="death-chart" class="dc-chart" class="inline-div">
+			<div id="death-chart" class="dc-chart inline-div align-bottom">
 				<span class="title">By Outcome</span>
 				<a class="reset title" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
-			<div id="cluster-chart" class="dc-chart" class="inline-div">
+			<div id="cluster-chart" class="dc-chart inline-div align-bottom">
 				<span class="title">By cluster</span>
 				<a class="reset title" href="javascript:clusterChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
@@ -367,6 +376,7 @@ div.notes {
 <script src="js/queue.min.js"></script>
 <script src="js/leaflet.js"></script>
 <script src="js/leaflet.markercluster-src.js"></script>
+<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.3"></script>
 
 <!--
 <script src="crossfilter.v1.min.js"></script>
@@ -383,16 +393,23 @@ div.notes {
 
 	dc.constants.EVENT_DELAY = 5;
 
-	var map = L.map('map').setView([24.711667, 46.724167], 3);
+	var map = L.map('map', {
+    		center: [24.711667, 46.724167],
+  			zoom: 3,
+  			maxZoom: 8  		
+		});
 
 	map.attributionControl.removeFrom(map);
 
 	L.control.scale().addTo(map);
 
+	//var layer = new L.StamenTileLayer('toner');
+	//map.addLayer(layer);
+
 	L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
 		key: "ffed45bc02bf40009f3d5c7e4dcf7f63",
-	//    styleId: 92914
-		styleId: 80968
+		styleId: 44909
+//		styleId: 104059
 	}).addTo(map);
 
 queue()
@@ -452,7 +469,7 @@ function ready(error, cityData, caseData) {
 		if (d.city.length > 0) {
 			cityData.forEach(function(city) {
 				if (d.city == city.name) {
-					d['city'] = cityData;
+					d['city'] = city;
 					found = true;
 				}
 			});
@@ -487,8 +504,8 @@ function ready(error, cityData, caseData) {
 
 		onsetChart.width(900)
 			.transitionDuration(0)
-			.height(180)
-			.margins({top: 10, right: 50, bottom: 60, left: 40})
+			.height(150)
+			.margins({top: 10, right: 20, bottom: 20, left: 20})
 			.dimension(onsetDate)
 			.group(onsetDates)
 			.centerBar(true)
@@ -499,6 +516,7 @@ function ready(error, cityData, caseData) {
 			.on("filtered", function(d) {     list.each(render); });
 
 		countryChart.width(280)
+			.height(180)
 			.transitionDuration(0)
 			.margins({top: 0, right: 20, bottom: 38, left: 20})
 			.group(countries)
@@ -512,7 +530,7 @@ function ready(error, cityData, caseData) {
 				.on("filtered", function() { list.each(render); })
 			.xAxis().ticks(5);
 
-		ageChart.width(240)
+		ageChart.width(300)
 			.transitionDuration(0)
 			.height(180)
 			.margins({top: 10, right: 10, bottom: 20, left: 20})
@@ -529,9 +547,9 @@ function ready(error, cityData, caseData) {
 
 		genderChart
 			.transitionDuration(0)
-			.width(120)
-			.height(120)
-			.margins({top: 10, right: 0, bottom: 20, left: 10})
+			.width(180)
+			.height(180)
+			.margins({top: 80, right: 0, bottom: 20, left: 20})
 			.group(genders)
 			.dimension(gender)
 					.colors(['#36648B', '#4F94CD', '#63B8FF'])
@@ -546,9 +564,9 @@ function ready(error, cityData, caseData) {
 
 		deathChart
 			.transitionDuration(0)
-			.width(120)
-			.height(120)
-			.margins({top: 38, right: 0, bottom: 20, left: 10})
+			.width(180)
+			.height(180)
+			.margins({top: 103, right: 0, bottom: 20, left: 20})
 			.group(deathStates)
 			.dimension(death)
 					.colors(['#CD9B1D', '#FFC125'])
@@ -562,9 +580,9 @@ function ready(error, cityData, caseData) {
 
 		clusterChart
 			.transitionDuration(0)
-			.width(120)
-			.height(120)
-			.margins({top: 38, right: 0, bottom: 20, left: 10})
+			.width(180)
+			.height(180)
+			.margins({top: 103, right: 0, bottom: 20, left: 20})
 			.group(clusterType)
 			.dimension(cluster)
 					.colors(['#9B9A1D', '#C1BB25'])
@@ -586,23 +604,31 @@ function ready(error, cityData, caseData) {
 			.group(all);
 
     // Create a layer for all the cities with circles scaled by the number of cases
-		var markers = L.markerClusterGroup();
-		var markerList = [];
-
-		function populate() {
-	  		cityData.forEach(function(city) {
-				var title = city.name;
-				var marker = L.marker(L.latLng(city.coordinates[1], city.coordinates[0]), { title: title });
-				marker.bindPopup(title);
-				markers.addLayer(marker);
-				markerList.push(marker);
+    	countries.all().forEach(function(country) {
+			var markers = L.markerClusterGroup({ 
+				maxClusterRadius: 100,
+				spiderfyOnMaxZoom: true, 
+				showCoverageOnHover: false, 
+				zoomToBoundsOnClick: true, 
+				singleMarkerMode: true
+				});
+				
+			var markerList = [];
+			caseData.forEach(function(individual) {
+				if (individual.country == country.key) {
+					var city = individual.city;
+					if (city != null) {
+						var title = city.name;
+						var marker = L.marker(L.latLng(city.coordinates[1], city.coordinates[0]), { title: title });
+						marker.bindPopup(title);
+						markers.addLayer(marker);
+						markerList.push(marker);
+					}			
+				}	
 			});
-		}
-
-		populate();
-
-		map.addLayer(markers);
-
+			map.addLayer(markers);
+		});
+		
 		renderAll();
 
 		// Renders the specified chart or list.
@@ -676,7 +702,7 @@ function ready(error, cityData, caseData) {
 
 		  individualEnter.append("div")
 			  .attr("class", "city")
-			  .text(function(d) { return d.city; });
+			  .text(function(d) { return d.city ? d.city.name : "-"; });
 
 		  individualEnter.append("div")
 			  .attr("class", "notes")
