@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>MERS-CoV Cases</title>
+<link rel="stylesheet" type="text/css" href="css/dc.css"/>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+<link rel="stylesheet" href="css/MarkerCluster.css" />
+<link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+<style>
+
+body {
+  font-family: "Helvetica";
+  width: 1200px;
+}
+
+
+footer {
+  padding: 2em 0 1em 0;
+  font-size: 12px;
+}
+
+h1 {
+  font-size: 96px;
+  margin-top: .3em;
+  margin-bottom: 0;
+}
+
+h1 + h2 {
+  margin-top: 0;
+}
+
+h2 {
+  font-weight: 100;
+  font-size: 28px;
+}
+
+h1, h2 {
+  font-family: "Helvetica";
+  text-rendering: optimizeLegibility;
+}
+
+#body > p {
+  line-height: 1.5em;
+  width: 640px;
+  text-rendering: optimizeLegibility;
+}
+
+#charts {
+  padding: 10px 0;
+  display: block;
+}
+
+#lists {
+  display: block;
+}
+
+.dc-chart {
+  margin-bottom: 20px;
+  float: none;
+}
+
+.dc-chart g.row text {
+    fill: black;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.reset {
+  padding-left: 1em;
+  font-size: smaller;
+  color: #aaa;
+}
+
+.reset-all {
+  color: #aaa;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px;
+}
+
+.title {
+  font-weight: 200;
+  font-size: 14px;
+}
+
+.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+
+.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+#onset-chart {
+  width: 920px;
+  height: 151px;
+}
+
+#onset-chart .bar {
+  fill: teal;
+}
+
+#country-chart {
+  width: 280px;
+  height: 151px;
+}
+
+#age-chart {
+  width: 240px;
+  height: 151px;
+}
+
+#age-chart .bar {
+  fill: #8B475D;
+}
+
+#gender-chart {
+  width: 131px;
+  height: 151px;
+}
+
+#death-chart {
+  width: 131px;
+  height: 151px;
+}
+
+#cluster-chart {
+  width: 131px;
+  height: 151px;
+}
+
+#case-list .month {
+  margin-bottom: .4em;
+  font-size: 14px;
+}
+
+#case-list .individual {
+  margin-left: 100px;
+  padding-left: 10px;
+  line-height: 1.5em;
+  background: #eee;
+  width: 750px;
+  margin-bottom: 1px;
+  font-size: 12px;
+}
+
+#case-list-header .header {
+  margin: 0px;
+  padding: 0px;
+  margin-left: 100px;
+  padding-left: 10px;
+  width: 750px;
+  font-size: 14px;
+}
+
+#case-list .individual div {
+  display: inline-block;
+  white-space: nowrap;
+  overflow:hidden; 
+  text-overflow: ellipsis;
+}
+
+#case-list-header .header div {
+  display: inline-block;
+  white-space: nowrap;
+  overflow:hidden; 
+  text-overflow: ellipsis;
+}
+
+div.onset,
+div.death {
+  width: 60px;
+  padding-right: 10px;
+  text-align: left;
+}
+
+div.age,
+div.gender {
+  width: 40px;
+  padding-right: 10px;
+  text-align: left;
+}
+
+div.country,
+div.city {
+  width: 100px;
+  padding-right: 10px;
+  text-align: left;
+}
+
+div.notes {
+  color: #999;
+  width: 260px;
+  padding-right: 10px;
+  text-align: left;
+  font: 10px sans-serif;
+}
+
+#data-count {
+	text-align: right;
+	width: 850px;
+    margin-top: 10px;
+    margin-right: 15px;
+  font-size: 14px;
+}
+
+#data-count .filter-count {
+    color: #3182bd;
+  font-weight: 400;
+}
+
+#data-count .total-count {
+    color: #3182bd;
+  font-weight: 400;
+}
+
+.inline-div {
+  display: inline-block;
+}
+
+.block-div {
+  display: block;
+}
+
+
+</style>
+
+    <style type="text/css">
+
+        svg {
+            display: block;
+        }
+
+        circle {
+            fill: brown;
+            fill-opacity: .5;
+            stroke: #fff;
+        }
+
+        circle:hover {
+            fill: red;
+            fill-opacity: 1;
+            stroke: #fff;
+        }
+
+        #province path {
+            fill: steelblue;
+            fill-opacity: 0.25;
+            stroke: #fff;
+            stroke-width: 1.5px;
+            vector-effect: non-scaling-stroke;
+        }
+
+        .info {
+            width: 200px;
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+
+        .legend {
+            width: 80px;
+            line-height: 18px;
+            color: #555;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+		#map {
+			width: 600px;
+			height: 400px;
+		}
+
+
+    </style>
+
+
+<div id="body">
+
+	<div id="charts">
+		<div>
+			<div id="map" class="inline-div"></div>
+			<div id="country-chart" class="dc-chart" class="inline-div">
+				<span class="title">By Country</span>
+				<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+			</div>
+		</div>
+		<div id="onset-chart" class="dc-chart">
+			<span class="title">Cases by Onset</span>
+			<a class="reset title" href="javascript:onsetChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+		</div>
+		<div>
+			<div id="age-chart" class="dc-chart" class="inline-div">
+				<span class="title">By Age</span>
+				<a class="reset title" href="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+			</div>
+			<div id="gender-chart" class="dc-chart" class="inline-div">
+				<span class="title">By Sex</span>
+				<a class="reset title" href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+			</div>
+			<div id="death-chart" class="dc-chart" class="inline-div">
+				<span class="title">By Outcome</span>
+				<a class="reset title" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+			</div>
+			<div id="cluster-chart" class="dc-chart" class="inline-div">
+				<span class="title">By cluster</span>
+				<a class="reset title" href="javascript:clusterChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div id="data-count" class="title">
+			<span class="filter-count"></span> selected out of <span class="total-count"></span> cases | <a
+				class="reset-all title"
+				href="javascript:dc.filterAll(); dc.renderAll();">reset all</a>
+		</div>
+    </div>
+	<div id="lists" class="block-div">
+		<div id="case-list-header">
+	    	<div class="header title">
+				<div class="onset">Onset</div>
+				<div class="death">Death</div>
+				<div class="age">Age</div>
+				<div class="gender">Sex</div>
+				<div class="country">Country</div>
+				<div class="city">City</div>
+			</div>
+		</div>
+		<div id="case-list" class="list"></div>
+	</div>
+
+<!--
+<footer>
+  <span style="float:right;">
+    Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>.
+  </span>
+  Uses <a href="http://squareup.com">Square, Inc.</a> 
+</footer>
+-->
+
+</div>
+
+<script src="js/jquery-1.10.1.min.js"></script>
+<script src="js/crossfilter.min.js"></script>
+<script src="js/d3.v3.min.js"></script>
+<script src="js/dc.min.js"></script>
+<script src="js/queue.min.js"></script>
+<script src="js/leaflet.js"></script>
+<script src="js/leaflet.markercluster-src.js"></script>
+
+<!--
+<script src="crossfilter.v1.min.js"></script>
+<script src="d3.v3.min.js"></script>
+-->
+
+<script>
+	var onsetChart = dc.barChart("#onset-chart");
+	var countryChart = dc.rowChart("#country-chart");
+	var ageChart = dc.barChart("#age-chart");
+	var genderChart = dc.rowChart("#gender-chart");
+	var deathChart = dc.rowChart("#death-chart");
+	var clusterChart = dc.rowChart("#cluster-chart");
+
+	dc.constants.EVENT_DELAY = 5;
+
+	var map = L.map('map').setView([24.711667, 46.724167], 3);
+
+	map.attributionControl.removeFrom(map);
+
+	L.control.scale().addTo(map);
+
+	L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+		key: "ffed45bc02bf40009f3d5c7e4dcf7f63",
+	//    styleId: 92914
+		styleId: 80968
+	}).addTo(map);
+
+queue()
+        .defer(d3.json, "data/cities.json")
+        .defer(d3.csv, "data/cases.csv")
+        .await(ready);
+
+
+function ready(error, cityData, caseData) {
+    if (error) return console.log("there was an error loading the data: " + error);
+
+
+  // Various formatters.
+  var formatNumber = d3.format(",d"),
+      formatDate = d3.time.format("%Y-%m-%d"),
+      formatPrettyDate = d3.time.format("%d %b"),
+	  formatMonth = d3.time.format("%b %Y");
+
+
+  var cases = [];
+
+  var nestByDate = d3.nest()
+      .key(function(d) { return d3.time.month(d.onset); });
+
+	  // A little coercion, since the CSV is untyped.
+	  caseData.forEach(function(d, i) {
+		d.index = i;
+		d.onset = formatDate.parse(d.onset);
+		if (d.death != null) {
+			d.death = formatDate.parse(d.death);
+			if (d.death != null) {
+				d.outcome = 2;
+			} else {
+				d.outcome = 1;
+			}
+		} else {
+			d.outcome = 0;
+		}
+	
+		d.age = +d.age;
+		if ($.trim(d.gender) == 'F') {
+			d.genderCode = 1;
+		} else if ($.trim(d.gender) == 'M') {
+			d.genderCode = 2;
+		} else {
+			d.genderCode = 0;
+		}
+		
+		if (d.onset != null && !isNaN(d.age) && d.gender != null) {
+			cases.push(d);
+		}
+	
+		d.cluster = (d.secondary === "TRUE" ? "secondary" : "primary");
+	
+		var found = false;
+
+		if (d.city.length > 0) {
+			cityData.forEach(function(city) {
+				if (d.city == city.name) {
+					d['city'] = cityData;
+					found = true;
+				}
+			});
+			if (!found) console.log("City not found: " + d.city);
+		}
+		if (!found) d.city = null;
+
+		found = false;
+
+	// 	console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.onset + ", " + d.secondary + ", " + d.cluster);
+	 });
+  
+	  var ageGroupSize = 5;
+
+	  // Create the crossfilter for the relevant dimensions and groups.
+	  var individual = crossfilter(cases),
+		  all = individual.groupAll(),
+		  onsetDate = individual.dimension(function(d) { return d.onset; }),
+		  onsetDates = onsetDate.group(d3.time.week),
+		  country = individual.dimension(function(d) { return d.country; }),
+		  countries = country.group(function(d) { return d; }),
+		  city = individual.dimension(function(d) { return d.city; }),
+		  cities = city.group(function(d) { return d; }),
+		  gender = individual.dimension(function(d) { return d.genderCode; }),
+		  genders = gender.group(function(d) { return d; }),
+		  death = individual.dimension(function(d) { return d.outcome }),
+		  deathStates = death.group(function(d) { return d; }),
+		  age = individual.dimension(function(d) { return d.age; }),
+		  ageGroups = age.group(function(d) { return Math.floor(d / ageGroupSize) * ageGroupSize; }),
+		  cluster = individual.dimension(function(d) { return d.cluster; });
+		  clusterType = cluster.group(function(d) { return d; });
+
+		onsetChart.width(900)
+			.transitionDuration(0)
+			.height(180)
+			.margins({top: 10, right: 50, bottom: 60, left: 40})
+			.dimension(onsetDate)
+			.group(onsetDates)
+			.centerBar(true)
+			.gap(1)
+			.x(d3.time.scale().domain([new Date(2012, 0, 1), new Date()]))
+			.round(d3.time.week.round)
+			.xUnits(d3.time.weeks)
+			.on("filtered", function(d) {     list.each(render); });
+
+		countryChart.width(280)
+			.transitionDuration(0)
+			.margins({top: 0, right: 20, bottom: 38, left: 20})
+			.group(countries)
+			.dimension(country)
+					.colors(['SlateGray'])
+			.label(function (d) {
+				return d.value + " " + d.key; 
+			})
+			.title(function(d) {return d.value;})
+			.elasticX(false)
+				.on("filtered", function() { list.each(render); })
+			.xAxis().ticks(5);
+
+		ageChart.width(240)
+			.transitionDuration(0)
+			.height(180)
+			.margins({top: 10, right: 10, bottom: 20, left: 20})
+			.dimension(age)
+			.group(ageGroups)
+			.centerBar(false)
+	//		.stack(genders, function(d) {
+	//			return d.key;
+	//			})
+			.gap(-8)
+			.x(d3.scale.linear().domain([0, 100]))
+			.on("filtered", function() { list.each(render); })
+			.xAxis().ticks(100 / (ageGroupSize * 2));
+
+		genderChart
+			.transitionDuration(0)
+			.width(120)
+			.height(120)
+			.margins({top: 10, right: 0, bottom: 20, left: 10})
+			.group(genders)
+			.dimension(gender)
+					.colors(['#36648B', '#4F94CD', '#63B8FF'])
+			.label(function (d){
+				return d.value + " " + (d.key === 1 ? "female" : (d.key === 2 ? "male" : "unknown"));
+			})
+	    // (optional) whether chart should render labels, :default = true
+			.title(function(d){return d.value;})
+			.elasticX(false)
+			.on("filtered", function() { list.each(render); })
+			.xAxis().ticks(5)
+
+		deathChart
+			.transitionDuration(0)
+			.width(120)
+			.height(120)
+			.margins({top: 38, right: 0, bottom: 20, left: 10})
+			.group(deathStates)
+			.dimension(death)
+					.colors(['#CD9B1D', '#FFC125'])
+			.label(function (d){
+				return d.value + " " + (d.key === 1 ? "alive" : (d.key === 2 ? "dead" : "unknown"));
+			})
+			.title(function(d){return d.value;})
+			.elasticX(false)
+				.on("filtered", function() { list.each(render); })
+			.xAxis().ticks(5);
+
+		clusterChart
+			.transitionDuration(0)
+			.width(120)
+			.height(120)
+			.margins({top: 38, right: 0, bottom: 20, left: 10})
+			.group(clusterType)
+			.dimension(cluster)
+					.colors(['#9B9A1D', '#C1BB25'])
+			.label(function (d) {
+				return d.value + " " + d.key; 
+			})
+			.title(function(d) {return d.value;})
+			.elasticX(false)
+				.on("filtered", function() { list.each(render); })
+			.xAxis().ticks(5);
+		
+		// Render the initial lists.
+		var list = d3.selectAll(".list")
+		  .data([caseList]);
+
+		// Render the total.
+		dc.dataCount("#data-count")
+			.dimension(individual)
+			.group(all);
+
+    // Create a layer for all the cities with circles scaled by the number of cases
+		var markers = L.markerClusterGroup();
+		var markerList = [];
+
+		function populate() {
+	  		cityData.forEach(function(city) {
+				var title = city.name;
+				var marker = L.marker(L.latLng(city.coordinates[1], city.coordinates[0]), { title: title });
+				marker.bindPopup(title);
+				markers.addLayer(marker);
+				markerList.push(marker);
+			});
+		}
+
+		populate();
+
+		map.addLayer(markers);
+
+		renderAll();
+
+		// Renders the specified chart or list.
+		function render(method) {
+			d3.select(this).call(method);
+		}
+
+	  // Whenever the brush moves, re-rendering everything.
+	  function renderAll() {
+		list.each(render);
+		dc.renderAll();
+	  }
+
+	  // Like d3.time.format, but faster.
+	  function parseDate(d) {
+		return new Date(2001,
+			d.substring(0, 2) - 1,
+			d.substring(2, 4),
+			d.substring(4, 6),
+			d.substring(6, 8));
+	  }
+
+	  window.filter = function(filters) {
+		filters.forEach(function(d, i) { charts[i].filter(d); });
+		renderAll();
+	  };
+
+	  window.reset = function(i) {
+		charts[i].filter(null);
+		renderAll();
+	  };
+
+	  function caseList(div) {
+		var casesByDate = nestByDate.entries(onsetDate.top(100));
+	
+		div.each(function() {
+		  var month = d3.select(this).selectAll(".month")
+			.data(casesByDate, function(d) { return d.key; });
+
+		  month.enter().append("div")
+			  .attr("class", "month title")
+			  .text(function(d) { return formatMonth(d.values[0].onset); });
+
+		  month.exit().remove();
+
+		  var individual = month.order().selectAll(".individual")
+			  .data(function(d) { return d.values; }, function(d) { return d.index; });
+
+		  var individualEnter = individual.enter().append("div")
+			  .attr("class", "individual");
+
+		  individualEnter.append("div")
+			  .attr("class", "onset")
+			  .text(function(d) { return formatPrettyDate(d.onset); });
+		
+		  individualEnter.append("div")
+			  .attr("class", "death")
+			  .text(function(d) { return (d.death != null ? formatPrettyDate(d.death) : ""); });
+		
+		  individualEnter.append("div")
+			  .attr("class", "age")
+			  .text(function(d) { return d.age; });
+
+		  individualEnter.append("div")
+			  .attr("class", "gender")
+			  .text(function(d) { return d.gender; });
+
+		  individualEnter.append("div")
+			  .attr("class", "country")
+			  .text(function(d) { return d.country; });
+
+		  individualEnter.append("div")
+			  .attr("class", "city")
+			  .text(function(d) { return d.city; });
+
+		  individualEnter.append("div")
+			  .attr("class", "notes")
+			  .text(function(d) { return d.notes; });
+
+		  individual.exit().remove();
+
+		  individual.order();
+		});
+	  }
+
+}
+
+</script>
