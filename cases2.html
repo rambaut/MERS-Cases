@@ -8,7 +8,7 @@
 <style>
 
 body {
-  font-family: "Helvetica";
+  font-family: Helvetica,Arial,sans-serif;
   width: 900px;
 }
 
@@ -34,7 +34,8 @@ h2 {
 }
 
 h1, h2 {
-  font-family: "Helvetica";
+  font-family: Helvetica,Arial,sans-serif;
+  
   text-rendering: optimizeLegibility;
 }
 
@@ -60,7 +61,8 @@ h1, h2 {
 
 .dc-chart g.row text {
     fill: black;
-    font-size: 12px;
+  font-family: Helvetica,Arial,sans-serif;
+    font-size: 11px;
     cursor: pointer;
 }
 
@@ -101,7 +103,7 @@ h1, h2 {
 
 #onset-chart {
   width: 920px;
-  height: 150px;
+  height: 170px;
 }
 
 #onset-chart .bar {
@@ -201,7 +203,7 @@ div.notes {
   width: 260px;
   padding-right: 10px;
   text-align: left;
-  font: 10px sans-serif;
+  font: 10px;
 }
 
 #data-count {
@@ -270,7 +272,7 @@ div.notes {
         .info {
             width: 200px;
             padding: 6px 8px;
-            font: 14px/16px Arial, Helvetica, sans-serif;
+            font: 14px/16px Helvetica, Arial, sans-serif;
             background: white;
             background: rgba(255,255,255,0.8);
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -523,9 +525,7 @@ div.notes {
 		  onsetDate = crossFilter.dimension(function(d) { return d.date; }),
 		  onsetDates = onsetDate.group(d3.time.week),
 		  country = crossFilter.dimension(function(d) { return d.country; }),
-		  countries = country.group(function(d) { 
-		  return d; 
-		  }),
+		  countries = country.group(function(d) { return d; }),
 		  gender = crossFilter.dimension(function(d) { return d.genderCode; }),
 		  genders = gender.group(function(d) { return d; }),
 		  death = crossFilter.dimension(function(d) { return d.outcome }),
@@ -549,7 +549,7 @@ div.notes {
 			.on("filtered", function(d) { renderAll(); });
 
 		countryChart.width(280)
-			.height(190)
+			.height(240)
 			.transitionDuration(0)
 			.margins({top: 0, right: 20, bottom: 38, left: 20})
 			.group(countries)
