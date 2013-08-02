@@ -523,7 +523,9 @@ div.notes {
 		  onsetDate = crossFilter.dimension(function(d) { return d.date; }),
 		  onsetDates = onsetDate.group(d3.time.week),
 		  country = crossFilter.dimension(function(d) { return d.country; }),
-		  countries = country.group(function(d) { return d; }),
+		  countries = country.group(function(d) { 
+		  return d; 
+		  }),
 		  gender = crossFilter.dimension(function(d) { return d.genderCode; }),
 		  genders = gender.group(function(d) { return d; }),
 		  death = crossFilter.dimension(function(d) { return d.outcome }),
@@ -751,7 +753,7 @@ div.notes {
 				individualEnter.append("div")
 				  .attr("class", "ref")
 				  .append("a")
-				  .attr("href", function(d) { return d.citation; }
+				  .attr("href", function(d) { return d.citation; })
 				  .text("ref");
 
 				individual.exit().remove();
