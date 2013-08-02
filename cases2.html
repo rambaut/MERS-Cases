@@ -9,7 +9,7 @@
 
 body {
   font-family: "Helvetica";
-  width: 920px;
+  width: 900px;
 }
 
 
@@ -114,7 +114,7 @@ h1, h2 {
 }
 
 #age-chart {
-  width: 300px;
+  width: 320px;
   height: 180px;
 }
 
@@ -147,7 +147,7 @@ h1, h2 {
   padding-left: 10px;
   line-height: 1.5em;
   background: #eee;
-  width: 750px;
+  width: 780px;
   margin-bottom: 1px;
   font-size: 12px;
 }
@@ -157,7 +157,7 @@ h1, h2 {
   padding: 0px;
   margin-left: 100px;
   padding-left: 10px;
-  width: 750px;
+  width: 780px;
   font-size: 14px;
 }
 
@@ -312,7 +312,6 @@ div.notes {
 				<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
 			<div id="map" class="inline-div align-top"></div>
-			<!-- Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>. -->
 		</div>
 		<div id="onset-chart" class="dc-chart">
 			<span class="title">Cases by Onset</span>
@@ -376,7 +375,6 @@ div.notes {
 <script src="js/queue.min.js"></script>
 <script src="js/leaflet.js"></script>
 <script src="js/leaflet.markercluster-src.js"></script>
-<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.3"></script>
 
 <!--
 <script src="crossfilter.v1.min.js"></script>
@@ -395,7 +393,7 @@ div.notes {
 
 	var map = L.map('map', {
     		center: [24.711667, 46.724167],
-  			zoom: 3,
+  			zoom: 4,
   			maxZoom: 8,
   			minZoom: 2  		
 		});
@@ -413,27 +411,27 @@ div.notes {
 //		styleId: 104059
 	}).addTo(map);
 
-queue()
+	queue()
         .defer(d3.json, "data/cities.json")
         .defer(d3.csv, "data/cases.csv")
         .await(ready);
 
 
-function ready(error, cityData, caseData) {
-    if (error) return console.log("there was an error loading the data: " + error);
+	function ready(error, cityData, caseData) {
+		if (error) return console.log("there was an error loading the data: " + error);
 
 
-  // Various formatters.
-  var formatNumber = d3.format(",d"),
-      formatDate = d3.time.format("%Y-%m-%d"),
-      formatPrettyDate = d3.time.format("%d %b"),
-	  formatMonth = d3.time.format("%b %Y");
+	  // Various formatters.
+	  var formatNumber = d3.format(",d"),
+		  formatDate = d3.time.format("%Y-%m-%d"),
+		  formatPrettyDate = d3.time.format("%d %b"),
+		  formatMonth = d3.time.format("%b %Y");
 
 
-  var cases = [];
+	  var cases = [];
 
-  var nestByDate = d3.nest()
-      .key(function(d) { return d3.time.month(d.onset); });
+	  var nestByDate = d3.nest()
+		  .key(function(d) { return d3.time.month(d.onset); });
 
 	  // A little coercion, since the CSV is untyped.
 	  caseData.forEach(function(d, i) {
@@ -486,21 +484,20 @@ function ready(error, cityData, caseData) {
 	  var ageGroupSize = 5;
 
 	  // Create the crossfilter for the relevant dimensions and groups.
-	  var individual = crossfilter(cases),
-		  all = individual.groupAll(),
-		  onsetDate = individual.dimension(function(d) { return d.onset; }),
+	  var crossFilter = crossfilter(cases),
+		  filteredCases = crossFilter.groupAll(),
+		  allCases = crossFilter.dimension(function(d) { return d; }),
+		  onsetDate = crossFilter.dimension(function(d) { return d.onset; }),
 		  onsetDates = onsetDate.group(d3.time.week),
-		  country = individual.dimension(function(d) { return d.country; }),
+		  country = crossFilter.dimension(function(d) { return d.country; }),
 		  countries = country.group(function(d) { return d; }),
-		  city = individual.dimension(function(d) { return d.city; }),
-		  cities = city.group(function(d) { return d; }),
-		  gender = individual.dimension(function(d) { return d.genderCode; }),
+		  gender = crossFilter.dimension(function(d) { return d.genderCode; }),
 		  genders = gender.group(function(d) { return d; }),
-		  death = individual.dimension(function(d) { return d.outcome }),
+		  death = crossFilter.dimension(function(d) { return d.outcome }),
 		  deathStates = death.group(function(d) { return d; }),
-		  age = individual.dimension(function(d) { return d.age; }),
+		  age = crossFilter.dimension(function(d) { return d.age; }),
 		  ageGroups = age.group(function(d) { return Math.floor(d / ageGroupSize) * ageGroupSize; }),
-		  cluster = individual.dimension(function(d) { return d.cluster; });
+		  cluster = crossFilter.dimension(function(d) { return d.cluster; });
 		  clusterType = cluster.group(function(d) { return d; });
 
 		onsetChart.width(900)
@@ -514,21 +511,21 @@ function ready(error, cityData, caseData) {
 			.x(d3.time.scale().domain([new Date(2012, 0, 1), new Date()]))
 			.round(d3.time.week.round)
 			.xUnits(d3.time.weeks)
-			.on("filtered", function(d) {     list.each(render); });
+			.on("filtered", function(d) { renderAll(); });
 
 		countryChart.width(280)
-			.height(180)
+			.height(190)
 			.transitionDuration(0)
 			.margins({top: 0, right: 20, bottom: 38, left: 20})
 			.group(countries)
 			.dimension(country)
-					.colors(['SlateGray'])
+					.colors(['LightSteelBlue'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
 			.title(function(d) {return d.value;})
 			.elasticX(false)
-				.on("filtered", function() { list.each(render); })
+				.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(5);
 
 		ageChart.width(300)
@@ -543,7 +540,7 @@ function ready(error, cityData, caseData) {
 	//			})
 			.gap(-8)
 			.x(d3.scale.linear().domain([0, 100]))
-			.on("filtered", function() { list.each(render); })
+			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(100 / (ageGroupSize * 2));
 
 		genderChart
@@ -560,7 +557,7 @@ function ready(error, cityData, caseData) {
 	    // (optional) whether chart should render labels, :default = true
 			.title(function(d){return d.value;})
 			.elasticX(false)
-			.on("filtered", function() { list.each(render); })
+			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(5)
 
 		deathChart
@@ -576,7 +573,7 @@ function ready(error, cityData, caseData) {
 			})
 			.title(function(d){return d.value;})
 			.elasticX(false)
-				.on("filtered", function() { list.each(render); })
+				.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(5);
 
 		clusterChart
@@ -592,7 +589,9 @@ function ready(error, cityData, caseData) {
 			})
 			.title(function(d) {return d.value;})
 			.elasticX(false)
-				.on("filtered", function() { list.each(render); })
+			.on("filtered", function() { 
+				renderAll(); 
+				})
 			.xAxis().ticks(5);
 		
 		// Render the initial lists.
@@ -601,34 +600,42 @@ function ready(error, cityData, caseData) {
 
 		// Render the total.
 		dc.dataCount("#data-count")
-			.dimension(individual)
-			.group(all);
+			.dimension(crossFilter)
+			.group(filteredCases);
 
-    // Create a layer for all the cities with circles scaled by the number of cases
-    	countries.all().forEach(function(country) {
-			var markers = L.markerClusterGroup({ 
-				maxClusterRadius: 120,
-				spiderfyOnMaxZoom: true, 
-				showCoverageOnHover: false, 
-				zoomToBoundsOnClick: true, 
-				singleMarkerMode: true
+		var markerLayers = L.layerGroup();		
+		markerLayers.addTo(map);
+
+		function updateMap() {		
+			markerLayers.clearLayers();
+		
+			// Create a layer for all the cities with circles scaled by the number of cases
+			countries.all().forEach(function(country) {
+				var markers = L.markerClusterGroup({ 
+					maxClusterRadius: 1,
+					spiderfyOnMaxZoom: true, 
+					showCoverageOnHover: false, 
+					zoomToBoundsOnClick: true, 
+					singleMarkerMode: true
+					});
+				
+				var markerList = [];
+				allCases.top(Infinity).forEach(function(individual) {
+					if (individual.country == country.key) {
+						var city = individual.city;
+						if (city != null) {
+							var title = city.name;
+							var marker = L.marker(L.latLng(city.coordinates[1], city.coordinates[0]), { title: title });
+							marker.bindPopup(title);
+							markers.addLayer(marker);
+							markerList.push(marker);
+						}			
+					}	
 				});
 				
-			var markerList = [];
-			caseData.forEach(function(individual) {
-				if (individual.country == country.key) {
-					var city = individual.city;
-					if (city != null) {
-						var title = city.name;
-						var marker = L.marker(L.latLng(city.coordinates[1], city.coordinates[0]), { title: title });
-						marker.bindPopup(title);
-						markers.addLayer(marker);
-						markerList.push(marker);
-					}			
-				}	
+				markerLayers.addLayer(markers);
 			});
-			map.addLayer(markers);
-		});
+		}
 		
 		renderAll();
 
@@ -637,84 +644,83 @@ function ready(error, cityData, caseData) {
 			d3.select(this).call(method);
 		}
 
-	  // Whenever the brush moves, re-rendering everything.
-	  function renderAll() {
-		list.each(render);
-		dc.renderAll();
-	  }
+		// Whenever the brush moves, re-rendering everything.
+		function renderAll() {
+			list.each(render);
+			dc.renderAll();
+			updateMap();
+		}
 
-	  // Like d3.time.format, but faster.
-	  function parseDate(d) {
+		// Like d3.time.format, but faster.
+		function parseDate(d) {
 		return new Date(2001,
 			d.substring(0, 2) - 1,
 			d.substring(2, 4),
 			d.substring(4, 6),
 			d.substring(6, 8));
-	  }
+		}
 
-	  window.filter = function(filters) {
-		filters.forEach(function(d, i) { charts[i].filter(d); });
-		renderAll();
-	  };
+		window.filter = function(filters) {
+			renderAll();
+		};
 
-	  window.reset = function(i) {
-		charts[i].filter(null);
-		renderAll();
-	  };
+		window.reset = function(i) {
+			renderAll();
+		};
 
-	  function caseList(div) {
-		var casesByDate = nestByDate.entries(onsetDate.top(100));
+		function caseList(div) {
+			var casesByDate = nestByDate.entries(onsetDate.top(100));
+
+			div.each(function() {
+				var month = d3.select(this).selectAll(".month")
+				.data(casesByDate, function(d) { return d.key; });
+
+				month.enter().append("div")
+				  .attr("class", "month title")
+				  .text(function(d) { return formatMonth(d.values[0].onset); });
+
+				month.exit().remove();
+
+				var individual = month.order().selectAll(".individual")
+				  .data(function(d) { return d.values; }, function(d) { return d.index; });
+
+				var individualEnter = individual.enter().append("div")
+				  .attr("class", "individual");
+
+				individualEnter.append("div")
+				  .attr("class", "onset")
+				  .text(function(d) { return formatPrettyDate(d.onset); });
+
+				individualEnter.append("div")
+				  .attr("class", "death")
+				  .text(function(d) { return (d.death != null ? formatPrettyDate(d.death) : ""); });
+
+				individualEnter.append("div")
+				  .attr("class", "age")
+				  .text(function(d) { return d.age; });
+
+				individualEnter.append("div")
+				  .attr("class", "gender")
+				  .text(function(d) { return d.gender; });
+
+				individualEnter.append("div")
+				  .attr("class", "country")
+				  .text(function(d) { return d.country; });
+
+				individualEnter.append("div")
+				  .attr("class", "city")
+				  .text(function(d) { return d.city ? d.city.name : "-"; });
+
+				individualEnter.append("div")
+				  .attr("class", "notes")
+				  .text(function(d) { return d.notes; });
+
+				individual.exit().remove();
+
+				individual.order();
+			});
+		} //function caseList(div)
 	
-		div.each(function() {
-		  var month = d3.select(this).selectAll(".month")
-			.data(casesByDate, function(d) { return d.key; });
-
-		  month.enter().append("div")
-			  .attr("class", "month title")
-			  .text(function(d) { return formatMonth(d.values[0].onset); });
-
-		  month.exit().remove();
-
-		  var individual = month.order().selectAll(".individual")
-			  .data(function(d) { return d.values; }, function(d) { return d.index; });
-
-		  var individualEnter = individual.enter().append("div")
-			  .attr("class", "individual");
-
-		  individualEnter.append("div")
-			  .attr("class", "onset")
-			  .text(function(d) { return formatPrettyDate(d.onset); });
-		
-		  individualEnter.append("div")
-			  .attr("class", "death")
-			  .text(function(d) { return (d.death != null ? formatPrettyDate(d.death) : ""); });
-		
-		  individualEnter.append("div")
-			  .attr("class", "age")
-			  .text(function(d) { return d.age; });
-
-		  individualEnter.append("div")
-			  .attr("class", "gender")
-			  .text(function(d) { return d.gender; });
-
-		  individualEnter.append("div")
-			  .attr("class", "country")
-			  .text(function(d) { return d.country; });
-
-		  individualEnter.append("div")
-			  .attr("class", "city")
-			  .text(function(d) { return d.city ? d.city.name : "-"; });
-
-		  individualEnter.append("div")
-			  .attr("class", "notes")
-			  .text(function(d) { return d.notes; });
-
-		  individual.exit().remove();
-
-		  individual.order();
-		});
-	  }
-
-}
+	} // function ready(error, cityData, caseData)
 
 </script>
