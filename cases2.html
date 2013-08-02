@@ -748,6 +748,12 @@ div.notes {
 				  .attr("class", "notes")
 				  .text(function(d) { return d.notes; });
 
+				individualEnter.append("div")
+				  .attr("class", "ref")
+				  .append("a")
+				  .attr("href", function(d) { return d.citation; }
+				  .text("ref");
+
 				individual.exit().remove();
 
 				individual.order();
