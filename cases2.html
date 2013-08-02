@@ -370,13 +370,12 @@ div.notes {
 
 </div>
 
-<script src="js/jquery-1.10.1.min.js"></script>
 <script src="js/crossfilter.min.js"></script>
-<script src="js/d3.v3.min.js"></script>
+<script src="js/d3.min.js"></script>
 <script src="js/dc.min.js"></script>
 <script src="js/queue.min.js"></script>
 <script src="js/leaflet.js"></script>
-<script src="js/leaflet.markercluster-src.js"></script>
+<script src="js/leaflet.markercluster.js"></script>
 
 <!--
 <script src="crossfilter.v1.min.js"></script>
@@ -484,9 +483,9 @@ div.notes {
 			d.age = null;
 		}
 		 
-		if ($.trim(d.gender) == 'F') {
+		if (d.gender == 'F') {
 			d.genderCode = 1;
-		} else if ($.trim(d.gender) == 'M') {
+		} else if (d.gender == 'M') {
 			d.genderCode = 2;
 		} else {
 			d.genderCode = 0;
