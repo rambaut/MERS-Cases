@@ -308,7 +308,7 @@ div.notes {
 	<div id="charts">
 		<div>
 			<div id="country-chart" class="dc-chart inline-div align-top">
-				<span class="title" class="inline-div">By Country</span>
+				<span class="title" class="inline-div">Cases by Country</span>
 				<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
 			<div id="map" class="inline-div align-top"></div>
@@ -346,7 +346,7 @@ div.notes {
 	<div id="lists" class="block-div">
 		<div id="case-list-header">
 	    	<div class="header title">
-				<div class="onset">Onset</div>
+				<div class="onset">Date</div>
 				<div class="death">Death</div>
 				<div class="age">Age</div>
 				<div class="gender">Sex</div>
@@ -431,12 +431,24 @@ div.notes {
 	  var cases = [];
 
 	  var nestByDate = d3.nest()
-		  .key(function(d) { return d3.time.month(d.onset); });
+		  .key(function(d) { return d3.time.month(d.date); });
 
 	  // A little coercion, since the CSV is untyped.
 	  caseData.forEach(function(d, i) {
 		d.index = i;
-		d.onset = formatDate.parse(d.onset);
+		
+		if (d.onset != null) {
+			d.onset = formatDate.parse(d.onset);
+		}
+		
+		if (d.hospitalized != null) {
+			d.hospitalized = formatDate.parse(d.hospitalized);
+		}
+
+		if (d.reported != null) {
+			d.reported = formatDate.parse(d.reported);
+		}
+
 		if (d.death != null) {
 			d.death = formatDate.parse(d.death);
 			if (d.death != null) {
@@ -447,8 +459,29 @@ div.notes {
 		} else {
 			d.outcome = 0;
 		}
-	
+		
+		d.date = d.onset;
+		d.dateType = "onset";
+
+		if (d.date == null) {
+			d.date = d.hospitalized;
+			d.dateType = "hospitalized";
+		}
+		if (d.date == null) {
+			d.date = d.death;
+			d.dateType = "death";
+
+			if (d.date == null || d.reported < d.date) {
+				d.date = d.reported;
+				d.dateType = "reported";
+			}
+		}
+
 		d.age = +d.age;
+		if (isNaN(d.age)) {
+			d.age = null;
+		}
+		 
 		if ($.trim(d.gender) == 'F') {
 			d.genderCode = 1;
 		} else if ($.trim(d.gender) == 'M') {
@@ -457,7 +490,7 @@ div.notes {
 			d.genderCode = 0;
 		}
 		
-		if (d.onset != null && !isNaN(d.age) && d.gender != null) {
+		if (d.date != null) {
 			cases.push(d);
 		}
 	
@@ -478,7 +511,7 @@ div.notes {
 
 		found = false;
 
-	// 	console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.onset + ", " + d.secondary + ", " + d.cluster);
+	 	console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.country + " [" + d.dateType + "], " + d.secondary + ", " + d.cluster);
 	 });
   
 	  var ageGroupSize = 5;
@@ -487,7 +520,7 @@ div.notes {
 	  var crossFilter = crossfilter(cases),
 		  filteredCases = crossFilter.groupAll(),
 		  allCases = crossFilter.dimension(function(d) { return d; }),
-		  onsetDate = crossFilter.dimension(function(d) { return d.onset; }),
+		  onsetDate = crossFilter.dimension(function(d) { return d.date; }),
 		  onsetDates = onsetDate.group(d3.time.week),
 		  country = crossFilter.dimension(function(d) { return d.country; }),
 		  countries = country.group(function(d) { return d; }),
@@ -677,7 +710,7 @@ div.notes {
 
 				month.enter().append("div")
 				  .attr("class", "month title")
-				  .text(function(d) { return formatMonth(d.values[0].onset); });
+				  .text(function(d) { return formatMonth(d.values[0].date); });
 
 				month.exit().remove();
 
@@ -689,7 +722,7 @@ div.notes {
 
 				individualEnter.append("div")
 				  .attr("class", "onset")
-				  .text(function(d) { return formatPrettyDate(d.onset); });
+				  .text(function(d) { return formatPrettyDate(d.date); });
 
 				individualEnter.append("div")
 				  .attr("class", "death")
