@@ -753,7 +753,7 @@ div.notes {
 				  .attr("class", "ref")
 				  .append("a")
 				  .attr("href", function(d) { return d.citation; })
-				  .text("ref");
+				  .text(function(d) { return d.citation != null && d.citation.length > 0 ? "Ref" : ""; });
 
 				individual.exit().remove();
 
