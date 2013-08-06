@@ -703,7 +703,7 @@ div.notes {
 		};
 
 		function caseList(div) {
-			var casesByDate = nestByDate.entries(onsetDate.top(100));
+			var casesByDate = nestByDate.entries(onsetDate.top(Infinity));
 
 			div.each(function() {
 				var month = d3.select(this).selectAll(".month")
