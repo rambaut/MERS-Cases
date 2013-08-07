@@ -325,7 +325,7 @@ div.notes {
 				<a class="reset title" href="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
 			<div id="gender-chart" class="dc-chart inline-div align-bottom">
-				<span class="title">By Sex</span>
+				<span class="title">By Gender</span>
 				<a class="reset title" href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
 			<div id="death-chart" class="dc-chart inline-div align-bottom">
@@ -351,7 +351,7 @@ div.notes {
 				<div class="onset">Date</div>
 				<div class="death">Death</div>
 				<div class="age">Age</div>
-				<div class="gender">Sex</div>
+				<div class="gender">Gender</div>
 				<div class="country">Country</div>
 				<div class="city">City</div>
 			</div>
@@ -376,6 +376,7 @@ div.notes {
 <script src="js/queue.min.js"></script>
 <script src="js/leaflet.js"></script>
 <script src="js/leaflet.markercluster.js"></script>
+<script src="js/utils.js"></script>
 
 <!--
 <script src="crossfilter.v1.min.js"></script>
@@ -383,6 +384,7 @@ div.notes {
 -->
 
 <script>
+
 	var onsetChart = dc.barChart("#onset-chart");
 	var countryChart = dc.rowChart("#country-chart");
 	var ageChart = dc.barChart("#age-chart");
@@ -390,7 +392,7 @@ div.notes {
 	var deathChart = dc.rowChart("#death-chart");
 	var clusterChart = dc.rowChart("#cluster-chart");
 
-	dc.constants.EVENT_DELAY = 5;
+	dc.constants.EVENT_DELAY = 0;
 
 	var map = L.map('map', {
     		center: [24.711667, 46.724167],
@@ -702,6 +704,13 @@ div.notes {
 			renderAll();
 		};
 
+		var args = getUrlVars();
+		
+		if ('gender' in args) {
+			console.log(args.gender);
+			gender.filter(args.gender);
+		}
+		
 		function caseList(div) {
 			var casesByDate = nestByDate.entries(onsetDate.top(Infinity));
 
