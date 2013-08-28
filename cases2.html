@@ -116,7 +116,7 @@ h1, h2 {
 }
 
 #age-chart {
-  width: 320px;
+  width: 300px;
   height: 180px;
 }
 
@@ -125,17 +125,22 @@ h1, h2 {
 }
 
 #gender-chart {
-  width: 180px;
+  width: 140px;
   height: 180px;
 }
 
 #death-chart {
-  width: 180px;
+  width: 140px;
   height: 180px;
 }
 
 #cluster-chart {
-  width: 180px;
+  width: 140px;
+  height: 180px;
+}
+
+#status-chart {
+  width: 140px;
   height: 180px;
 }
 
@@ -316,7 +321,7 @@ div.notes {
 			<div id="map" class="inline-div align-top"></div>
 		</div>
 		<div id="onset-chart" class="dc-chart">
-			<span class="title">Cases by Onset</span>
+			<span class="title">Cases by date</span>
 			<a class="reset title" href="javascript:onsetChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 		</div>
 		<div>
@@ -335,6 +340,10 @@ div.notes {
 			<div id="cluster-chart" class="dc-chart inline-div align-bottom">
 				<span class="title">By cluster</span>
 				<a class="reset title" href="javascript:clusterChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+			</div>
+			<div id="status-chart" class="dc-chart inline-div align-bottom">
+				<span class="title">By status</span>
+				<a class="reset title" href="javascript:statusChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 			</div>
 		</div>
 	</div>
@@ -391,6 +400,7 @@ div.notes {
 	var genderChart = dc.rowChart("#gender-chart");
 	var deathChart = dc.rowChart("#death-chart");
 	var clusterChart = dc.rowChart("#cluster-chart");
+	var statusChart = dc.rowChart("#status-chart");
 
 	dc.constants.EVENT_DELAY = 0;
 
@@ -499,6 +509,8 @@ div.notes {
 	
 		d.cluster = (d.secondary === "TRUE" ? "secondary" : "primary");
 	
+		d.status = (d.suspected === "TRUE" ? "suspected" : "confirmed");
+
 		var found = false;
 
 		if (d.city.length > 0) {
@@ -535,6 +547,8 @@ div.notes {
 		  ageGroups = age.group(function(d) { return Math.floor(d / ageGroupSize) * ageGroupSize; }),
 		  cluster = crossFilter.dimension(function(d) { return d.cluster; });
 		  clusterType = cluster.group(function(d) { return d; });
+		  caseStatus = crossFilter.dimension(function(d) { return d.status; });
+		  caseStatusType = caseStatus.group(function(d) { return d; });
 
 		onsetChart.width(900)
 			.transitionDuration(0)
@@ -581,7 +595,7 @@ div.notes {
 
 		genderChart
 			.transitionDuration(0)
-			.width(180)
+			.width(140)
 			.height(180)
 			.margins({top: 80, right: 0, bottom: 20, left: 20})
 			.group(genders)
@@ -598,7 +612,7 @@ div.notes {
 
 		deathChart
 			.transitionDuration(0)
-			.width(180)
+			.width(140)
 			.height(180)
 			.margins({top: 103, right: 0, bottom: 20, left: 20})
 			.group(deathStates)
@@ -614,12 +628,30 @@ div.notes {
 
 		clusterChart
 			.transitionDuration(0)
-			.width(180)
+			.width(140)
 			.height(180)
 			.margins({top: 103, right: 0, bottom: 20, left: 20})
 			.group(clusterType)
 			.dimension(cluster)
 					.colors(['#9B9A1D', '#C1BB25'])
+			.label(function (d) {
+				return d.value + " " + d.key; 
+			})
+			.title(function(d) {return d.value;})
+			.elasticX(false)
+			.on("filtered", function() { 
+				renderAll(); 
+				})
+			.xAxis().ticks(5);
+		
+		statusChart
+			.transitionDuration(0)
+			.width(140)
+			.height(180)
+			.margins({top: 103, right: 0, bottom: 20, left: 20})
+			.group(caseStatusType)
+			.dimension(caseStatus)
+					.colors(['#2E8B57', '#20B2AA'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
