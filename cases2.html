@@ -763,7 +763,7 @@ div.notes {
 				  .attr("class", "individual");
 
 				individualEnter.append("div")
-				  .attr("title", "Date given: " + d.dateType)
+				  .attr("title", function(d) { return "Date given: " + d.dateType; })
 				  .attr("class", "onset")
 				  .text(function(d) { return formatPrettyDate(d.date); });
 
