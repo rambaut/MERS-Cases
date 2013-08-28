@@ -72,7 +72,7 @@ number,code,gender,age,country,city,district,hospital,exposure,onset,hospitalize
 71,2F,F,2,Italy,Florence,,,,,,2013-06-02,,,,,,H (family),TRUE,,,http://www.who.int/csr/don/2013_06_02_ncov/en/index.html,,
 72,42F,F,42,Italy,Florence,,,,,,2013-06-02,,,,,,H (co-worker),TRUE,,,http://www.who.int/csr/don/2013_06_02_ncov/en/index.html,,
 73,14F,F,14,KSA,Eastern Province,,,,2013-05-29,,2013-06-05,,,,,,,,,,http://www.who.int/csr/don/2013_06_05/en/index.html,,
-74,83M,M,83,KSA,Al-Ahsa,,,,2013-05-27,,2013-07-07,2013-05-31,,,,,,,,,http://www.who.int/csr/don/2013_06_07/en/index.html,,Al-Hasa_21_2013
+74,83M,M,83,KSA,Al-Ahsa,,,,2013-05-27,,2013-07-07,2013-05-31,,,,fatal,,,,,http://www.who.int/csr/don/2013_06_07/en/index.html,,Al-Hasa_21_2013
 75,75M,M,75,KSA,Al-Ahsa,,,,,,2013-06-14,2013-07-05,,,,fatal,,,,death as date reported,http://www.who.int/csr/don/2013_06_14/en/index.html ,http://www.who.int/csr/don/2013_07_05/en/index.html,
 76,45M,M,45,KSA,Taif,,,,2013-05-31,,2013-06-14,2013-06-16,,,,fatal,I,,,onset reported as 'end of may',http://www.who.int/csr/don/2013_06_15/en/index.html,,
 77,68F,F,68,KSA,Taif,,,,2013-06-06,,,2013-06-16,,,,fatal,I (family),TRUE,,,http://www.who.int/csr/don/2013_06_15/en/index.html,,
