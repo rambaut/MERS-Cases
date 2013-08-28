@@ -189,6 +189,13 @@ div.death {
   text-align: left;
 }
 
+div.date {
+  width: 60px;
+  padding-right: 10px;
+  text-align: left;
+  color: #888888;
+}
+
 div.age,
 div.gender {
   width: 40px;
@@ -764,7 +771,7 @@ div.notes {
 
 				individualEnter.append("div")
 				  .attr("title", function(d) { return "Date given: " + d.dateType; })
-				  .attr("class", "onset")
+				  .attr("class", function(d) { return (d.dateType === "onset" ? "onset" : "date"); })
 				  .text(function(d) { return formatPrettyDate(d.date); });
 
 				individualEnter.append("div")
