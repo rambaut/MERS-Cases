@@ -29,9 +29,9 @@ number,FT,code,gender,age,country,city,district,hospital,exposure,onset,hospital
 28,15,39M,M,39,KSA,Riyadh,,,,2013-02-24,2013-02-28,2013-03-12,2013-03-02,,,,fatal,D (family),TRUE,,,http://dx.doi.org/10.1016/j.ijid.2013.07.001,http://www.who.int/csr/don/2013_03_12/en/index.html,,
 29,16,40M,M,40,KSA,Riyadh,,,,2013-03-02,2013-03-04,2013-03-23,,2013-03-11,,mild,,D (family),TRUE,,,http://dx.doi.org/10.1016/j.ijid.2013.07.001,http://www.who.int/csr/don/2013_03_23/en/index.html,,
 30,17,73M,M,73,UAE,Abu Dhabi,,,,2013-03-08,2013-03-10,2013-03-26,2013-03-26,,,,fatal,,,,Transferred from Abu Dhabi to Munich on 2013-03-19,http://dx.doi.org/10.1016/ S1473-3099(13)70154-3 ,,,
-31,,56M,M,56,KSA,Al-Hofuf,,,,2013-04-08,2013-04-09,,2013-04-15,,,,fatal,F,,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,A
+31,,56M,M,56,KSA,Al-Hofuf,,,,2013-04-08,2013-04-09,,2013-04-15,,,,fatal,F,,TRUE,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,A
 32,33,58M,M,58,KSA,Al-Hofuf,,,,2013-04-06,,,,2013-05-04,,,,F,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,B
-33,,55M,M,55,KSA,Al-Hofuf,,,2013-04-08,2013-04-11,,,2013-04-19,,,,fatal,F,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,C
+33,,55M,M,55,KSA,Al-Hofuf,,,2013-04-08,2013-04-11,,,2013-04-19,,,,fatal,F,TRUE,TRUE,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,C
 34,18,59M,M,59,KSA,Al-Hofuf,,,,2013-04-14,,,2013-04-20,,,,fatal,F,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,D
 35,19,24M,M,24,KSA,Al-Hofuf,,,,2013-04-15,,,2013-05-29,,,,fatal,F,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,E
 36,20,87M,M,87,KSA,Al-Hofuf,,,,2013-04-17,,,2013-04-28,,,,fatal,F,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,F
