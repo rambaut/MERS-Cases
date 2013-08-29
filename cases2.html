@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="css/leaflet.css" />
 <link rel="stylesheet" href="css/MarkerCluster.css" />
 <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+<link href="js/tooltips/themes/1/tooltip.css" rel="stylesheet" type="text/css" />
 <style>
 
 body {
@@ -393,6 +394,7 @@ div.notes {
 <script src="js/leaflet.js"></script>
 <script src="js/leaflet.markercluster.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/tooltips/themes/1/tooltip.js" type="text/javascript"></script>
 
 <!--
 <script src="crossfilter.v1.min.js"></script>
@@ -471,13 +473,15 @@ div.notes {
 
 		if (d.death != null) {
 			d.death = formatDate.parse(d.death);
-			if (d.death != null) {
+			if (d.death != null || d.outcome === 'fatal') {
 				d.outcome = 2;
 			} else {
 				d.outcome = 1;
 			}
+		} else if (d.outcome == 'fatal') {
+			d.outcome = 2;
 		} else {
-			d.outcome = 0;
+		  	d.outcome = 1;
 		}
 		
 		d.date = d.onset;
@@ -749,7 +753,7 @@ div.notes {
 			console.log(args.gender);
 			gender.filter(args.gender);
 		}
-		
+				
 		function caseList(div) {
 			var casesByDate = nestByDate.entries(onsetDate.top(Infinity));
 
@@ -767,10 +771,19 @@ div.notes {
 				  .data(function(d) { return d.values; }, function(d) { return d.index; });
 
 				var individualEnter = individual.enter().append("div")
-				  .attr("class", "individual");
+				  .attr("class", "individual tooltip")
+				  .attr("onmouseover", function(d) { return "tooltip.pop(this, '<h3>" + d.age + "Y, " + d.gender + " " + d.city.name + ", " + d.country + "</h3>" +
+				  	"<p>Date: " + formatPrettyDate(d.date) + " (" + d.dateType + ")</p>" +
+				  	(d.onset != null ? "<p>Onset: " + formatPrettyDate(d.onset) + "</p>" : "") + 
+				  	(d.hospitalized != null ? "<p>Hospitalized: " + formatPrettyDate(d.hospitalized) + "</p>" : "") +
+				  	(d.death != null ? "<p>Death: " + formatPrettyDate(d.death) + "</p>" : "") +
+				  	(d.notes != null ? "<p>"+d.notes+"</p>" : "") +
+				  	(d.citation != null ? "<p><a href=\""+d.citation+"\">Citation</a></p>" : "") +
+				  	(d.citation2 != null ? "<p><a href=\""+d.citation2+"\">Citation</a></p>" : "") +
+				  "')"; });
 
 				individualEnter.append("div")
-				  .attr("title", function(d) { return "Date given: " + d.dateType; })
+//				  .attr("title", function(d) { return "Date given: " + d.dateType; })
 				  .attr("class", function(d) { return (d.dateType === "onset" ? "onset" : "date"); })
 				  .text(function(d) { return formatPrettyDate(d.date); });
 
