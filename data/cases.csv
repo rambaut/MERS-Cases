@@ -1,4 +1,4 @@
-number,FT,code,gender,age,country,city,district,hospital,exposure,onset,hospitalized,reported,death,discharged,comorbidity,severity,outcome,cluster,secondary,suspected,notes,citation,citation2,sequence,Patient
+number,FT,code,gender,age,country,city,district,hospital,exposure,onset,hospitalized,reported,death,discharged,comorbidity,severity,outcome,cluster,secondary,suspected,notes,citation,citation2,sequence,patient
 1,2,25M,M,25,Jordan,Zarqa,,,,2012-03-21,2012-04-04,,2012-04-25,,,,fatal,A (hospital),,,,http://applications.emro.who.int/emhj/v19/Supp1/EMHJ_2013_19_Supp1_S12_S18.pdf,,,
 2,,30M,M,30,Jordan,Zarqa,,,,2012-03-30,2012-04-08,,,,,,,A (hospital),TRUE,TRUE,probable,http://applications.emro.who.int/emhj/v19/Supp1/EMHJ_2013_19_Supp1_S12_S18.pdf,,,
 3,1,40F,F,40,Jordan,Zarqa,,,,2012-04-02,2012-04-09,,2012-04-19,,,,fatal,A (hospital),TRUE,,,http://applications.emro.who.int/emhj/v19/Supp1/EMHJ_2013_19_Supp1_S12_S18.pdf,,,
@@ -16,18 +16,18 @@ number,FT,code,gender,age,country,city,district,hospital,exposure,onset,hospital
 15,4,49M,M,49,Qatar,Doha,,,,2012-09-03,2012-09-07,,2013-06-28,,none,,fatal,,,,"Visited KSA prior to onset, transferred to London, UK",http://www.who.int/csr/don/2012_09_23/en/index.html,,,
 16,5,45M,M,45,KSA,Riyadh,,,,2012-10-09,2012-10-12,2012-11-23,,2012-11-04,"diabetes, atrophied kidney & heart disease",severe,recovered,,,,"Three days prior to the onset of illness, he had visited a local farm near his home in Riyadh where he had a brief contact with farm animals",http://www.smj.org.sa/PDFFiles/Dec12/Recoveryfromseverecoronavirus.pdf,,,
 17,6,45M,M,45,Qatar,Doha,,,,2012-10-12,,2012-11-23,,,,,,,,,"Transferred to Essen, Germany",,,,
-18,9,70M,M,70,KSA,Riyadh,,,,2012-10-05,2012-10-13,2012-11-23,2012-10-23,,,,fatal,B,,,Patient 1 from DOI:10.1056/NEJMoa1303729 ?,http://www.nejm.org/doi/pdf/10.1056/NEJMoa1303729,,,
-19,7,31M,M,31,KSA,Riyadh,,,,2012-11-03,2012-11-06,2012-11-23,,2012-11-14,,,,B (family),TRUE,,Patient 4 from DOI:10.1056/NEJMoa1303729 ?,http://www.nejm.org/doi/pdf/10.1056/NEJMoa1303729,,,
-20,8,39M,M,39,KSA,Riyadh,,,,2012-10-24,2012-10-28,2012-11-30,2012-11-02,,,,fatal,B (family),TRUE,,Patient 2 from DOI:10.1056/NEJMoa1303729 ?,http://www.nejm.org/doi/pdf/10.1056/NEJMoa1303729,,,
-21,,16M,M,16,KSA,Riyadh,,,,2012-11-02,2012-11-07,,,2012-11-11,,,,B (family),TRUE,TRUE,Probable MERS. Patient 3 from DOI:10.1056/NEJMoa1303729 ?,http://www.nejm.org/doi/pdf/10.1056/NEJMoa1303729,,,
+18,9,70M,M,70,KSA,Riyadh,,,,2012-10-05,2012-10-13,2012-11-23,2012-10-23,,,,fatal,B,,,Patient 1 from DOI:10.1056/NEJMoa1303729 ?,http://www.nejm.org/doi/pdf/10.1056/NEJMoa1303729,,,1
+19,7,31M,M,31,KSA,Riyadh,,,,2012-11-03,2012-11-06,2012-11-23,,2012-11-14,,,,B (family),TRUE,,Patient 4 from DOI:10.1056/NEJMoa1303729 ?,http://www.nejm.org/doi/pdf/10.1056/NEJMoa1303729,,,4
+20,8,39M,M,39,KSA,Riyadh,,,,2012-10-24,2012-10-28,2012-11-30,2012-11-02,,,,fatal,B (family),TRUE,,Patient 2 from DOI:10.1056/NEJMoa1303729 ?,http://www.nejm.org/doi/pdf/10.1056/NEJMoa1303729,,,2
+21,,16M,M,16,KSA,Riyadh,,,,2012-11-02,2012-11-07,,,2012-11-11,,,,B (family),TRUE,TRUE,Probable MERS. Patient 3 from DOI:10.1056/NEJMoa1303729 ?,http://www.nejm.org/doi/pdf/10.1056/NEJMoa1303729,,,3
 22,10,60M,M,60,KSA,Makkah,,,,2013-01-24,,2013-02-11,2013-03-16,,,,fatal,C,,,Travelled to Pakistan and KSA before returning to UK,http://www.who.int/csr/don/2013_02_11b/en/index.html,,,
 23,11,39M,M,39,UK,Birmingham,,,,2013-02-06,,2013-02-13,2013-02-17,,immune-suppressed,,fatal,C (family),TRUE,,,http://www.who.int/csr/don/2013_02_13/en/index.html,,,
 24,12,30F,F,30,UK,Birmingham,,,,2013-02-05,,2013-02-16,,,,mild,,C (family),TRUE,,,http://www.who.int/csr/don/2013_02_16/en/index.html,,,
 25,13,61F,F,61,KSA,Riyadh,,,,,2013-01-29,2013-02-21,2013-02-10,,,,fatal,,,,,http://www.who.int/csr/don/2013_02_21/en/index.html,,,
 26,14,69M,M,69,KSA,Jeddah,,,,,2013-02-10,2013-03-06, 2013-02-19,,,,fatal,,,,Jeddah reference?,http://www.who.int/csr/don/2013_03_06/en/index.html,,,
-27,,51M,M,51,KSA,Riyadh,,,,2013-02-13,,,2013-02-24,,myeloma,,fatal,D,,,Possibly aquired in hospital 14 days prior to onset,http://dx.doi.org/10.1016/j.ijid.2013.07.001,,,Patient 1
-28,15,39M,M,39,KSA,Riyadh,,,,2013-02-24,2013-02-28,2013-03-12,2013-03-02,,,,fatal,D (family),TRUE,,,http://dx.doi.org/10.1016/j.ijid.2013.07.001,http://www.who.int/csr/don/2013_03_12/en/index.html,,
-29,16,40M,M,40,KSA,Riyadh,,,,2013-03-02,2013-03-04,2013-03-23,,2013-03-11,,mild,,D (family),TRUE,,,http://dx.doi.org/10.1016/j.ijid.2013.07.001,http://www.who.int/csr/don/2013_03_23/en/index.html,,
+27,,51M,M,51,KSA,Riyadh,,,,2013-02-13,,,2013-02-24,,myeloma,,fatal,D,,,Possibly aquired in hospital 14 days prior to onset,http://dx.doi.org/10.1016/j.ijid.2013.07.001,,,1
+28,15,39M,M,39,KSA,Riyadh,,,,2013-02-24,2013-02-28,2013-03-12,2013-03-02,,,,fatal,D (family),TRUE,,,http://dx.doi.org/10.1016/j.ijid.2013.07.001,http://www.who.int/csr/don/2013_03_12/en/index.html,,2
+29,16,40M,M,40,KSA,Riyadh,,,,2013-03-02,2013-03-04,2013-03-23,,2013-03-11,,mild,,D (family),TRUE,,,http://dx.doi.org/10.1016/j.ijid.2013.07.001,http://www.who.int/csr/don/2013_03_23/en/index.html,,3
 30,17,73M,M,73,UAE,Abu Dhabi,,,,2013-03-08,2013-03-10,2013-03-26,2013-03-26,,,,fatal,,,,Transferred from Abu Dhabi to Munich on 2013-03-19,http://dx.doi.org/10.1016/ S1473-3099(13)70154-3 ,,,
 31,,56M,M,56,KSA,Al-Hofuf,,,,2013-04-08,2013-04-09,,2013-04-15,,,,fatal,F,,TRUE,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,A
 32,33,58M,M,58,KSA,Al-Hofuf,,,,2013-04-06,,,,2013-05-04,,,,F,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,B
@@ -54,8 +54,8 @@ number,FT,code,gender,age,country,city,district,hospital,exposure,onset,hospital
 53,,56M,M,56,KSA,Al-Hofuf,,,,2013-05-11,2013-05-11,,2013-05-23,,,,fatal,F,TRUE,,death date as end of study,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,W
 54,37,81M,M,81,KSA,Al-Hofuf,,,"2013-04-24,2013-04-28",2013-05-02,,,,,,,fatal,F,TRUE,,"still alive 2013-05-23, reported dead later",http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,X
 55,35,69F,F,69,KSA,Al-Hofuf,,,,2013-04-25,,2013-05-14,2013-05-08,,,,fatal,F,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,Y
-56,31,64M,M,64,UAE,Dubai,,,"2013-04-09,2013-04-17",2013-04-22,2013-04-23,2013-05-07,2013-05-28,,,,fatal,E,,,"Hospitalized in Valenciennes, France",http://dx.doi.org/10.1016/S0140-6736(13)60982-4,,,
-57,34,51M,M,51,France,Valenciennes,,,"2013-04-26,2013-04-29",2013-05-08,2013-05-09,2013-05-12,,,,,,E (hospital contact),TRUE,,,http://dx.doi.org/10.1016/S0140-6736(13)60982-4,,,
+56,31,64M,M,64,UAE,Dubai,,,"2013-04-09,2013-04-17",2013-04-22,2013-04-23,2013-05-07,2013-05-28,,,,fatal,E,,,"Hospitalized in Valenciennes, France",http://dx.doi.org/10.1016/S0140-6736(13)60982-4,,,1
+57,34,51M,M,51,France,Valenciennes,,,"2013-04-26,2013-04-29",2013-05-08,2013-05-09,2013-05-12,,,,,,E (hospital contact),TRUE,,,http://dx.doi.org/10.1016/S0140-6736(13)60982-4,,,2
 58,,66M,M,66,Qatar,Doha,,,,2013-05-06,,2013-05-22,2013-05-10,,diabetes,,fatal,G (probable index),,TRUE,"Returned from trip to Qatar and KSA on 2013-05-03, probable case but tested negative",http://www.who.int/csr/disease/coronavirus_infections/update_20130531/en/,,,
 59,43,34M,M,34,Tunisia,Monastir,,,,2013-05-10,,2013-05-22,,,,mild,,G (family),TRUE,,onset as death of index case,http://www.who.int/csr/disease/coronavirus_infections/update_20130531/en/,,,
 60,42,35F,F,35,KSA,Makkah,,Monastir,,2013-05-10,,2013-05-22,,,,mild,,G (family),TRUE,,onset as death of index case,http://www.who.int/csr/disease/coronavirus_infections/update_20130531/en/,,,
@@ -68,9 +68,9 @@ number,FT,code,gender,age,country,city,district,hospital,exposure,onset,hospital
 67,50,61M,M,61,KSA,Al-Ahsa,,,,2013-05-20,,2013-05-29,,,,,,,,,,http://www.who.int/csr/don/2013_05_31_ncov/en/index.html,,,
 68,58,21M,M,21,KSA,Hafr Al-Batin,,,,,,2013-06-14,2013-06-12,,,,fatal,,,,,http://www.who.int/csr/don/2013_06_14/en/index.html,,,
 69,56,63F,F,63,KSA,Eastern Province,,,,,,2013-06-14,2013-06-16,,yes,,fatal,,,,,http://www.who.int/csr/don/2013_06_14/en/index.html,,,
-70,51,45M,M,45,Jordan,Amman,,Florence,,2013-05-24,2013-05-28,,,2013-06-06,,,,H,,,"40 day trip to Jordan, onset 1 day prior to return to Italy",http://www.eurosurveillance.org/ViewArticle.aspx?ArticleId=20564,http://www.who.int/csr/don/2013_06_01_ncov/en/index.html,,Case 1
-71,52,2F,F,2,Italy,Florence,,,2013-05-26,2013-05-29,,2013-06-02,,2013-06-05,,,,H (family),TRUE,,,http://www.eurosurveillance.org/ViewArticle.aspx?ArticleId=20564,http://www.who.int/csr/don/2013_06_02_ncov/en/index.html,,Case 2
-72,53,42F,F,42,Italy,Florence,,,2013-05-27,2013-05-31,,2013-06-02,,2013-06-06,,,,H (co-worker),TRUE,,,http://www.eurosurveillance.org/ViewArticle.aspx?ArticleId=20564,http://www.who.int/csr/don/2013_06_02_ncov/en/index.html,,Case 3
+70,51,45M,M,45,Jordan,Amman,,Florence,,2013-05-24,2013-05-28,,,2013-06-06,,,,H,,,"40 day trip to Jordan, onset 1 day prior to return to Italy",http://www.eurosurveillance.org/ViewArticle.aspx?ArticleId=20564,http://www.who.int/csr/don/2013_06_01_ncov/en/index.html,,1
+71,52,2F,F,2,Italy,Florence,,,2013-05-26,2013-05-29,,2013-06-02,,2013-06-05,,,,H (family),TRUE,,,http://www.eurosurveillance.org/ViewArticle.aspx?ArticleId=20564,http://www.who.int/csr/don/2013_06_02_ncov/en/index.html,,2
+72,53,42F,F,42,Italy,Florence,,,2013-05-27,2013-05-31,,2013-06-02,,2013-06-06,,,,H (co-worker),TRUE,,,http://www.eurosurveillance.org/ViewArticle.aspx?ArticleId=20564,http://www.who.int/csr/don/2013_06_02_ncov/en/index.html,,3
 73,54,14F,F,14,KSA,Eastern Province,,,,2013-05-29,,2013-06-05,,,,,,,,,not part of Al-Ahsa hospital cluster,http://www.who.int/csr/don/2013_06_05/en/index.html,,,
 74,55,83M,M,83,KSA,Al-Ahsa,,,,2013-05-27,,2013-07-07,2013-05-31,,,,fatal,,,,,http://www.who.int/csr/don/2013_06_07/en/index.html,,Al-Hasa_21_2013,
 75,57,75M,M,75,KSA,Al-Ahsa,,,,,,2013-06-14,2013-07-05,,,,fatal,,,,death as date reported,http://www.who.int/csr/don/2013_06_14/en/index.html ,http://www.who.int/csr/don/2013_07_05/en/index.html,,

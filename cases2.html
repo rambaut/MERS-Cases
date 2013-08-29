@@ -753,7 +753,7 @@ div.notes {
 			console.log(args.gender);
 			gender.filter(args.gender);
 		}
-				
+					
 		function caseList(div) {
 			var casesByDate = nestByDate.entries(onsetDate.top(Infinity));
 
@@ -772,14 +772,20 @@ div.notes {
 
 				var individualEnter = individual.enter().append("div")
 				  .attr("class", "individual tooltip")
-				  .attr("onmouseover", function(d) { return "tooltip.pop(this, '<h3>" + d.age + "Y, " + d.gender + " " + d.city.name + ", " + d.country + "</h3>" +
-				  	"<p>Date: " + formatPrettyDate(d.date) + " (" + d.dateType + ")</p>" +
-				  	(d.onset != null ? "<p>Onset: " + formatPrettyDate(d.onset) + "</p>" : "") + 
-				  	(d.hospitalized != null ? "<p>Hospitalized: " + formatPrettyDate(d.hospitalized) + "</p>" : "") +
-				  	(d.death != null ? "<p>Death: " + formatPrettyDate(d.death) + "</p>" : "") +
-				  	(d.notes != null ? "<p>"+d.notes+"</p>" : "") +
-				  	(d.citation != null ? "<p><a href=\""+d.citation+"\">Citation</a></p>" : "") +
-				  	(d.citation2 != null ? "<p><a href=\""+d.citation2+"\">Citation</a></p>" : "") +
+				  .attr("onmouseover", function(d) { return "tooltip.pop(this, '<h3>" + d.country + ", " + d.city.name + "<br>" + d.age + "Y, " + d.gender + 
+				  	", Date: " + formatPrettyDate(d.date) + " (" + d.dateType + ")</h3>" +
+				  	(d.FT != null ? "<p><a href=\"http://www.flutrackers.com/forum/showthread.php?t=205075\">FluTrackers case: #" + d.FT + "</a></p>" : "") + 
+				  	"<ul>" +
+				  	(d.onset != null ? "<li>Onset: " + formatPrettyDate(d.onset) : "</li>") + 
+				  	(d.hospitalized != null ? "<li>Hospitalized: " + formatPrettyDate(d.hospitalized) + "</li>" : "") +
+				  	(d.death != null ? "<li>Death: " + formatPrettyDate(d.death) + "</li>" : "") +
+				  	(d.reported != null ? "<li>Reported: " + formatPrettyDate(d.reported) + "</li>" : "") +
+				    "</ul>" +
+					(d.notes != null && d.notes.length > 0 ? "<p>"+d.notes+"</p>" : "") +
+				  	"<p>" + 
+				  	(d.patient != null && d.patient.length > 0  ? "<a href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
+				  	(d.citation != null && d.citation.length > 0 ? "<a href=\""+d.citation+"\">Reference</a>" : "") +
+				  	(d.citation2 != null && d.citation2.length > 0 ? " | <a href=\""+d.citation2+"\">Secondary Reference</a>" : "") + "</p>" +
 				  "')"; });
 
 				individualEnter.append("div")
