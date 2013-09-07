@@ -56,9 +56,9 @@ number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hos
 55,35,,69F,F,69,KSA,Al-Hofuf,,,,2013-04-25,,2013-05-14,2013-05-08,,,,fatal,F,,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,Y
 56,31,,64M,M,64,UAE,Dubai,,,"2013-04-09,2013-04-17",2013-04-22,2013-04-23,2013-05-07,2013-05-28,,,,fatal,E,,,,"Hospitalized in Valenciennes, France",http://dx.doi.org/10.1016/S0140-6736(13)60982-4,,,1
 57,34,,51M,M,51,France,Valenciennes,,,"2013-04-26,2013-04-29",2013-05-08,2013-05-09,2013-05-12,,,,,,E,hospital contact,TRUE,,,http://dx.doi.org/10.1016/S0140-6736(13)60982-4,,,2
-58,,,66M,M,66,Qatar,Doha,,,,2013-05-06,,2013-05-22,2013-05-10,,diabetes,,fatal,G,,,TRUE,"Returned from trip to Qatar and KSA on 2013-05-03, probable case but tested negative",http://www.who.int/csr/disease/coronavirus_infections/update_20130531/en/,,,
+58,,,66M,M,66,Qatar,Doha,,Monastir,,2013-05-06,,2013-05-22,2013-05-10,,diabetes,,fatal,G,,,,"Returned from trip to Qatar and KSA on 2013-05-03, confirmed by CDC",http://www.who.int/csr/disease/coronavirus_infections/update_20130531/en/,doi: http://dx.doi.org/10.1136/bmj.f3372,,
 59,43,,34M,M,34,Tunisia,Monastir,,,,2013-05-10,,2013-05-22,,,,mild,,G,family,TRUE,,onset as death of index case,http://www.who.int/csr/disease/coronavirus_infections/update_20130531/en/,,,
-60,42,,35F,F,35,KSA,Makkah,,Monastir,,2013-05-10,,2013-05-22,,,,mild,,G,family,TRUE,,onset as death of index case,http://www.who.int/csr/disease/coronavirus_infections/update_20130531/en/,,,
+60,42,,35F,F,35,Tunisia,Monastir,,,,2013-05-10,,2013-05-22,,,,mild,,G,family,TRUE,,onset as death of index case,http://www.who.int/csr/disease/coronavirus_infections/update_20130531/en/,,,
 61,44,,63M,M,63,KSA,Al-Qassim,,,,,2013-05-15,2013-05-23,2013-05-20,,,,fatal,,,,,,http://www.who.int/csr/don/2013_05_23_ncov/en/index.html,,,
 62,45,,56M,M,56,KSA,Eastern Province,,,,2013-05-12,,,2013-05-20,,,,fatal,,,,,,http://www.who.int/csr/don/2013_05_29_ncov/en/index.html,,,
 63,46,,85F,F,85,KSA,Eastern Province,,,,2013-05-17,,2013-05-29,,,,,,,,,,,http://www.who.int/csr/don/2013_05_29_ncov/en/index.html,,,
@@ -112,7 +112,7 @@ number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hos
 111,94,,39F,F,39,KSA,Riyadh,,,,,,2013-08-01,,,,mild,,,,TRUE,,"health care worker, exposed to patients who were laboratory-confirmed cases",http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/Mediastatement-2013-08-01-001.aspx,http://www.who.int/csr/don/2013_08_01/en/index.html,,
 112,95,,50F,F,50,KSA,Riyadh,,,,,,2013-08-19,,,chronic disease,,,,,,,,http://www.who.int/csr/don/2013_08_28/en/index.html,,,
 113,96,,59F,F,59,KSA,Riyadh,,,,2013-07-23,,2013-08-19,,,chronic disease,critical,,,,,,,http://www.who.int/csr/don/2013_08_28/en/index.html,,,
-114,97,,59M,M,59,KSA,Madinah,,Doha,,2013-08-15,,2013-08-20,,,,stable,,N,,,,Returned to Qatar with symptoms from probable trip to KSA,http://www.who.int/csr/don/2013_08_29/en/index.html,,,
+114,97,,59M,M,59,KSA,Madinah,,Doha,,2013-08-15,,2013-08-20,,,,stable,,N,,,,Returned to Qatar with symptoms from probable trip to KSA,http://www.who.int/csr/don/2013_08_29/en/index.html,http://www.kuna.net.kw/ArticleDetails.aspx?id=2331628&language=en,,
 115,98,,50F,F,50,KSA,Riyadh,,,,2013-08-01,,2013-08-22,,,cancer & chronic disease,,,,,,,,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/mediastatement-2013-08-21-001.aspx,http://www.who.int/csr/don/2013_08_28/en/index.html,,
 116,99,,70M,M,70,KSA,Riyadh,,,,,,2013-08-22,,,chronic disease,,,,,,,,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/mediastatement-2013-08-21-001.aspx,http://www.who.int/csr/don/2013_08_28/en/index.html,,
 117,100,,31M,M,31,KSA,Asir Province,,,,,,2013-08-22,,,chronic disease,,,,,,,,http://www.who.int/csr/don/2013_08_28/en/index.html,,,
@@ -127,3 +127,8 @@ number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hos
 126,108,SA86,7F,F,7,KSA,Hafr Al-Batin,,,,,,2013-08-29,,2013-08-31,,asymptomatic,,L,family,TRUE,,Family of #124,http://www.promedmail.org/direct.php?id=20130829.1911345,http://www.who.int/csr/don/2013_08_30/en/index.html,,
 127,109,,26?,?,26,KSA,Riyadh,,,,,,2013-09-01,,2013-09-01,,,,,,,,discharge as date of reporting,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/Mediastatement-2013-09-01-001.aspx,,,
 128,110,,19?,?,19,KSA,Hafr Al-Batin,,,,,,2013-09-01,,2013-09-01,,,,,,,,discharge as date of reporting,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/Mediastatement-2013-09-01-001.aspx,,,
+129,111,,56F,F,56,Qatar,Doha,,,,,2013-08-23,2013-09-03,2013-08-31,,chronic disease,,,,,,,,http://www.kuna.net.kw/ArticleDetails.aspx?id=2331628&language=en,,,
+130,,,41F,F,41,KSA,Riyadh,,,,2013-08-15,,2013-09-06,2013-09-06,,none,,fatal,,,,,"health care worker, no history of contacts with animals or a positive case. Death as date of reporting",http://beta.promedmail.org/direct.php?id=20130906.1928088,,,
+131,,,30M,M,30,KSA,Riyadh,,,,,2013-09-04,2013-09-06,,,,critical,,,,TRUE,,health care worker from Riyadh who is a contact of a positive case,http://beta.promedmail.org/direct.php?id=20130906.1928088,,,
+132,,,79F,F,79,KSA,Hafr Al-Batin,,,,2013-08-21,,2013-09-06,2013-09-02,,,,fatal,,,TRUE,,a contact of a positive case from [21 Aug 2013],http://beta.promedmail.org/direct.php?id=20130906.1928088,,,
+133,,,47M,M,47,KSA,Hafr Al-Batin,,,,2013-08-23,,2013-09-06,,,,critical,,,,TRUE,, a contact of a positive case,http://beta.promedmail.org/direct.php?id=20130906.1928088,,,
