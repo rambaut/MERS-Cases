@@ -660,6 +660,8 @@ div.notes {
 		} else {
 			d.cluster = null;
 		}
+
+		d.comorbidity = (d.comorbidity === "TRUE" ? true : false);
 	
 		d.contact = (d.secondary === "TRUE" ? d.contact : "primary");
 		d.contact = (d.contact === "contact" ? "unspecified contact" : d.contact);
@@ -813,9 +815,9 @@ div.notes {
 			.margins({top: 103, right: 0, bottom: 20, left: 20})
 			.group(comorbidityGroups)
 			.dimension(comorbidity)
-					.colors(['#CD9B1D', '#FFC125'])
+					.colors(['#99993D', '#E6E65C'])
 			.label(function (d){
-				return d.value + " " + (d.comorbidity == true ? "existing" : "none or unknown");
+				return d.value + " " + (d.key ? "existing" : "none or unknown");
 			})
 			.title(function(d){return d.value;})
 			.elasticX(false)
@@ -842,7 +844,7 @@ div.notes {
 			.margins({top: 20, right: 0, bottom: 20, left: 20})
 			.group(contactTypes)
 			.dimension(contact)
-			.colors(['#9B9A1D', '#C1BB25'])
+			.colors(['#3D5200', '#6B8F00', '#99CC00', '#B8DB4D'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
@@ -860,7 +862,7 @@ div.notes {
 			.margins({top: 73, right: 0, bottom: 20, left: 20})
 			.group(caseStatusType)
 			.dimension(caseStatus)
-			.colors(['#2E8B57', '#20B2AA'])
+			.colors(['#00CC66', '#4DDB94'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
