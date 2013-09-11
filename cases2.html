@@ -56,7 +56,7 @@ h1, h2 {
 }
 
 .dc-chart g.row text {
-    fill: black;
+	fill: black;
   font-family: Helvetica,Arial,sans-serif;
     font-size: 11px;
     cursor: pointer;
@@ -111,6 +111,16 @@ h1, h2 {
   height: 180px;
 }
 
+#location-chart {
+  width: 280px;
+  height: 180px;
+}
+
+#location-chart g.row text {
+    font-size: 10px;
+}
+
+
 #age-chart {
   width: 300px;
   height: 180px;
@@ -130,7 +140,17 @@ h1, h2 {
   height: 180px;
 }
 
-#cluster-chart {
+#cluster-size-chart {
+  width: 300px;
+  height: 180px;
+}
+
+#cluster-size .bar {
+  fill: #8B475D;
+}
+
+
+#primary-secondary-chart {
   width: 140px;
   height: 180px;
 }
@@ -391,9 +411,15 @@ div.notes {
 		<h2>Spatial Distribution</span></h2>
 		<div class="panelcontent">
 			<div>
-				<div id="country-chart" class="dc-chart inline-div align-top">
-					<span class="title" class="inline-div">Cases by Country</span>
-					<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+				<div class="inline-div">
+					<div id="country-chart" class="dc-chart align-top">
+						<span class="title" class="inline-div">Cases by Country</span>
+						<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					</div>
+					<div id="location-chart" class="dc-chart align-top">
+						<span class="title" class="inline-div">Cases by KSA location</span>
+						<a class="reset title" href="javascript:locationChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					</div>
 				</div>
 				<div id="map" class="inline-div align-top"></div>
 			</div>
@@ -409,7 +435,7 @@ div.notes {
 		</div>
 	</div>
 	<div class="panel">
-		<h2>Demography/Epidemiology</span></h2>
+		<h2>Demography</span></h2>
 		<div class="panelcontent">
 			<div>
 				<div id="age-chart" class="dc-chart inline-div align-bottom">
@@ -424,9 +450,22 @@ div.notes {
 					<span class="title">By Outcome</span>
 					<a class="reset title" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
-				<div id="cluster-chart" class="dc-chart inline-div align-bottom">
+			</div>
+		</div>
+	</div>
+	<div class="panel">
+		<h2>Epidemiology</span></h2>
+		<div class="panelcontent">
+			<div>
+				<!--
+				<div id="cluster-size-chart" class="dc-chart inline-div align-bottom">
+					<span class="title">Cluster size</span>
+					<a class="reset title" href="javascript:clusterSizeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+				</div>
+				-->
+				<div id="primary-secondary-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By cluster</span>
-					<a class="reset title" href="javascript:clusterChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<a class="reset title" href="javascript:primarySecondaryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
 				<div id="status-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By status</span>
@@ -484,10 +523,12 @@ div.notes {
 
 	var onsetChart = dc.barChart("#onset-chart");
 	var countryChart = dc.rowChart("#country-chart");
+	var locationChart = dc.rowChart("#location-chart");
 	var ageChart = dc.barChart("#age-chart");
 	var genderChart = dc.rowChart("#gender-chart");
 	var deathChart = dc.rowChart("#death-chart");
-	var clusterChart = dc.rowChart("#cluster-chart");
+	var clusterSizeChart = dc.barChart("#cluster-size-chart");
+	var primarySecondaryChart = dc.rowChart("#primary-secondary-chart");
 	var statusChart = dc.rowChart("#status-chart");
 
 	dc.constants.EVENT_DELAY = 0;
@@ -597,7 +638,7 @@ div.notes {
 			cases.push(d);
 		}
 	
-		d.cluster = (d.secondary === "TRUE" ? "secondary" : "primary");
+		d.primarySecondary = (d.secondary === "TRUE" ? "secondary" : "primary");
 	
 		d.status = (d.suspected === "TRUE" ? "suspected" : "confirmed");
 
@@ -629,14 +670,18 @@ div.notes {
 		  onsetDates = onsetDate.group(d3.time.week),
 		  country = crossFilter.dimension(function(d) { return d.country; }),
 		  countries = country.group(function(d) { return d; }),
+		  location = crossFilter.dimension(function(d) { return (d.country == "KSA" ? d.city.name : "other countries" ); }),
+		  locations = location.group(function(d) { return d; }),
 		  gender = crossFilter.dimension(function(d) { return d.genderCode; }),
 		  genders = gender.group(function(d) { return d; }),
 		  death = crossFilter.dimension(function(d) { return d.outcome }),
 		  deathStates = death.group(function(d) { return d; }),
 		  age = crossFilter.dimension(function(d) { return d.age; }),
 		  ageGroups = age.group(function(d) { return Math.floor(d / ageGroupSize) * ageGroupSize; }),
+		  primarySecondary = crossFilter.dimension(function(d) { return d.primarySecondary; });
+		  primarySecondaryGroups = primarySecondary.group(function(d) { return d; });
 		  cluster = crossFilter.dimension(function(d) { return d.cluster; });
-		  clusterType = cluster.group(function(d) { return d; });
+		  clusterSizes = cluster.group(function(d) { return d; });
 		  caseStatus = crossFilter.dimension(function(d) { return d.status; });
 		  caseStatusType = caseStatus.group(function(d) { return d; });
 
@@ -654,18 +699,37 @@ div.notes {
 			.on("filtered", function(d) { renderAll(); });
 
 		countryChart.width(280)
-			.height(240)
+			.height(200)
 			.transitionDuration(0)
 			.margins({top: 0, right: 20, bottom: 38, left: 20})
 			.group(countries)
 			.dimension(country)
-					.colors(['LightSteelBlue'])
+			.colors(['LightSteelBlue'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
+			.labelOffsetY(12)
+			.gap(2)
 			.title(function(d) {return d.value;})
 			.elasticX(false)
-				.on("filtered", function() { renderAll(); })
+			.on("filtered", function() { renderAll(); })
+			.xAxis().ticks(5);
+
+		locationChart.width(280)
+			.height(220)
+			.transitionDuration(0)
+			.margins({top: 0, right: 20, bottom: 38, left: 20})
+			.group(locations)
+			.dimension(location)
+			.colors(['Khaki'])
+			.label(function (d) {
+				return d.value + " " + d.key; 
+			})
+			.gap(2)
+			.labelOffsetY(9)
+			.title(function(d) {return d.value;})
+			.elasticX(false)
+			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(5);
 
 		ageChart.width(300)
@@ -713,16 +777,31 @@ div.notes {
 			})
 			.title(function(d){return d.value;})
 			.elasticX(false)
-				.on("filtered", function() { renderAll(); })
+			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(5);
 
-		clusterChart
+		clusterSizeChart.width(300)
+			.transitionDuration(0)
+			.height(180)
+			.margins({top: 10, right: 10, bottom: 20, left: 20})
+			.dimension(cluster)
+			.group(clusterSizes)
+			.centerBar(false)
+	//		.stack(genders, function(d) {
+	//			return d.key;
+	//			})
+			.gap(-8)
+			.x(d3.scale.linear().domain([0, 10]))
+			.on("filtered", function() { renderAll(); })
+			.xAxis().ticks(10);
+
+		primarySecondaryChart
 			.transitionDuration(0)
 			.width(140)
 			.height(180)
 			.margins({top: 103, right: 0, bottom: 20, left: 20})
-			.group(clusterType)
-			.dimension(cluster)
+			.group(primarySecondaryGroups)
+			.dimension(primarySecondary)
 					.colors(['#9B9A1D', '#C1BB25'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
@@ -741,7 +820,7 @@ div.notes {
 			.margins({top: 103, right: 0, bottom: 20, left: 20})
 			.group(caseStatusType)
 			.dimension(caseStatus)
-					.colors(['#2E8B57', '#20B2AA'])
+			.colors(['#2E8B57', '#20B2AA'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
@@ -774,7 +853,22 @@ div.notes {
 					spiderfyOnMaxZoom: true, 
 					showCoverageOnHover: false, 
 					zoomToBoundsOnClick: true, 
-					singleMarkerMode: true
+					singleMarkerMode: true,
+					iconCreateFunction: function(cluster) {
+						var childCount = cluster.getChildCount();
+
+						var c = ' marker-cluster-';
+						if (childCount < 10) {
+							c += 'small';
+						} else if (childCount < 20) {
+							c += 'medium';
+						} else {
+							c += 'large';
+						}
+
+						return new L.DivIcon({ html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
+    				}
+
 					});
 				
 				var markerList = [];
