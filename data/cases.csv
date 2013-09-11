@@ -52,7 +52,7 @@ number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hos
 51,41,,81F,F,81,KSA,Al-Hofuf,,,,2013-05-28,,,?,,,,fatal,F,,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,U
 52,39,,45M,M,45,KSA,Al-Hofuf,,,,2013-05-02,,,,,,,,F,hospital worker,TRUE,,critical condition,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,V
 53,,,56M,M,56,KSA,Al-Hofuf,,,,2013-05-11,2013-05-11,,2013-05-23,,,,fatal,F,,TRUE,,death date as end of study,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,W
-54,37,,81M,M,81,KSA,Al-Hofuf,,,"2013-04-24,2013-04-28",2013-05-02,,,,,,,fatal,F,,TRUE,,"still alive 2013-05-23, reported dead later",http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,X
+54,37,,81M,M,81,KSA,Al-Hofuf,,,"2013-04-24,2013-04-28",2013-05-02,,,?,,,,fatal,F,,TRUE,,"still alive 2013-05-23, reported dead later",http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,X
 55,35,,69F,F,69,KSA,Al-Hofuf,,,,2013-04-25,,2013-05-14,2013-05-08,,,,fatal,F,,TRUE,,,http://www.nejm.org/doi/full/10.1056/NEJMoa1306742,,,Y
 56,31,,64M,M,64,UAE,Dubai,,,"2013-04-09,2013-04-17",2013-04-22,2013-04-23,2013-05-07,2013-05-28,,,,fatal,E,,,,"Hospitalized in Valenciennes, France",http://dx.doi.org/10.1016/S0140-6736(13)60982-4,,,1
 57,34,,51M,M,51,France,Valenciennes,,,"2013-04-26,2013-04-29",2013-05-08,2013-05-09,2013-05-12,,,,,,E,hospital contact,TRUE,,,http://dx.doi.org/10.1016/S0140-6736(13)60982-4,,,2
@@ -144,3 +144,7 @@ number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hos
 143,,,24M,M,24,KSA,Madinah,,,,,,2013-09-10,,,,asymptomatic,,,,,,health care worker,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/mediastatement-2013-09-10-002.aspx,,,
 144,,,60M,M,60,KSA,Riyadh,,,,,,2013-09-10,,,,asymptomatic,,,,TRUE,,"contact with a confirmed case, did not show symptoms",http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/mediastatement-2013-09-10-002.aspx,,,
 145,,,47M,M,47,KSA,Riyadh,,,,,,2013-09-10,,,,stable,,,,TRUE,,contact with a confirmed case,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/mediastatement-2013-09-10-002.aspx,,,
+146,,,51F,F,51,KSA,Riyadh,,,,,,2013-09-11,,,,stable,,,,TRUE,,health care worker with contact of a previously reported case,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/MediaStatement-2013-09-11-001.aspx,,,
+147,,,47F,F,47,KSA,Riyadh,,,,,,2013-09-11,,,,mild,,,,TRUE,,health care worker with contact of a previously reported case,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/MediaStatement-2013-09-11-001.aspx,,,
+148,,,39F,F,39,KSA,Riyadh,,,,,,2013-09-11,,,,mild,,,,TRUE,,health care worker with contact of a previously reported case,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/MediaStatement-2013-09-11-001.aspx,,,
+149,,,38M,M,38,KSA,Riyadh,,,,,,2013-09-11,,,,stable,,,,TRUE,,health care worker with contact of a previously reported case,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/MediaStatement-2013-09-11-001.aspx,,,
