@@ -140,9 +140,14 @@ h1, h2 {
   height: 180px;
 }
 
+#comorbidity-chart {
+  width: 140px;
+  height: 180px;
+}
+
 #cluster-size-chart {
   width: 300px;
-  height: 180px;
+  height: 150px;
 }
 
 #cluster-size .bar {
@@ -150,14 +155,14 @@ h1, h2 {
 }
 
 
-#primary-secondary-chart {
+#contact-chart {
   width: 140px;
-  height: 180px;
+  height: 150px;
 }
 
 #status-chart {
   width: 140px;
-  height: 180px;
+  height: 150px;
 }
 
 #case-list .month {
@@ -413,7 +418,7 @@ div.notes {
 			<div>
 				<div class="inline-div">
 					<div id="country-chart" class="dc-chart align-top">
-						<span class="title" class="inline-div">Cases by Country</span>
+						<span class="title" class="inline-div">Cases by country</span>
 						<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 					</div>
 					<div id="location-chart" class="dc-chart align-top">
@@ -439,16 +444,20 @@ div.notes {
 		<div class="panelcontent">
 			<div>
 				<div id="age-chart" class="dc-chart inline-div align-bottom">
-					<span class="title">By Age</span>
+					<span class="title">By age</span>
 					<a class="reset title" href="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
 				<div id="gender-chart" class="dc-chart inline-div align-bottom">
-					<span class="title">By Gender</span>
+					<span class="title">By gender</span>
 					<a class="reset title" href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
 				<div id="death-chart" class="dc-chart inline-div align-bottom">
-					<span class="title">By Outcome</span>
+					<span class="title">By outcome</span>
 					<a class="reset title" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+				</div>
+				<div id="comorbidity-chart" class="dc-chart inline-div align-bottom">
+					<span class="title">By comorbidity</span>
+					<a class="reset title" href="javascript:comorbidityChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
 			</div>
 		</div>
@@ -457,15 +466,13 @@ div.notes {
 		<h2>Epidemiology</span></h2>
 		<div class="panelcontent">
 			<div>
-				<!--
 				<div id="cluster-size-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">Cluster size</span>
 					<a class="reset title" href="javascript:clusterSizeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
-				-->
-				<div id="primary-secondary-chart" class="dc-chart inline-div align-bottom">
-					<span class="title">By cluster</span>
-					<a class="reset title" href="javascript:primarySecondaryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+				<div id="contact-chart" class="dc-chart inline-div align-bottom">
+					<span class="title">By contact</span>
+					<a class="reset title" href="javascript:contactChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
 				<div id="status-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By status</span>
@@ -527,8 +534,9 @@ div.notes {
 	var ageChart = dc.barChart("#age-chart");
 	var genderChart = dc.rowChart("#gender-chart");
 	var deathChart = dc.rowChart("#death-chart");
+	var comorbidityChart = dc.rowChart("#comorbidity-chart");
 	var clusterSizeChart = dc.barChart("#cluster-size-chart");
-	var primarySecondaryChart = dc.rowChart("#primary-secondary-chart");
+	var contactChart = dc.rowChart("#contact-chart");
 	var statusChart = dc.rowChart("#status-chart");
 
 	dc.constants.EVENT_DELAY = 0;
@@ -571,6 +579,7 @@ div.notes {
 
 
 	  var cases = [];
+	  var clusters = {};
 
 	  var nestByDate = d3.nest()
 		  .key(function(d) { return d3.time.month(d.date); });
@@ -638,8 +647,23 @@ div.notes {
 			cases.push(d);
 		}
 	
-		d.primarySecondary = (d.secondary === "TRUE" ? "secondary" : "primary");
+		if (d.cluster != null && d.cluster.length > 0) {
+			if (d.cluster in clusters) {
+				clusters[d.cluster].count ++;			
+			} else {
+				clusters[d.cluster] = {
+					name: d.cluster,
+					count: 1
+				};				
+			}
+			d.cluster = clusters[d.cluster];
+		} else {
+			d.cluster = null;
+		}
 	
+		d.contact = (d.secondary === "TRUE" ? d.contact : "primary");
+		d.contact = (d.contact === "contact" ? "unspecified contact" : d.contact);
+
 		d.status = (d.suspected === "TRUE" ? "suspected" : "confirmed");
 
 		var found = false;
@@ -659,7 +683,7 @@ div.notes {
 
 	 	console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.country + " [" + d.dateType + "], " + d.secondary + ", " + d.cluster);
 	 });
-  
+  	
 	  var ageGroupSize = 5;
 
 	  // Create the crossfilter for the relevant dimensions and groups.
@@ -676,11 +700,13 @@ div.notes {
 		  genders = gender.group(function(d) { return d; }),
 		  death = crossFilter.dimension(function(d) { return d.outcome }),
 		  deathStates = death.group(function(d) { return d; }),
+		  comorbidity = crossFilter.dimension(function(d) { return d.comorbidity }),
+		  comorbidityGroups = comorbidity.group(function(d) { return d; }),
 		  age = crossFilter.dimension(function(d) { return d.age; }),
 		  ageGroups = age.group(function(d) { return Math.floor(d / ageGroupSize) * ageGroupSize; }),
-		  primarySecondary = crossFilter.dimension(function(d) { return d.primarySecondary; });
-		  primarySecondaryGroups = primarySecondary.group(function(d) { return d; });
-		  cluster = crossFilter.dimension(function(d) { return d.cluster; });
+		  contact = crossFilter.dimension(function(d) { return d.contact; });
+		  contactTypes = contact.group(function(d) { return d; });
+		  cluster = crossFilter.dimension(function(d) { return (d.cluster != null ? d.cluster.count : 1); });
 		  clusterSizes = cluster.group(function(d) { return d; });
 		  caseStatus = crossFilter.dimension(function(d) { return d.status; });
 		  caseStatusType = caseStatus.group(function(d) { return d; });
@@ -742,7 +768,7 @@ div.notes {
 	//		.stack(genders, function(d) {
 	//			return d.key;
 	//			})
-			.gap(-8)
+			.gap(-10)
 			.x(d3.scale.linear().domain([0, 100]))
 			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(100 / (ageGroupSize * 2));
@@ -780,29 +806,43 @@ div.notes {
 			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(5);
 
-		clusterSizeChart.width(300)
-			.transitionDuration(0)
-			.height(180)
-			.margins({top: 10, right: 10, bottom: 20, left: 20})
-			.dimension(cluster)
-			.group(clusterSizes)
-			.centerBar(false)
-	//		.stack(genders, function(d) {
-	//			return d.key;
-	//			})
-			.gap(-8)
-			.x(d3.scale.linear().domain([0, 10]))
-			.on("filtered", function() { renderAll(); })
-			.xAxis().ticks(10);
-
-		primarySecondaryChart
+		comorbidityChart
 			.transitionDuration(0)
 			.width(140)
 			.height(180)
 			.margins({top: 103, right: 0, bottom: 20, left: 20})
-			.group(primarySecondaryGroups)
-			.dimension(primarySecondary)
-					.colors(['#9B9A1D', '#C1BB25'])
+			.group(comorbidityGroups)
+			.dimension(comorbidity)
+					.colors(['#CD9B1D', '#FFC125'])
+			.label(function (d){
+				return d.value + " " + (d.comorbidity == true ? "existing" : "none or unknown");
+			})
+			.title(function(d){return d.value;})
+			.elasticX(false)
+			.on("filtered", function() { renderAll(); })
+			.xAxis().ticks(5);
+
+		clusterSizeChart.width(300)
+			.transitionDuration(0)
+			.height(150)
+			.margins({top: 10, right: 10, bottom: 20, left: 20})
+			.dimension(cluster)
+			.group(clusterSizes)
+			.centerBar(false)
+			.gap(1)
+			.x(d3.scale.linear().domain([0.5, 25.5]))
+			.centerBar(true)
+			.on("filtered", function() { renderAll(); })
+			.xAxis().ticks(10);
+
+		contactChart
+			.transitionDuration(0)
+			.width(140)
+			.height(150)
+			.margins({top: 20, right: 0, bottom: 20, left: 20})
+			.group(contactTypes)
+			.dimension(contact)
+			.colors(['#9B9A1D', '#C1BB25'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
@@ -816,8 +856,8 @@ div.notes {
 		statusChart
 			.transitionDuration(0)
 			.width(140)
-			.height(180)
-			.margins({top: 103, right: 0, bottom: 20, left: 20})
+			.height(150)
+			.margins({top: 73, right: 0, bottom: 20, left: 20})
 			.group(caseStatusType)
 			.dimension(caseStatus)
 			.colors(['#2E8B57', '#20B2AA'])
