@@ -630,10 +630,8 @@ div.notes {
 			}
 		}
 
+		// convert age to number (with be NaN if parsing fails).
 		d.age = +d.age;
-		if (isNaN(d.age)) {
-			d.age = null;
-		}
 		 
 		if (d.gender == 'F') {
 			d.genderCode = 1;
