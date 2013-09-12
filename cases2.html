@@ -986,7 +986,7 @@ div.notes {
 				var individualEnter = individual.enter().append("div")
 				  .attr("class", "individual tooltip")
 				  .attr("onmouseover", function(d) { return "tooltip.pop(this, '<h3>#" + d.number + ": " + d.country + ", " + d.city.name + "<br>" + 
-				  		(d.age != null ? d.age : "?") + ", " + d.gender + 
+				  		(isNaN(d.age) ? "?" : d.age) + ", " + d.gender + 
 				  		", Date: " + formatPrettyDate(d.date) + " (" + d.dateType + ")</h3>" +
 				  	(d.FT != null && d.FT.length > 0 ? "<p><a href=\"http://www.flutrackers.com/forum/showthread.php?t=205075\">FluTrackers case: #" + d.FT + "</a></p>" : "") + 
 				  	"<ul>" +
@@ -1013,7 +1013,7 @@ div.notes {
 
 				individualEnter.append("div")
 				  .attr("class", "age")
-				  .text(function(d) { return d.age; });
+				  .text(function(d) { return (isNaN(d.age) ? "?" : d.age); });
 
 				individualEnter.append("div")
 				  .attr("class", "gender")
