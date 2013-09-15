@@ -8,14 +8,19 @@
 <link href="js/tooltips/themes/1/tooltip.css" rel="stylesheet" type="text/css" />
 
 <style type="text/css">
+	body
+	{
+		font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		font-size: 14px;
+		font-weight: 200;
+	}
+
 	.label
 	{
-		font-family: Helvetica,Arial,sans-serif;
 		font-size: 9pt;
 	}
 	.value
 	{
-		font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 		font-size: 9pt;
 		color: gray;
 		fill-opacity: .6;
@@ -23,7 +28,6 @@
 
 	.tick_label
 	{
-		font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 		font-size: 9pt;
 	}
 </style>
@@ -34,60 +38,67 @@
 		border-radius: 6px;
 		-webkit-border-radius: 6px;
 		-moz-border-radius: 6px;
-	}
-	#table td, #table th {
-
+		border-collapse: 
+		collapse; border-spacing: 0; 
 	}
 	#table th {
 		color: #333;
-		font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-		font-size: 11px;
+		font-size: 14px;
+		font-weight: 200;
 		font-style: normal;
 		font-weight: normal;
 		text-align: left;
 		padding: 0 20px;
 	}
+	#table tbody th {
+		border-top: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+	}
+	#table tbody td {
+		border-top: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+	}
+	#table tbody th {
+		color: #333;
+		text-align: right;
+		padding: 0 20px;
+	}
 	#table td {
 		padding: 0 20px;
-		line-height: 20px;
-		color: #0084B4;
+		line-height: 24px;
+		color: #1C3448;
 		font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-		font-size: 11px;
-		border-bottom: 1px solid #fff;
-		border-top: 1px solid #fff;
+		font-size: 14px;
+		font-weight: 200;
 	}
-/*	
-	#table td:hover {
-		background-color: #fff;
-	}
-*/	
 </style>
 
 <div id="body">
-	<div style="display: inline-block">
+	<div style="display:inline-block; vertical-align:top; margin-right: 20px">
 		<table id="table">
 			<thead>
-				<tr>
+				<tr style="border:1px">
 					<th scope="row">&nbsp;</th>
-					<th scope="col"><span id="c1h">Dead</span></th>
-					<th scope="col"><span id="c2h">Survived</span></th>
+					<th scope="col"><span id="c1h"></span></th>
+					<th scope="col"><span id="c2h"></span></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<th scope="row"><span id="r1h">With existing conditions</span></th>
-					<td><span id="r1c1">322</span></td>
-					<td><span id="r2c1">43</span></td>
+				<tr style="border:10px">
+					<th scope="row"><span id="r1h"></span></th>
+					<td><span id="r1c1"></span></td>
+					<td><span id="r1c2"></span></td>
 				</tr>
-				<tr>
-					<th scope="row" id="r2h"><span id="r2h">Without existing conditions</span></th>
-					<td><span id="r2c1">23</span></td>
-					<td><span id="r2c2">25</span></td>
+				<tr style="border:10px">
+					<th scope="row" id="r2h"><span id="r2h"></span></th>
+					<td><span id="r2c1"></span></td>
+					<td><span id="r2c2"></span></td>
 				</tr>
 			</tbody>
 		</table>
+		<div style="text-align: center; margin-top: 18px">Fisher's exact test (2-tailed) <span id="pValue"></span></div>
 	</div>
-	<div style="display: inline-block">
+	<div style="display:inline-block; vertical-align:top">
 		<div id="chart"></div>
 	</div>
 </div>
@@ -97,8 +108,12 @@
 <script src="js/dc.min.js"></script>
 <script src="js/queue.min.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/fisher.js"></script>
 
 <script>
+
+	parameters = getUrlVars(); 
+	console.log(parameters); 
 
 	queue()
 		.defer(d3.csv, "data/cases.csv")
@@ -120,244 +135,276 @@
 		caseData.forEach(function(d, i) {
 			d.index = i;
 	
-			if (d.onset != null) {
-				d.onset = formatDate.parse(d.onset);
-			}
-	
-			if (d.hospitalized != null) {
-				d.hospitalized = formatDate.parse(d.hospitalized);
-			}
-
-			if (d.reported != null) {
-				d.reported = formatDate.parse(d.reported);
-			}
-
 			if (d.death != null) {
 				d.death = formatDate.parse(d.death);
-				if (d.death != null || d.outcome === 'fatal') {
-					d.outcome = 2;
-				} else {
-					d.outcome = 1;
-				}
-			} else if (d.outcome == 'fatal') {
-				d.outcome = 2;
-			} else {
-				d.outcome = 1;
+				d.fatal = (d.death != null || d.outcome === 'fatal');
+			} else {			
+				d.fatal = (d.outcome == 'fatal');
 			}
 	
-			d.date = d.onset;
-			d.dateType = "onset";
-
-			if (d.date == null) {
-				d.date = d.hospitalized;
-				d.dateType = "hospitalized";
-			}
-			if (d.date == null) {
-				d.date = d.death;
-				d.dateType = "death";
-
-				if (d.date == null || d.reported < d.date) {
-					d.date = d.reported;
-					d.dateType = "reported";
-				}
-			}
-
 			// convert age to number (with be NaN if parsing fails).
-			d.age = +d.age;
+			d.age =  +d.age;
 	 
-			if (d.gender == 'F') {
-				d.genderCode = 1;
-			} else if (d.gender == 'M') {
-				d.genderCode = 2;
-			} else {
-				d.genderCode = 0;
-			}
-	
-			if (d.date != null) {
-				cases.push(d);
-			}
+			d.comorbidity = (d.comorbidity === "TRUE");
 
-			d.comorbidity = (d.comorbidity === "TRUE" ? true : false);
-
-			d.contact = (d.secondary === "TRUE" ? d.contact : "primary");
+			d.primary = !(d.secondary === "TRUE");
+			
+			d.contact = (d.secondary ? d.contact : "primary");
 			d.contact = (d.contact === "contact" ? "unspecified contact" : d.contact);
 
-			d.status = (d.suspected === "TRUE" ? "suspected" : "confirmed");
+			d.HCW = (d.HCW === "TRUE");
 
-			var found = false;
-
+			d.confirmed = !(d.suspected === "TRUE");
+			
+			cases.push(d);
 		});
   	
 		// Create the crossfilter for the relevant dimensions and groups.
 		var crossFilter = crossfilter(cases),
-			filteredCases = crossFilter.groupAll(),
-			allCases = crossFilter.dimension(function(d) { return d; }),
-			gender = crossFilter.dimension(function(d) { return d.genderCode; }),
-			genders = gender.group(function(d) { return d; }),
-			outcome = crossFilter.dimension(function(d) { return d.outcome }),
-			outcomes = outcome.group(function(d) { return d; }),
+			fatal = crossFilter.dimension(function(d) { return d.fatal }),
+			outcomes = fatal.group(function(d) { return d; }),
 			comorbidity = crossFilter.dimension(function(d) { return d.comorbidity }),
 			age = crossFilter.dimension(function(d) { return d.age; }),
 			contact = crossFilter.dimension(function(d) { return d.contact; }),
-			caseStatus = crossFilter.dimension(function(d) { return d.status; });
+			primary = crossFilter.dimension(function(d) { return d.primary; }),
+			HCW = crossFilter.dimension(function(d) { return d.HCW; }),
+			confirmed = crossFilter.dimension(function(d) { return d.confirmed; });
 
-		caseStatus.filter("confirmed");
+		confirmed.filter(true);
+
+		var dim;
+		var row1Label, row2Label;
+
+		var value1, value2;
 		
-		var outcomeValues = outcomes.top(2);
-	 	console.log(outcomeValues);
+		if (parameters.dim === "comorbidity") {
+			dim = comorbidity;
+			value1 = true;
+			value2 = false;
+			row1Label = "with comorbidity";
+			row2Label = "without comorbidity";
+		} else if (parameters.dim === "primary") {
+			dim = primary;
+			value1 = true;
+			value2 = false;
+			row1Label = "primary";
+			row2Label = "secondary";
+		} else if (parameters.dim === "hcw") {
+			dim = HCW;
+			value1 = true;
+			value2 = false;
+			row1Label = "HCW";
+			row2Label = "not HCW";
+		} else if (parameters.dim === "hcw_other") {
+			dim = HCW;
+			value1 = true;
+			value2 = false;
+			row1Label = "HCW contacts";
+			row2Label = "other contacts";
+		} else if (parameters.dim === "hcw_family") {
+			dim = contact;
+			value1 = "health care worker";
+			value2 = "family";
+			row1Label = "HCW contacts";
+			row2Label = "family contacts";
+		}
 		
-		comorbidity.filter(true);
+		if (parameters.filter1 === "secondary") {
+			primary.filter(false);
+		}
+		if (parameters.filter2 === "comorbidity") {
+			comorbidity.filter(false);
+		}
 
-		var outcomeValues = outcomes.top(2);
+
+		var col1Label = "died";
+		var col2Label = "survived";
+		
+		var outcomeValues = outcomes.all();
+
+		dim.filter(value1);
+
+		var outcomeValues = outcomes.all();
 	 	console.log(outcomeValues);
+	 	
+		var r1c1 = outcomeValues[1].value;
+		var r1c2 = outcomeValues[0].value;
 
-    var data = [{"label":"with comorbidity, dead", "value":16}, 
-            	{"label":"with comorbidity, survived", "value":56}, 
-            	{"label":"without comorbidity, dead", "value":7},
-            	{"label":"without comorbidity, survived", "value":77}];
+		dim.filterAll();
+		dim.filter(value2);
 
-    //maximum of data you want to use
-    var data_max = 80,
+		var outcomeValues = outcomes.all();
+	 	console.log(outcomeValues);
+	 	
+		var r2c1 = outcomeValues[1].value;
+		var r2c2 = outcomeValues[0].value;
 
-    //number of tickmarks to use
-    num_ticks = 5,
+		var results = fishersExact(r1c1, r1c2, r2c1, r2c2);
+		
+		
+		d3.select("#c1h").text(col1Label);
+		d3.select("#c2h").text(col2Label);
+		d3.select("#r1h").text(row1Label);
+		d3.select("#r2h").text(row2Label);
 
-    //margins
-    left_margin = 160,
-    right_margin = 30,
-    top_margin = 30,
-    bottom_margin = 0;
+		d3.select("#r1c1").text(r1c1);
+		d3.select("#r2c1").text(r2c1);
+		d3.select("#r1c2").text(r1c2);
+		d3.select("#r2c2").text(r2c2);
+		
+		d3.select("#pValue").text(results.pValue);
 
-    var w = 300,                        //width
-        h = 200,                        //height
-        color = function(id) { return (id % 2 == 0 ? '#F08080' : '#ADD8E6') };
+		console.log(results);
+		
+		var data = [
+					{"label":"" + row2Label + ", " + col2Label, "value":r2c2, "percent": ((r2c2 * 100.0) / (r2c1 + r2c2))},
+					{"label":"" + row2Label + ", " + col1Label, "value":r2c1, "percent": ((r2c1 * 100.0) / (r2c1 + r2c2))},
+					{"label":"" + row1Label + ", " + col2Label, "value":r1c2, "percent": ((r1c2 * 100.0) / (r1c1 + r1c2))}, 
+					{"label":"" + row1Label + ", " + col1Label, "value":r1c1, "percent": ((r1c1 * 100.0) / (r1c1 + r1c2))} 
+				];
 
-    var x = d3.scale.linear()
-        	.domain([0, data_max])
-        	.range([0, w - (left_margin + right_margin) ]),
-        	
-        y = d3.scale.ordinal()
-        	.domain(d3.range(data.length))
-        	.rangeRoundBands([bottom_margin, h - top_margin], 0.05, 0.455);
+		//maximum of data you want to use
+		var data_max = 100,
 
-    var chart_top = h - y.rangeBand()/2 - top_margin;
-    var chart_bottom = bottom_margin + y.rangeBand()/2;
-    var chart_left = left_margin;
-    var chart_right = w - right_margin;
+		//number of tickmarks to use
+		num_ticks = 5,
 
-    /*
-     *  Setup the SVG element and position it
-     */
-    var vis = d3.select("#chart")
-        .append("svg:svg")
-            .attr("width", w)
-            .attr("height", h)
-        .append("svg:g")
-            .attr("id", "barchart")
-            .attr("class", "barchart")
+		//margins
+		left_margin = 160,
+		right_margin = 20,
+		top_margin = 0,
+		bottom_margin = 20;
 
-    //Ticks
-    var rules = vis.selectAll("g.rule")
-        .data(x.ticks(num_ticks))
-    	.enter()
-        .append("svg:g")
-        .attr("transform", function(d) {
-                return "translate(" + (chart_left + x(d)) + ")";
-            });
-            
-    rules.append("svg:line")
-        .attr("class", "tick")
-        .attr("y1", chart_top)
-        .attr("y2", chart_top + 4)
-        .attr("stroke", "black");
+		var w = 450,                        //width
+			h = 110,                        //height
+			color = function(id) { return (id % 2 == 0 ? '#ADD8E6' : '#F08080') };
 
-    rules.append("svg:text")
-        .attr("class", "tick_label")
-        .attr("text-anchor", "middle")
-        .attr("y", chart_top)
-        .text(function(d) {
-        	return d;
-        });
-        
-    var bbox = vis.selectAll(".tick_label").node().getBBox();
-    
-    vis.selectAll(".tick_label")
-    	.attr("transform", function(d) {
-            return "translate(0," + (bbox.height) + ")";
-        });
+		var x = d3.scale.linear()
+				.domain([0, data_max])
+				.range([0, w - (left_margin + right_margin) ]),
+			
+			y = d3.scale.ordinal()
+				.domain(d3.range(data.length))
+				.rangeRoundBands([h - bottom_margin, top_margin], 0.1, 0);
 
-    var bars = vis.selectAll("g.bar")
-        .data(data)
-   		.enter()
-        .append("svg:g")
-            .attr("class", "bar")
-            .attr("transform", function(d, i) { 
-                    return "translate(" + chart_left + ", " + y(i) + ")"; 
-                });
+		var chart_top = top_margin;
+		var chart_bottom = h - bottom_margin;
+		var chart_left = left_margin;
+		var chart_right = w - right_margin;
 
-    bars.append("svg:rect")
-        .attr("x", 0)
-        .attr("width", function(d) {
-                return (x(d.value));
-            })
-        .attr("height", y.rangeBand())
-        .attr("fill", function(d, i) {
-                return (color(i));
-            })
-        .attr("stroke", function(d, i) {
-                return (color(i));
-            });
+		/*
+		 *  Setup the SVG element and position it
+		 */
+		var vis = d3.select("#chart")
+			.append("svg:svg")
+				.attr("width", w)
+				.attr("height", h)
+			.append("svg:g")
+				.attr("id", "barchart")
+				.attr("class", "barchart")
 
-    //Labels
-    var labels = vis.selectAll("g.bar")
-        .append("svg:text")
-            .attr("class", "label")
-            .attr("x", 0)
-            .attr("text-anchor", "right")
-            .text(function(d) {
-                    return d.label;
-                });
+		//Ticks
+		var rules = vis.selectAll("g.rule")
+			.data(x.ticks(num_ticks))
+			.enter()
+			.append("svg:g")
+			.attr("transform", function(d) {
+					return "translate(" + (chart_left + x(d)) + ")";
+				});
+			
+		rules.append("svg:line")
+			.attr("class", "tick")
+			.attr("y1", chart_bottom)
+			.attr("y2", chart_bottom + 4)
+			.attr("stroke", "black");
 
-    var bbox = labels.node().getBBox();
-    vis.selectAll(".label")
-        .attr("transform", function(d) {
-                return "translate(" + (-chart_left) + ", " + (y.rangeBand()/2 + bbox.height/4) + ")";
-            });
+		rules.append("svg:text")
+			.attr("class", "tick_label")
+			.attr("text-anchor", "middle")
+			.attr("y", chart_bottom)
+			.text(function(d) {
+				return d;
+			});
+		
+		var bbox = vis.selectAll(".tick_label").node().getBBox();
+	
+		vis.selectAll(".tick_label")
+			.attr("transform", function(d) {
+				return "translate(0," + (bbox.height) + ")";
+			});
+
+		var bars = vis.selectAll("g.bar")
+			.data(data)
+			.enter()
+			.append("svg:g")
+				.attr("class", "bar")
+				.attr("transform", function(d, i) { 
+						return "translate(" + chart_left + ", " + y(i) + ")"; 
+					});
+
+		bars.append("svg:rect")
+			.attr("x", 0)
+			.attr("width", function(d) {
+					return (x(d.percent));
+				})
+			.attr("height", y.rangeBand())
+			.attr("fill", function(d, i) {
+					return (color(i));
+				})
+			.attr("stroke", function(d, i) {
+					return (color(i));
+				});
+
+		//Labels
+		var labels = vis.selectAll("g.bar")
+			.append("svg:text")
+				.attr("class", "label")
+				.attr("x", 0)
+				.attr("text-anchor", "right")
+				.text(function(d) {
+						return d.label;
+					});
+
+		var bbox = labels.node().getBBox();
+		vis.selectAll(".label")
+			.attr("transform", function(d) {
+					return "translate(" + (-chart_left) + ", " + (y.rangeBand()/2 + bbox.height/4) + ")";
+				});
 
 
-    labels = vis.selectAll("g.bar")
-        .append("svg:text")
-        .attr("class", "value")
-        .attr("x", function(d) {
-                return x(d.value) + 4;
-            })
-        .attr("text-anchor", "left")
-        .text(function(d) {
-       		return "" + d.value + "%";
-        });
+		labels = vis.selectAll("g.bar")
+			.append("svg:text")
+			.attr("class", "value")
+			.attr("x", function(d) {
+					return x(d.percent) + 4;
+				})
+			.attr("text-anchor", "left")
+			.text(function(d) {
+				return "" + d.value + " ("+ d.percent.toFixed(2) + "%)";
+			});
 
-    bbox = labels.node().getBBox();
-    vis.selectAll(".value")
-        .attr("transform", function(d)
-        {
-            return "translate(0, " + (y.rangeBand()/2 + bbox.height/4) + ")";
-        });
+		bbox = labels.node().getBBox();
+		vis.selectAll(".value")
+			.attr("transform", function(d)
+			{
+				return "translate(0, " + (y.rangeBand()/2 + bbox.height/4) + ")";
+			});
 
-    //Axes
-    vis.append("svg:line")
-        .attr("class", "axes")
-        .attr("x1", chart_left)
-        .attr("x2", chart_left)
-        .attr("y1", chart_bottom)
-        .attr("y2", chart_top)
-        .attr("stroke", "black");
-     vis.append("svg:line")
-        .attr("class", "axes")
-        .attr("x1", chart_left)
-        .attr("x2", chart_right)
-        .attr("y1", chart_top)
-        .attr("y2", chart_top)
-        .attr("stroke", "black");
+		//Axes
+		vis.append("svg:line")
+			.attr("class", "axes")
+			.attr("x1", chart_left)
+			.attr("x2", chart_left)
+			.attr("y1", chart_bottom)
+			.attr("y2", chart_top)
+			.attr("stroke", "black");
+		 vis.append("svg:line")
+			.attr("class", "axes")
+			.attr("x1", chart_left)
+			.attr("x2", chart_right)
+			.attr("y1", chart_bottom)
+			.attr("y2", chart_bottom)
+			.attr("stroke", "black");
  
 	} // function ready(error, caseData)
 
