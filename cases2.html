@@ -912,11 +912,26 @@ div.notes {
 					});
 				
 				var markerList = [];
-				allCases.top(Infinity).forEach(function(individual) {
-					if (individual.country == country.key) {
-						var city = individual.city;
+				allCases.top(Infinity).forEach(function(d) {
+					if (d.country == country.key) {
+						var city = d.city;
 						if (city != null) {
-							var title = city.name;
+//							var title = city.name;
+							var title = "<h3>#" + d.number + ": " + d.country + ", " + d.city.name + "<br>" + 
+								(isNaN(d.age) ? "?" : d.age) + ", " + d.gender + 
+								", Date: " + formatPrettyDate(d.date) + " (" + d.dateType + ")</h3>" +
+								(d.FT != null && d.FT.length > 0 ? "<p><a href=\"http://www.flutrackers.com/forum/showthread.php?t=205075\">FluTrackers case: #" + d.FT + "</a></p>" : "") + 
+								"<ul>" +
+								(d.onset != null ? "<li>Onset: " + formatPrettyDate(d.onset) : "</li>") + 
+								(d.hospitalized != null ? "<li>Hospitalized: " + formatPrettyDate(d.hospitalized) + "</li>" : "") +
+								(d.death != null ? "<li>Death: " + formatPrettyDate(d.death) + "</li>" : "") +
+								(d.reported != null ? "<li>Reported: " + formatPrettyDate(d.reported) + "</li>" : "") +
+								"</ul>" +
+								(d.notes != null && d.notes.length > 0 ? "<p>"+d.notes+"</p>" : "") +
+								"<p>" + 
+								(d.patient != null && d.patient.length > 0  ? "<a href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
+								(d.citation != null && d.citation.length > 0 ? "<a href=\""+d.citation+"\">Reference</a>" : "") +
+								(d.citation2 != null && d.citation2.length > 0 ? " | <a href=\""+d.citation2+"\">Secondary Reference</a>" : "") + "</p>";
 							var marker = L.marker(L.latLng(city.coordinates[1], city.coordinates[0]), { title: title });
 							marker.bindPopup(title);
 							markers.addLayer(marker);
