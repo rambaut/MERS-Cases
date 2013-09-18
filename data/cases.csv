@@ -148,5 +148,5 @@ number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hos
 148,131,,39F,F,39,KSA,Riyadh,,,,,,2013-09-11,,,,mild,,P,TRUE,health care worker,TRUE,,health care worker with contact of a previously reported case,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/MediaStatement-2013-09-11-001.aspx,,,,
 149,132,,38M,M,38,KSA,Riyadh,,,,,,2013-09-11,,,,stable,,P,TRUE,health care worker,TRUE,,health care worker with contact of a previously reported case,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/MediaStatement-2013-09-11-001.aspx,,,,
 150,133,,75F,F,75,KSA,Madinah,,,,,,2013-09-18,2013-09-18,,TRUE,,fatal,O,,contact,TRUE,,"contact with previous case, comorbidities, death as date of reporting",,,,,
-151,134,,35M,M,35,KSA,Madinah,,,,,,2013-09-19,,,TRUE,,,O,,contact,TRUE,,"contact with previous case, comorbidities",,,,,
-152,135,,83M,M,83,KSA,Riyadh,,,,,,2013-09-20,2013-09-18,,TRUE,,fatal,,,,,,"comorbidities, death as date of reporting",,,,,
+151,134,,35M,M,35,KSA,Madinah,,,,,,2013-09-18,,,TRUE,,,O,,contact,TRUE,,"contact with previous case, comorbidities",,,,,
+152,135,,83M,M,83,KSA,Riyadh,,,,,,2013-09-18,2013-09-18,,TRUE,,fatal,,,,,,"comorbidities, death as date of reporting",,,,,
