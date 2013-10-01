@@ -153,3 +153,6 @@ number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hos
 153,136,,78F,F,78,KSA,Riyadh,,,,,,2013-09-27,,,TRUE,ICU,,,,,,,several chronic diseases and receive treatment intensive care,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/mediastatemenet-2013-09-27-001.aspx,,,,
 154,137,,53F,F,53,KSA,Riyadh,,,,,,2013-09-27,,,TRUE,ICU,,,,,,,suffering from health problems also and is currently receiving treatment intensive care,http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/mediastatemenet-2013-09-27-001.aspx,,,,
 155,138,,63M,M,63,KSA,Riyadh,,,,,,2013-09-27,,,TRUE,ICU,,,,,,,"suffers from diseases as well as chronic, and receiving intensive care treatment ",http://www.moh.gov.sa/en/CoronaNew/PressReleases/Pages/mediastatemenet-2013-09-27-001.aspx,,,,
+156,,,79M,M,79,KSA,Riyadh,,,,,,2013-10-01,,,TRUE,hospitalized,,,,contact,TRUE,,,,,,,
+157,,,14M,M,14,KSA,Riyadh,,,,,,2013-10-01,,,,hospitalized,,,,contact,TRUE,,,,,,,
+158,,,45M,M,45,KSA,Riyadh,,,,,,2013-10-01,,,TRUE,ICU,,,,contact,TRUE,,,,,,,
