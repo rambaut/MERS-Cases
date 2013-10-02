@@ -145,6 +145,11 @@ h1, h2 {
   height: 180px;
 }
 
+#severity-chart {
+  width: 140px;
+  height: 180px;
+}
+
 #cluster-size-chart {
   width: 300px;
   height: 150px;
@@ -451,13 +456,17 @@ div.notes {
 					<span class="title">By gender</span>
 					<a class="reset title" href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
-				<div id="death-chart" class="dc-chart inline-div align-bottom">
-					<span class="title">By outcome</span>
-					<a class="reset title" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+				<div id="severity-chart" class="dc-chart inline-div align-bottom">
+					<span class="title">By severity</span>
+					<a class="reset title" href="javascript:severityChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
 				<div id="comorbidity-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By comorbidity</span>
 					<a class="reset title" href="javascript:comorbidityChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+				</div>
+				<div id="death-chart" class="dc-chart inline-div align-bottom">
+					<span class="title">By outcome</span>
+					<a class="reset title" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
 			</div>
 		</div>
@@ -535,6 +544,7 @@ div.notes {
 	var genderChart = dc.rowChart("#gender-chart");
 	var deathChart = dc.rowChart("#death-chart");
 	var comorbidityChart = dc.rowChart("#comorbidity-chart");
+	var severityChart = dc.rowChart("#severity-chart");
 	var clusterSizeChart = dc.barChart("#cluster-size-chart");
 	var contactChart = dc.rowChart("#contact-chart");
 	var statusChart = dc.rowChart("#status-chart");
@@ -638,7 +648,7 @@ div.notes {
 		} else if (d.gender == 'M') {
 			d.genderCode = 2;
 		} else {
-			d.genderCode = 0;
+			d.genderCode = 3;
 		}
 		
 		if (d.date != null) {
@@ -659,7 +669,10 @@ div.notes {
 			d.cluster = null;
 		}
 
-		d.comorbidity = (d.comorbidity === "TRUE" ? true : false);
+		d.comorbidity = (d.comorbidity === "TRUE" ? "existing" : (d.comorbidity === "FALSE" ? "none" : "unknown"));
+	
+		var clin = (d.clinical.split(" ")[0]);
+		d.clinical = (clin === "clinical" || clin === "fatal" ? "severe/clinical" : (clin === "subclinical" ? "mild/subclinical" : "unknown"));
 	
 		d.contact = (d.secondary === "TRUE" ? d.contact : "primary");
 		d.contact = (d.contact === "contact" ? "unspecified contact" : d.contact);
@@ -700,6 +713,8 @@ div.notes {
 		  genders = gender.group(function(d) { return d; }),
 		  death = crossFilter.dimension(function(d) { return d.outcome }),
 		  deathStates = death.group(function(d) { return d; }),
+		  severity = crossFilter.dimension(function(d) { return d.clinical }),
+		  severityGroups = severity.group(function(d) { return d; }),
 		  comorbidity = crossFilter.dimension(function(d) { return d.comorbidity }),
 		  comorbidityGroups = comorbidity.group(function(d) { return d; }),
 		  age = crossFilter.dimension(function(d) { return d.age; }),
@@ -794,7 +809,7 @@ div.notes {
 			.transitionDuration(0)
 			.width(140)
 			.height(180)
-			.margins({top: 103, right: 0, bottom: 20, left: 20})
+			.margins({top: 104, right: 0, bottom: 20, left: 20})
 			.group(deathStates)
 			.dimension(death)
 					.colors(['#CD9B1D', '#FFC125'])
@@ -810,12 +825,28 @@ div.notes {
 			.transitionDuration(0)
 			.width(140)
 			.height(180)
-			.margins({top: 103, right: 0, bottom: 20, left: 20})
+			.margins({top: 80, right: 0, bottom: 20, left: 20})
 			.group(comorbidityGroups)
 			.dimension(comorbidity)
 					.colors(['#99993D', '#E6E65C'])
 			.label(function (d){
-				return d.value + " " + (d.key ? "existing" : "none or unknown");
+				return d.value + " " + (d.key);
+			})
+			.title(function(d){return d.value;})
+			.elasticX(false)
+			.on("filtered", function() { renderAll(); })
+			.xAxis().ticks(5);
+
+		severityChart
+			.transitionDuration(0)
+			.width(140)
+			.height(180)
+			.margins({top: 80, right: 0, bottom: 20, left: 20})
+			.group(severityGroups)
+			.dimension(severity)
+					.colors(['#99993D', '#E6E65C'])
+			.label(function (d){
+				return d.value + " " + (d.key);
 			})
 			.title(function(d){return d.value;})
 			.elasticX(false)
