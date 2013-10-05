@@ -671,8 +671,10 @@ div.notes {
 
 		d.comorbidity = (d.comorbidity === "TRUE" ? "existing" : (d.comorbidity === "FALSE" ? "none" : "unknown"));
 	
-		var clin = (d.clinical.split(" ")[0]);
-		d.clinical = (clin === "clinical" || clin === "fatal" ? "severe/clinical" : (clin === "subclinical" ? "mild/subclinical" : "unknown"));
+		if (!(d.clinical === undefined)) {
+			var clin = (d.clinical.split(" ")[0]);
+			d.clinical = (clin === "clinical" || clin === "fatal" ? "severe/clinical" : (clin === "subclinical" ? "mild/subclinical" : "unknown"));
+		}
 	
 		d.contact = (d.secondary === "TRUE" ? d.contact : "primary");
 		d.contact = (d.contact === "contact" ? "unspecified contact" : d.contact);
