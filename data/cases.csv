@@ -156,5 +156,5 @@ number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hos
 156,139,,79M,M,79,KSA,Riyadh,,,,,,2013-10-01,,,TRUE,hospitalized,,clinical,,,,contact,TRUE,,contact with previous case,http://www.cidrap.umn.edu/news-perspective/2013/10/who-confirms-6-mers-cases-saudi-arabia,,,,
 157,140,,14F,F,14,KSA,Riyadh,,,,,,2013-10-01,,,,hospitalized,,clinical,,,,contact,TRUE,,"contact with previous case, stable condition",http://www.cidrap.umn.edu/news-perspective/2013/10/who-confirms-6-mers-cases-saudi-arabia,,,,
 158,141,,45M,M,45,KSA,Riyadh,,,,,,2013-10-01,,,TRUE,ICU,,clinical,,,,contact,TRUE,,"contact with previous case, intensive treatment",http://www.cidrap.umn.edu/news-perspective/2013/10/who-confirms-6-mers-cases-saudi-arabia,,,,
-159,142,,78M,M,78,KSA,Riyadh,,,,,,2013-10-10,2013-10-10,,TRUE,,fatal,fatal,,,,,,,,,,,,
-160,143,,55M,M,55,KSA,Riyadh,,,,,,2013-10-10,2013-10-10,,TRUE,,fatal,fatal,,,,,,,,,,,,
+159,142,,78M,M,78,KSA,Riyadh,,,,2013-09-30,,2013-10-10,2013-10-10,,TRUE,,fatal,fatal,,,,,,,Became ill at the end of September 2013 and died in the beginning of October 2013. No contact to a known laboratory-confirmed case with MERS-CoV.,http://www.who.int/csr/don/2013_10_14/en/index.html,,,,
+160,143,,55M,M,55,KSA,Riyadh,,,,2013-09-30,,2013-10-10,2013-10-10,,TRUE,,fatal,fatal,,,,,,,Became ill at the end of September 2013 and died in the beginning of October 2013. No contact to a known laboratory-confirmed case with MERS-CoV.,http://www.who.int/csr/don/2013_10_14/en/index.html,,,,
