@@ -5,6 +5,7 @@
 { "name": "Al-Hofuf", "province": "KSA", "coordinates": [49.5833, 25.3833] },
 { "name": "Dammam", "province": "KSA", "coordinates": [50.2000, 26.2833] },
 { "name": "Al-Qassim", "province": "KSA", "coordinates": [43.0000, 26.0000] },
+{ "name": "Jubail", "province": "KSA", "coordinates": [49.6667, 27.0000] },
 { "name": "Asir Province", "province": "KSA", "coordinates": [43.0000, 19.0000] },
 { "name": "Hafr Al-Batin", "province": "KSA", "coordinates": [45.9636, 28.4342] },
 { "name": "Wadi al-Dawasir", "province": "KSA", "coordinates": [45.1994, 20.5042] },
