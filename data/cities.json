@@ -22,5 +22,6 @@
 { "name": "Monastir", "province": "Tunisia", "coordinates": [10.8275, 35.7717] },
 { "name": "Birmingham", "province": "UK", "coordinates": [-1.91, 52.48] },
 { "name": "Valenciennes", "province": "France", "coordinates": [3.5233, 50.3581] },
-{ "name": "Florence", "province": "Italy", "coordinates": [11.2536, 43.7717] }
+{ "name": "Florence", "province": "Italy", "coordinates": [11.2536, 43.7717] },
+{ "name": "Muscat", "province": "Oman", "coordinates": [58.5400, 23.6100] }
 ]
