@@ -23,5 +23,7 @@
 { "name": "Birmingham", "province": "UK", "coordinates": [-1.91, 52.48] },
 { "name": "Valenciennes", "province": "France", "coordinates": [3.5233, 50.3581] },
 { "name": "Florence", "province": "Italy", "coordinates": [11.2536, 43.7717] },
-{ "name": "Muscat", "province": "Oman", "coordinates": [58.5400, 23.6100] }
+{ "name": "Muscat", "province": "Oman", "coordinates": [58.5400, 23.6100] },
+{ "name": "Nizwa", "province": "Oman", "coordinates": [57.5333, 22.9333] },
+{ "name": "Adam", "province": "Oman", "coordinates": [57.5333, 22.3833] }
 ]
