@@ -1033,7 +1033,8 @@ div.notes {
 
 				var individualEnter = individual.enter().append("div")
 				  .attr("class", "individual tooltip")
-				  .attr("onmouseover", function(d) { return "tooltip.pop(this, '<h3>#" + d.number + ": " + d.country + ", " + d.city.name + "<br>" + 
+				  .attr("onmouseover", function(d) { return "tooltip.pop(this, '<h3>#" + d.number + ": " + d.country + ", " + 
+				  		(d.city !== null ? d.city.name : "unknown") + "<br>" + 
 				  		(isNaN(d.age) ? "?" : d.age) + ", " + d.gender + 
 				  		", Date: " + formatPrettyDate(d.date) + " (" + d.dateType + ")</h3>" +
 				  	(d.FT != null && d.FT.length > 0 ? "<p><a target=\"_blank\" href=\"http://www.flutrackers.com/forum/showthread.php?t=205075\">FluTrackers case: #" + d.FT + "</a></p>" : "") + 
