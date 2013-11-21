@@ -178,3 +178,4 @@ number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hos
 178,,,?F,F,?,KSA,Makkah,,Madrid,,,,2013-11-18,,,,,recovered,,U,,170,contact,TRUE,TRUE,A woman who attended the Hajj in Saudi Arabia in October. The woman travelled to and from Saudi Arabia with Spain's other probable MERS case (#170). The two women shared sleeping quarters during the trip. The two women have recovered and have been discharged from hospital.,http://www.nanaimodailynews.com/news/kuwait-joins-countries-with-mers-infections-spain-tests-2nd-probable-case-1.700911,,,,
 179,161,,73F,F,73,KSA,Riyadh,,,,,,2013-11-19,,,TRUE,,fatal,fatal,,,,,,,,,,,,
 180,162,,65M,M,65,KSA,Al Jawf Province,,,,,,2013-11-19,,,TRUE,ICU,,clinical,,,,,,,,,,,,
+181,,,37M,M,37,KSA,Riyadh,,,,,,2013-11-21,2013-11-21,,,,fatal,fatal,,,,,,,death as date reported,,,,,
