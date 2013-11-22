@@ -46,10 +46,6 @@ h1, h2 {
   text-rendering: optimizeLegibility;
 }
 
-#lists {
-  display: block;
-}
-
 .dc-chart {
   margin-bottom: 20px;
   float: none;
@@ -173,6 +169,11 @@ h1, h2 {
 #date-type-chart {
   width: 140px;
   height: 150px;
+}
+
+#lists {
+  width: 100%; overflow: auto; max-height:1200px; margin-right: 18px;
+  display: block;
 }
 
 #case-list .month {
@@ -515,18 +516,20 @@ div.notes {
 	<div class="panel">
 		<h2>Case list</span></h2>
 		<div class="panelcontent">
-			<div id="lists" class="block-div">
-				<div id="case-list-header">
-					<div class="header title">
-						<div class="onset">Date</div>
-						<div class="death">Death</div>
-						<div class="age">Age</div>
-						<div class="gender">Gender</div>
-						<div class="country">Country</div>
-						<div class="city">City</div>
+		    <div>
+				<div id="lists" class="block-div">
+					<div id="case-list-header">
+						<div class="header title">
+							<div class="onset">Date</div>
+							<div class="death">Death</div>
+							<div class="age">Age</div>
+							<div class="gender">Gender</div>
+							<div class="country">Country</div>
+							<div class="city">City</div>
+						</div>
 					</div>
+					<div id="case-list" class="list red-border"></div>
 				</div>
-				<div id="case-list" class="list"></div>
 			</div>
 		</div>
     </div>
