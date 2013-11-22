@@ -103,7 +103,7 @@ h1, h2 {
 }
 
 #onset-chart .bar {
-  fill: teal;
+  fill: steelblue;
 }
 
 #country-chart {
@@ -156,7 +156,7 @@ h1, h2 {
 }
 
 #cluster-size .bar {
-  fill: #8B475D;
+  fill: #3D5C00;
 }
 
 
@@ -856,7 +856,7 @@ div.notes {
 			.margins({top: 80, right: 0, bottom: 20, left: 20})
 			.group(genders)
 			.dimension(gender)
-					.colors(['#36648B', '#4F94CD', '#63B8FF'])
+					.colors(['#B82E00', '#DB704D', '#F0C2B2'])
 			.label(function (d){
 				return d.value + " " + (d.key === 1 ? "female" : (d.key === 2 ? "male" : "unknown"));
 			})
@@ -873,7 +873,7 @@ div.notes {
 			.margins({top: 104, right: 0, bottom: 20, left: 20})
 			.group(deathStates)
 			.dimension(death)
-					.colors(['#CD9B1D', '#FFC125'])
+					.colors(['#B2B247', '#FFFF66', '#FFFFB2'])
 			.label(function (d){
 				return d.value + " " + (d.key === 1 ? "alive" : (d.key === 2 ? "dead" : "unknown"));
 			})
@@ -889,7 +889,7 @@ div.notes {
 			.margins({top: 80, right: 0, bottom: 20, left: 20})
 			.group(comorbidityGroups)
 			.dimension(comorbidity)
-					.colors(['#99993D', '#E6E65C'])
+					.colors(['#CCCC00', '#FFFF33', '#FFFFB2'])
 			.label(function (d){
 				return d.value + " " + (d.key);
 			})
@@ -905,7 +905,7 @@ div.notes {
 			.margins({top: 80, right: 0, bottom: 20, left: 20})
 			.group(severityGroups)
 			.dimension(severity)
-					.colors(['#99993D', '#E6E65C'])
+					.colors(['#FF9900', '#FFB84D', '#FFEBCC'])
 			.label(function (d){
 				return d.value + " " + (d.key);
 			})
@@ -952,7 +952,7 @@ div.notes {
 			.margins({top: 73, right: 0, bottom: 20, left: 20})
 			.group(caseStatusType)
 			.dimension(caseStatus)
-			.colors(['#00CC66', '#4DDB94'])
+			.colors(['#339933', '#85C285'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
@@ -970,7 +970,7 @@ div.notes {
 			.margins({top: 73, right: 0, bottom: 20, left: 20})
 			.group(dateTypes)
 			.dimension(dateType)
-			.colors(['#00CC66', '#4DDB94'])
+			.colors(['#008A8A', '#80CCCC'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
