@@ -170,6 +170,11 @@ h1, h2 {
   height: 150px;
 }
 
+#date-type-chart {
+  width: 140px;
+  height: 150px;
+}
+
 #case-list .month {
   margin-bottom: .4em;
   font-size: 14px;
@@ -471,6 +476,19 @@ div.notes {
 			</div>
 		</div>
 	</div>
+	<!--
+	<div class="panel">
+		<h2>Age</span></h2>
+		<div class="panelcontent">
+			<div>
+				<div id="detailed-age-chart" class="dc-chart inline-div align-bottom">
+					<span class="title">By age</span>
+					<a class="reset title" href="javascript:detailedAgeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	-->
 	<div class="panel">
 		<h2>Epidemiology</span></h2>
 		<div class="panelcontent">
@@ -486,6 +504,10 @@ div.notes {
 				<div id="status-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By status</span>
 					<a class="reset title" href="javascript:statusChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+				</div>
+				<div id="date-type-chart" class="dc-chart inline-div align-bottom">
+					<span class="title">Date</span>
+					<a class="reset title" href="javascript:dateTypeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 				</div>
 			</div>
 		</div>
@@ -536,6 +558,16 @@ div.notes {
 -->
 
 <script>
+	var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+	// a and b are javascript Date objects
+	function dateDiffInDays(a, b) {
+	  // Discard the time and time-zone information.
+	  var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+	  var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+	  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+	}
 
 	var onsetChart = dc.barChart("#onset-chart");
 	var countryChart = dc.rowChart("#country-chart");
@@ -548,6 +580,8 @@ div.notes {
 	var clusterSizeChart = dc.barChart("#cluster-size-chart");
 	var contactChart = dc.rowChart("#contact-chart");
 	var statusChart = dc.rowChart("#status-chart");
+	var dateTypeChart = dc.rowChart("#date-type-chart");
+	var detailedAgeChart = dc.barChart("#detailed-age-chart");
 
 	dc.constants.EVENT_DELAY = 0;
 
@@ -598,26 +632,26 @@ div.notes {
 	  caseData.forEach(function(d, i) {
 		d.index = i;
 		
-		if (d.onset != null) {
+		if (d.onset !== null) {
 			d.onset = formatDate.parse(d.onset);
 		}
 		
-		if (d.hospitalized != null) {
+		if (d.hospitalized !== null) {
 			d.hospitalized = formatDate.parse(d.hospitalized);
 		}
 
-		if (d.reported != null) {
+		if (d.reported !== null) {
 			d.reported = formatDate.parse(d.reported);
 		}
 
-		if (d.death != null) {
+		if (d.death !== null) {
 			d.death = formatDate.parse(d.death);
-			if (d.death != null || d.outcome === 'fatal') {
+			if (d.death !== null || d.outcome === 'fatal') {
 				d.outcome = 2;
 			} else {
 				d.outcome = 1;
 			}
-		} else if (d.outcome == 'fatal') {
+		} else if (d.outcome === 'fatal') {
 			d.outcome = 2;
 		} else {
 		  	d.outcome = 1;
@@ -626,15 +660,15 @@ div.notes {
 		d.date = d.onset;
 		d.dateType = "onset";
 
-		if (d.date == null) {
+		if (d.date === null) {
 			d.date = d.hospitalized;
 			d.dateType = "hospitalized";
 		}
-		if (d.date == null) {
+		if (d.date === null) {
 			d.date = d.death;
 			d.dateType = "death";
 
-			if (d.date == null || d.reported < d.date) {
+			if (d.date === null || d.reported < d.date) {
 				d.date = d.reported;
 				d.dateType = "reported";
 			}
@@ -642,20 +676,23 @@ div.notes {
 
 		// convert age to number (with be NaN if parsing fails).
 		d.age = +d.age;
+		if (d.age === null || isNaN(d.age)) {
+			d.age = -100;
+		}
 		 
-		if (d.gender == 'F') {
+		if (d.gender === 'F') {
 			d.genderCode = 1;
-		} else if (d.gender == 'M') {
+		} else if (d.gender === 'M') {
 			d.genderCode = 2;
 		} else {
 			d.genderCode = 3;
 		}
 		
-		if (d.date != null) {
+		if (d.date !== null) {
 			cases.push(d);
 		}
 	
-		if (d.cluster != null && d.cluster.length > 0) {
+		if (d.cluster !== null && d.cluster.length > 0) {
 			if (d.cluster in clusters) {
 				clusters[d.cluster].count ++;			
 			} else {
@@ -685,7 +722,7 @@ div.notes {
 
 		if (d.city.length > 0) {
 			cityData.forEach(function(city) {
-				if (d.city == city.name) {
+				if (d.city === city.name) {
 					d['city'] = city;
 					found = true;
 				}
@@ -696,9 +733,28 @@ div.notes {
 
 		found = false;
 
-	 	console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.country + " [" + d.dateType + "], " + d.secondary + ", " + d.cluster);
+	 	// console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.country + " [" + d.dateType + "], " + d.secondary + ", " + d.cluster);
 	 });
   	
+		cases.sort(function(a,b) { return a.date.getTime() - b.date.getTime()});
+		
+		var lastDate = null;
+		var lastOnset = null;
+
+  		cases.forEach(function(d, i) {
+  			if (lastDate !== null) {
+  				d.waitingTime = dateDiffInDays(lastDate, d.date);
+  			}
+  	  		lastDate = d.date;
+  	  		if (d.dateType === "onset" || d.dateType === "hospitalized") {
+				if (lastOnset !== null) {
+					d.waitingTimeOnset = dateDiffInDays(lastOnset, d.date);
+				}
+  				lastOnset = d.date;
+  			}
+			console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.country + " [" + d.dateType + "], "  + formatDate(d.date) + ", " + d.waitingTime + ", " + d.waitingTimeOnset );
+	  	});
+
 	  var ageGroupSize = 5;
 
 	  // Create the crossfilter for the relevant dimensions and groups.
@@ -721,12 +777,15 @@ div.notes {
 		  comorbidityGroups = comorbidity.group(function(d) { return d; }),
 		  age = crossFilter.dimension(function(d) { return d.age; }),
 		  ageGroups = age.group(function(d) { return Math.floor(d / ageGroupSize) * ageGroupSize; }),
+		  ageGroups2 = age.group(function(d) { return d; }),
 		  contact = crossFilter.dimension(function(d) { return d.contact; });
 		  contactTypes = contact.group(function(d) { return d; });
 		  cluster = crossFilter.dimension(function(d) { return (d.cluster != null ? d.cluster.count : 1); });
 		  clusterSizes = cluster.group(function(d) { return d; });
 		  caseStatus = crossFilter.dimension(function(d) { return d.status; });
 		  caseStatusType = caseStatus.group(function(d) { return d; });
+		  dateType = crossFilter.dimension(function(d) { return (d.dateType === "onset" || d.dateType === "hospitalized" ? "with date of case" : "only date of report"); });
+		  dateTypes = dateType.group(function(d) { return d; });
 
 		onsetChart.width(900)
 			.transitionDuration(0)
@@ -904,6 +963,40 @@ div.notes {
 				})
 			.xAxis().ticks(5);
 		
+		dateTypeChart
+			.transitionDuration(0)
+			.width(140)
+			.height(150)
+			.margins({top: 73, right: 0, bottom: 20, left: 20})
+			.group(dateTypes)
+			.dimension(dateType)
+			.colors(['#00CC66', '#4DDB94'])
+			.label(function (d) {
+				return d.value + " " + d.key; 
+			})
+			.title(function(d) {return d.value;})
+			.elasticX(false)
+			.on("filtered", function() { 
+				renderAll(); 
+				})
+			.xAxis().ticks(5);
+			
+		detailedAgeChart.width(800)
+			.transitionDuration(0)
+			.height(180)
+			.margins({top: 10, right: 10, bottom: 20, left: 20})
+			.dimension(age)
+			.group(ageGroups2)
+			.centerBar(false)
+	//		.stack(genders, function(d) {
+	//			return d.key;
+	//			})
+			.gap(1)
+			.x(d3.scale.linear().domain([0, 100]))
+			.on("filtered", function() { renderAll(); })
+			.xAxis().ticks(100 / (ageGroupSize * 2));
+
+		
 		// Render the initial lists.
 		var list = d3.selectAll(".list")
 		  .data([caseList]);
@@ -948,23 +1041,23 @@ div.notes {
 				allCases.top(Infinity).forEach(function(d) {
 					if (d.country == country.key) {
 						var city = d.city;
-						if (city != null) {
+						if (city !== null) {
 //							var title = city.name;
 							var title = "<h3>#" + d.number + ": " + d.country + ", " + d.city.name + "<br>" + 
 								(isNaN(d.age) ? "?" : d.age) + ", " + d.gender + 
 								", Date: " + formatPrettyDate(d.date) + " (" + d.dateType + ")</h3>" +
-								(d.FT != null && d.FT.length > 0 ? "<p><a target=\"_blank\" href=\"http://www.flutrackers.com/forum/showthread.php?t=205075\">FluTrackers case: #" + d.FT + "</a></p>" : "") + 
+								(d.FT !== null && d.FT.length > 0 ? "<p><a target=\"_blank\" href=\"http://www.flutrackers.com/forum/showthread.php?t=205075\">FluTrackers case: #" + d.FT + "</a></p>" : "") + 
 								"<ul>" +
-								(d.onset != null ? "<li>Onset: " + formatPrettyDate(d.onset) : "</li>") + 
-								(d.hospitalized != null ? "<li>Hospitalized: " + formatPrettyDate(d.hospitalized) + "</li>" : "") +
-								(d.death != null ? "<li>Death: " + formatPrettyDate(d.death) + "</li>" : "") +
-								(d.reported != null ? "<li>Reported: " + formatPrettyDate(d.reported) + "</li>" : "") +
+								(d.onset !== null ? "<li>Onset: " + formatPrettyDate(d.onset) : "</li>") + 
+								(d.hospitalized !== null ? "<li>Hospitalized: " + formatPrettyDate(d.hospitalized) + "</li>" : "") +
+								(d.death !== null ? "<li>Death: " + formatPrettyDate(d.death) + "</li>" : "") +
+								(d.reported !== null ? "<li>Reported: " + formatPrettyDate(d.reported) + "</li>" : "") +
 								"</ul>" +
-								(d.notes != null && d.notes.length > 0 ? "<p>"+d.notes+"</p>" : "") +
+								(d.notes !== null && d.notes.length > 0 ? "<p>"+d.notes+"</p>" : "") +
 								"<p>" + 
-								(d.patient != null && d.patient.length > 0  ? "<a target=\"_blank\" href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
-								(d.citation != null && d.citation.length > 0 ? "<a target=\"_blank\" href=\""+d.citation+"\">Reference</a>" : "") +
-								(d.citation2 != null && d.citation2.length > 0 ? " | <a target=\"_blank\" href=\""+d.citation2+"\">Secondary Reference</a>" : "") + "</p>";
+								(d.patient !== null && d.patient.length > 0  ? "<a target=\"_blank\" href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
+								(d.citation !== null && d.citation.length > 0 ? "<a target=\"_blank\" href=\""+d.citation+"\">Reference</a>" : "") +
+								(d.citation2 !== null && d.citation2.length > 0 ? " | <a target=\"_blank\" href=\""+d.citation2+"\">Secondary Reference</a>" : "") + "</p>";
 							var marker = L.marker(L.latLng(city.coordinates[1], city.coordinates[0]), { title: title });
 							marker.bindPopup(title);
 							markers.addLayer(marker);
@@ -1062,7 +1155,7 @@ div.notes {
 
 				individualEnter.append("div")
 				  .attr("class", "age")
-				  .text(function(d) { return (isNaN(d.age) ? "?" : d.age); });
+				  .text(function(d) { return (d.age === null ? "?" : d.age); });
 
 				individualEnter.append("div")
 				  .attr("class", "gender")
