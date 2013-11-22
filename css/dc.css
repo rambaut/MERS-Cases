@@ -1,10 +1,9 @@
-.dc-chart {
+div.dc-chart {
     float: left;
 }
 
 .dc-chart rect.bar {
     stroke: none;
-    fill: steelblue;
     cursor: pointer;
 }
 
@@ -27,18 +26,21 @@
     fill: #ccc;
 }
 
-.dc-chart .sub .bar {
-    stroke: none;
-    fill: #ccc;
-}
-
 .dc-chart .pie-slice {
     fill: white;
     font-size: 12px;
     cursor: pointer;
 }
 
+.dc-chart .pie-slice.external{
+    fill: black;
+}
+
 .dc-chart .pie-slice :hover {
+    fill-opacity: .8;
+}
+
+.dc-chart .pie-slice.highlight {
     fill-opacity: .8;
 }
 
@@ -94,28 +96,11 @@
 
 .dc-chart path.line {
     fill: none;
-    stroke: steelblue;
     stroke-width: 1.5px;
 }
 
 .dc-chart circle.dot {
-    fill: steelblue;
-}
-
-.dc-chart g.stack1 path.line {
-    stroke: green;
-}
-
-.dc-chart g.stack1 circle.dot {
-    fill: green;
-}
-
-.dc-chart g.stack2 path.line {
-    stroke: red;
-}
-
-.dc-chart g.stack2 circle.dot {
-    fill: red;
+    stroke: none;
 }
 
 .dc-chart g.dc-tooltip path {
@@ -125,17 +110,8 @@
 }
 
 .dc-chart path.area {
-    fill: steelblue;
     fill-opacity: .3;
     stroke: none;
-}
-
-.dc-chart g.stack1 path.area {
-    fill: green;
-}
-
-.dc-chart g.stack2 path.area {
-    fill: red;
 }
 
 .dc-chart .node {
@@ -154,7 +130,7 @@
 }
 
 .dc-chart .deselected circle {
-    strok: none;
+    stroke: none;
     fill-opacity: .5;
     fill: #ccc;
 }
@@ -234,7 +210,15 @@
     cursor: pointer;
 }
 
-.dc-chart g text {
+.dc-legend {
+    font-size: 11px;
+}
+
+.dc-legend-item {
+    cursor: pointer;
+}
+
+.dc-chart g.axis text {
     /* Makes it so the user can't accidentally click and select text that is meant as a label only */
     -webkit-user-select: none; /* Chrome/Safari */
     -moz-user-select: none; /* Firefox */
@@ -242,4 +226,83 @@
     -o-user-select: none;
     user-select: none;
     pointer-events: none;
+}
+
+.dc-chart path.highlight {
+    stroke-width: 3;
+    fill-opacity: 1;
+    stroke-opacity: 1;
+}
+
+.dc-chart .highlight {
+    fill-opacity: 1;
+    stroke-opacity: 1;
+}
+
+.dc-chart .fadeout {
+    fill-opacity: 0.2;
+    stroke-opacity: 0.2;
+}
+
+.dc-chart path.dc-symbol, g.dc-legend-item.fadeout {
+    fill-opacity: 0.5;
+    stroke-opacity: 0.5;
+}
+
+.dc-hard .number-display {
+    float: none;
+}
+
+.dc-chart .box text {
+    font: 10px sans-serif;
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10 */
+    -o-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+.dc-chart .box line,
+.dc-chart .box circle {
+    fill: #fff;
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.dc-chart .box rect {
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.dc-chart .box .center {
+    stroke-dasharray: 3,3;
+}
+
+.dc-chart .box .outlier {
+    fill: none;
+    stroke: #ccc;
+}
+
+.dc-chart .box.deselected .box {
+    fill: #ccc;
+}
+
+.dc-chart .box.deselected {
+    opacity: .5;
+}
+
+.dc-chart .symbol{
+    stroke: none;
+}
+
+.dc-chart .heatmap .box-group.deselected rect {
+    stroke: none;
+    fill-opacity: .5;
+    fill: #ccc;
+}
+
+.dc-chart .heatmap g.axis text {
+    pointer-events: all;
+    cursor: pointer;
 }

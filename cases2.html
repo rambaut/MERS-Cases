@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="css/leaflet.css" />
 <link rel="stylesheet" href="css/MarkerCluster.css" />
 <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+<link rel="stylesheet" type="text/css" href="css/kube.css" />
 <link href="js/tooltips/themes/1/tooltip.css" rel="stylesheet" type="text/css" />
 <style>
 
@@ -48,7 +49,6 @@ h1, h2 {
 
 .dc-chart {
   margin-bottom: 20px;
-  float: none;
 }
 
 .dc-chart g.row text {
@@ -341,6 +341,7 @@ div.notes {
         }
 
 		#map {
+		float: right;
 			width: 600px;
 			height: 400px;
 		}
@@ -426,18 +427,20 @@ div.notes {
 	<div class="panel">
 		<h2>Spatial Distribution</span></h2>
 		<div class="panelcontent">
-			<div>
-				<div class="inline-div">
-					<div id="country-chart" class="dc-chart align-top">
-						<span class="title" class="inline-div">Cases by country</span>
-						<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-					</div>
-					<div id="location-chart" class="dc-chart align-top">
-						<span class="title" class="inline-div">Cases by KSA location</span>
-						<a class="reset title" href="javascript:locationChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+			<div class="units-row">
+				<div class="unit-30">
+					<div>
+						<div id="country-chart" class="dc-chart units-row"">
+							<span class="title" class="inline-div">Cases by country</span>
+							<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+						</div>
+						<div id="location-chart" class="dc-chart units-row">
+							<span class="title" class="inline-div">Cases by KSA location</span>
+							<a class="reset title" href="javascript:locationChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+						</div>
 					</div>
 				</div>
-				<div id="map" class="inline-div align-top"></div>
+				<div id="map" class="unit-70 align-top"></div>
 			</div>
 		</div>
 	</div>
@@ -584,7 +587,6 @@ div.notes {
 	var contactChart = dc.rowChart("#contact-chart");
 	var statusChart = dc.rowChart("#status-chart");
 	var dateTypeChart = dc.rowChart("#date-type-chart");
-	var detailedAgeChart = dc.barChart("#detailed-age-chart");
 
 	dc.constants.EVENT_DELAY = 0;
 
@@ -781,13 +783,14 @@ div.notes {
 		  age = crossFilter.dimension(function(d) { return d.age; }),
 		  ageGroups = age.group(function(d) { return Math.floor(d / ageGroupSize) * ageGroupSize; }),
 		  ageGroups2 = age.group(function(d) { return d; }),
-		  contact = crossFilter.dimension(function(d) { return d.contact; });
-		  contactTypes = contact.group(function(d) { return d; });
+		  contact = crossFilter.dimension(function(d) { return d.contact; }),
+		  contactTypes = contact.group(function(d) { return d; }),
 		  cluster = crossFilter.dimension(function(d) { return (d.cluster != null ? d.cluster.count : 1); });
-		  clusterSizes = cluster.group(function(d) { return d; });
-		  caseStatus = crossFilter.dimension(function(d) { return d.status; });
-		  caseStatusType = caseStatus.group(function(d) { return d; });
-		  dateType = crossFilter.dimension(function(d) { return (d.dateType === "onset" || d.dateType === "hospitalized" ? "with date of case" : "only date of report"); });
+		  //clusterSizes = cluster.group(function(d) { return d; });
+		  clusterSizes = cluster.group().reduceSum(function(d) { return (d.cluster != null ? 1 / d.cluster.count : 1); }),
+		  caseStatus = crossFilter.dimension(function(d) { return d.status; }),
+		  caseStatusType = caseStatus.group(function(d) { return d; }),
+		  dateType = crossFilter.dimension(function(d) { return (d.dateType === "onset" || d.dateType === "hospitalized" ? "with date of case" : "only date of report"); }),
 		  dateTypes = dateType.group(function(d) { return d; });
 
 		onsetChart.width(900)
@@ -803,15 +806,20 @@ div.notes {
 			.xUnits(d3.time.weeks)
 			.on("filtered", function(d) { renderAll(); });
 
-		countryChart.width(280)
+		console.log(countries);
+		
+		countryChart.width(260)
 			.height(200)
 			.transitionDuration(0)
 			.margins({top: 0, right: 20, bottom: 38, left: 20})
 			.group(countries)
 			.dimension(country)
-			.colors(['LightSteelBlue'])
+			.colors('lightsteelblue')
 			.label(function (d) {
 				return d.value + " " + d.key; 
+			})
+			.ordering(function (d) {
+				return -d.value; 
 			})
 			.labelOffsetY(12)
 			.gap(2)
@@ -820,15 +828,18 @@ div.notes {
 			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(5);
 
-		locationChart.width(280)
-			.height(220)
+		locationChart.width(260)
+			.height(260)
 			.transitionDuration(0)
 			.margins({top: 0, right: 20, bottom: 38, left: 20})
 			.group(locations)
 			.dimension(location)
-			.colors(['Khaki'])
+			.colors('Khaki')
 			.label(function (d) {
 				return d.value + " " + d.key; 
+			})
+			.ordering(function (d) {
+				return -d.value; 
 			})
 			.gap(2)
 			.labelOffsetY(9)
@@ -847,6 +858,7 @@ div.notes {
 	//		.stack(genders, function(d) {
 	//			return d.key;
 	//			})
+			.elasticY(true)
 			.gap(-10)
 			.x(d3.scale.linear().domain([0, 100]))
 			.on("filtered", function() { renderAll(); })
@@ -859,7 +871,7 @@ div.notes {
 			.margins({top: 80, right: 0, bottom: 20, left: 20})
 			.group(genders)
 			.dimension(gender)
-					.colors(['#B82E00', '#DB704D', '#F0C2B2'])
+			.ordinalColors(['#B82E00', '#DB704D', '#F0C2B2'])
 			.label(function (d){
 				return d.value + " " + (d.key === 1 ? "female" : (d.key === 2 ? "male" : "unknown"));
 			})
@@ -876,7 +888,7 @@ div.notes {
 			.margins({top: 104, right: 0, bottom: 20, left: 20})
 			.group(deathStates)
 			.dimension(death)
-					.colors(['#B2B247', '#FFFF66', '#FFFFB2'])
+			.ordinalColors(['#B2B247', '#FFFF66', '#FFFFB2'])
 			.label(function (d){
 				return d.value + " " + (d.key === 1 ? "alive" : (d.key === 2 ? "dead" : "unknown"));
 			})
@@ -892,7 +904,7 @@ div.notes {
 			.margins({top: 80, right: 0, bottom: 20, left: 20})
 			.group(comorbidityGroups)
 			.dimension(comorbidity)
-					.colors(['#CCCC00', '#FFFF33', '#FFFFB2'])
+			.ordinalColors(['#CCCC00', '#FFFF33', '#FFFFB2'])
 			.label(function (d){
 				return d.value + " " + (d.key);
 			})
@@ -908,7 +920,7 @@ div.notes {
 			.margins({top: 80, right: 0, bottom: 20, left: 20})
 			.group(severityGroups)
 			.dimension(severity)
-					.colors(['#FF9900', '#FFB84D', '#FFEBCC'])
+			.ordinalColors(['#FF9900', '#FFB84D', '#FFEBCC'])
 			.label(function (d){
 				return d.value + " " + (d.key);
 			})
@@ -937,7 +949,7 @@ div.notes {
 			.margins({top: 20, right: 0, bottom: 20, left: 20})
 			.group(contactTypes)
 			.dimension(contact)
-			.colors(['#3D5200', '#6B8F00', '#99CC00', '#B8DB4D'])
+			.ordinalColors(['#3D5200', '#6B8F00', '#99CC00', '#B8DB4D'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
@@ -955,7 +967,7 @@ div.notes {
 			.margins({top: 73, right: 0, bottom: 20, left: 20})
 			.group(caseStatusType)
 			.dimension(caseStatus)
-			.colors(['#339933', '#85C285'])
+			.ordinalColors(['#339933', '#85C285'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
@@ -973,7 +985,7 @@ div.notes {
 			.margins({top: 73, right: 0, bottom: 20, left: 20})
 			.group(dateTypes)
 			.dimension(dateType)
-			.colors(['#008A8A', '#80CCCC'])
+			.ordinalColors(['#008A8A', '#80CCCC'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
@@ -982,23 +994,7 @@ div.notes {
 			.on("filtered", function() { 
 				renderAll(); 
 				})
-			.xAxis().ticks(5);
-			
-		detailedAgeChart.width(800)
-			.transitionDuration(0)
-			.height(180)
-			.margins({top: 10, right: 10, bottom: 20, left: 20})
-			.dimension(age)
-			.group(ageGroups2)
-			.centerBar(false)
-	//		.stack(genders, function(d) {
-	//			return d.key;
-	//			})
-			.gap(1)
-			.x(d3.scale.linear().domain([0, 100]))
-			.on("filtered", function() { renderAll(); })
-			.xAxis().ticks(100 / (ageGroupSize * 2));
-
+			.xAxis().ticks(5);		
 		
 		// Render the initial lists.
 		var list = d3.selectAll(".list")
@@ -1131,7 +1127,7 @@ div.notes {
 				  .attr("class", "individual tooltip")
 				  .attr("onmouseover", function(d) { return "tooltip.pop(this, '<h3>#" + d.number + ": " + d.country + ", " + 
 				  		(d.city !== null ? d.city.name : "unknown") + "<br>" + 
-				  		(isNaN(d.age) ? "?" : d.age) + ", " + d.gender + 
+				  		(d.age < 0 ? "?" : d.age) + ", " + d.gender + 
 				  		", Date: " + formatPrettyDate(d.date) + " (" + d.dateType + ")</h3>" +
 				  	(d.FT != null && d.FT.length > 0 ? "<p><a target=\"_blank\" href=\"http://www.flutrackers.com/forum/showthread.php?t=205075\">FluTrackers case: #" + d.FT + "</a></p>" : "") + 
 				  	"<ul>" +
@@ -1158,7 +1154,7 @@ div.notes {
 
 				individualEnter.append("div")
 				  .attr("class", "age")
-				  .text(function(d) { return (d.age === null ? "?" : d.age); });
+				  .text(function(d) { return (d.age < 0 ? "?" : d.age); });
 
 				individualEnter.append("div")
 				  .attr("class", "gender")
