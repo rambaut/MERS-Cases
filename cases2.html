@@ -48,9 +48,9 @@ h1, h2 {
 }
 
 .dc-chart {
-  margin-bottom: 20px;
+	margin: 0;
 }
-
+	
 .dc-chart g.row text {
 	fill: black;
   font-family: Helvetica,Arial,sans-serif;
@@ -59,13 +59,11 @@ h1, h2 {
 }
 
 .reset {
-  padding-left: 1em;
-  font-size: smaller;
-  color: #aaa;
+  color: #888;
 }
 
 .reset-all {
-  color: #aaa;
+  color: #888;
 }
 
 .axis path, .axis line {
@@ -93,86 +91,15 @@ h1, h2 {
   stroke: #666;
 }
 
-#onset-chart {
-  width: 920px;
-  height: 170px;
-}
-
-#onset-chart .bar {
-  fill: steelblue;
-}
-
-#country-chart {
-  width: 280px;
-  height: 180px;
-}
-
-#location-chart {
-  width: 280px;
-  height: 180px;
-}
-
 #location-chart g.row text {
     font-size: 10px;
 }
 
-
-#age-chart {
-  width: 300px;
-  height: 180px;
-}
-
-#age-chart .bar {
-  fill: #8B475D;
-}
-
-#gender-chart {
-  width: 140px;
-  height: 180px;
-}
-
-#death-chart {
-  width: 140px;
-  height: 180px;
-}
-
-#comorbidity-chart {
-  width: 140px;
-  height: 180px;
-}
-
-#severity-chart {
-  width: 140px;
-  height: 180px;
-}
-
-#cluster-size-chart {
-  width: 300px;
-  height: 150px;
-}
-
-#cluster-size .bar {
-  fill: #3D5C00;
-}
-
-
-#contact-chart {
-  width: 140px;
-  height: 150px;
-}
-
-#status-chart {
-  width: 140px;
-  height: 150px;
-}
-
-#date-type-chart {
-  width: 140px;
-  height: 150px;
-}
-
 #lists {
-  width: 100%; overflow: auto; max-height:1200px; margin-right: 18px;
+  width: 100%; 
+  overflow: auto; 
+  max-height:1200px; 
+  margin-right: 18px;
   display: block;
 }
 
@@ -256,15 +183,16 @@ div.notes {
     margin-top: 10px;
     margin-right: 15px;
   font-size: 14px;
+  font-weight: 200;
 }
 
 #data-count .filter-count {
-    color: #3182bd;
+   color: #3182bd;
   font-weight: 400;
 }
 
 #data-count .total-count {
-    color: #3182bd;
+ color: #3182bd;
   font-weight: 400;
 }
 
@@ -343,7 +271,7 @@ div.notes {
 		#map {
 		float: right;
 			width: 600px;
-			height: 400px;
+			height: 450px;
 		}
 
 		.leaflet-control-zoom {
@@ -418,9 +346,9 @@ div.notes {
 <div id="body">
 
 	<div>
-		<div id="data-count" class="title">
+		<div id="data-count">
 			<span class="filter-count"></span> selected out of <span class="total-count"></span> cases | <a
-				class="reset-all title"
+				class="reset-all"
 				href="javascript:dc.filterAll(); dc.renderAll();">reset all</a>
 		</div>
 	</div>
@@ -430,13 +358,13 @@ div.notes {
 			<div class="units-row">
 				<div class="unit-30">
 					<div>
-						<div id="country-chart" class="dc-chart units-row"">
+						<div id="country-chart" class="units-row dc-chart">
 							<span class="title" class="inline-div">Cases by country</span>
-							<a class="reset title" href="javascript:countryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+							<span class="reset title" style="display: none;">| <a href="javascript:countryChart.filterAll();dc.redrawAll();">reset</a></span>
 						</div>
 						<div id="location-chart" class="dc-chart units-row">
 							<span class="title" class="inline-div">Cases by KSA location</span>
-							<a class="reset title" href="javascript:locationChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+							<span class="reset title" style="display: none;">| <a href="javascript:locationChart.filterAll();dc.redrawAll();">reset</a></span>
 						</div>
 					</div>
 				</div>
@@ -444,74 +372,64 @@ div.notes {
 			</div>
 		</div>
 	</div>
+	
 	<div class="panel">
 		<h2>Time-series</span></h2>
 		<div class="panelcontent">
 			<div id="onset-chart" class="dc-chart">
 				<span class="title">Cases by date</span>
-				<a class="reset title" href="javascript:onsetChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+				<span class="reset title" style="display: none;">| <a href="javascript:onsetChart.filterAll();dc.redrawAll();">reset</a></span>
 			</div>
 		</div>
 	</div>
+	
 	<div class="panel">
 		<h2>Demography</span></h2>
 		<div class="panelcontent">
 			<div>
 				<div id="age-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By age</span>
-					<a class="reset title" href="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<span class="reset title" style="display: none;">| <a href="javascript:ageChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
 				<div id="gender-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By gender</span>
-					<a class="reset title" href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<span class="reset title" style="display: none;">| <a href="javascript:genderChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
 				<div id="severity-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By severity</span>
-					<a class="reset title" href="javascript:severityChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<span class="reset title" style="display: none;">| <a href="javascript:severityChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
 				<div id="comorbidity-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By comorbidity</span>
-					<a class="reset title" href="javascript:comorbidityChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<span class="reset title" style="display: none;">| <a href="javascript:comorbidityChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
 				<div id="death-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By outcome</span>
-					<a class="reset title" href="javascript:deathChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<span class="reset title" style="display: none;">| <a href="javascript:deathChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!--
-	<div class="panel">
-		<h2>Age</span></h2>
-		<div class="panelcontent">
-			<div>
-				<div id="detailed-age-chart" class="dc-chart inline-div align-bottom">
-					<span class="title">By age</span>
-					<a class="reset title" href="javascript:detailedAgeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	-->
+
 	<div class="panel">
 		<h2>Epidemiology</span></h2>
 		<div class="panelcontent">
 			<div>
 				<div id="cluster-size-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">Cluster size</span>
-					<a class="reset title" href="javascript:clusterSizeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<span class="reset title" style="display: none;">| <a href="javascript:clusterSizeChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
 				<div id="contact-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By contact</span>
-					<a class="reset title" href="javascript:contactChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<span class="reset title" style="display: none;">| <a href="javascript:contactChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
 				<div id="status-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By status</span>
-					<a class="reset title" href="javascript:statusChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<span class="reset title" style="display: none;">| <a href="javascript:statusChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
 				<div id="date-type-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">Date</span>
-					<a class="reset title" href="javascript:dateTypeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+					<span class="reset title" style="display: none;">| <a href="javascript:dateTypeChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
 			</div>
 		</div>
@@ -793,10 +711,12 @@ div.notes {
 		  dateType = crossFilter.dimension(function(d) { return (d.dateType === "onset" || d.dateType === "hospitalized" ? "with date of case" : "only date of report"); }),
 		  dateTypes = dateType.group(function(d) { return d; });
 
-		onsetChart.width(900)
-			.transitionDuration(0)
+		onsetChart
+			.width(900)
 			.height(150)
+			.transitionDuration(0)
 			.margins({top: 10, right: 20, bottom: 20, left: 20})
+			.colors('steelblue')
 			.dimension(onsetDate)
 			.group(onsetDates)
 			.centerBar(true)
@@ -808,19 +728,20 @@ div.notes {
 
 		console.log(countries);
 		
-		countryChart.width(260)
-			.height(200)
+		countryChart
+			.width(300)
+			.height(170)
+			.margins({top: 0, right: 20, bottom: 20, left: 20})
 			.transitionDuration(0)
-			.margins({top: 0, right: 20, bottom: 38, left: 20})
 			.group(countries)
 			.dimension(country)
 			.colors('lightsteelblue')
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
-			.ordering(function (d) {
-				return -d.value; 
-			})
+//			.ordering(function (d) {
+//				return d.value; 
+//			})
 			.labelOffsetY(12)
 			.gap(2)
 			.title(function(d) {return d.value;})
@@ -828,19 +749,20 @@ div.notes {
 			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(5);
 
-		locationChart.width(260)
-			.height(260)
+		locationChart
+			.width(260)
+			.height(240)
+			.margins({top: 0, right: 20, bottom: 20, left: 20})
 			.transitionDuration(0)
-			.margins({top: 0, right: 20, bottom: 38, left: 20})
 			.group(locations)
 			.dimension(location)
-			.colors('Khaki')
+			.ordinalColors(['Khaki'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
-			.ordering(function (d) {
-				return -d.value; 
-			})
+//			.ordering(function (a) {
+//				return a.value; 
+//			})
 			.gap(2)
 			.labelOffsetY(9)
 			.title(function(d) {return d.value;})
@@ -852,6 +774,7 @@ div.notes {
 			.transitionDuration(0)
 			.height(180)
 			.margins({top: 10, right: 10, bottom: 20, left: 20})
+			.colors('#8B475D')
 			.dimension(age)
 			.group(ageGroups)
 			.centerBar(false)
@@ -933,6 +856,7 @@ div.notes {
 			.transitionDuration(0)
 			.height(150)
 			.margins({top: 10, right: 10, bottom: 20, left: 20})
+			.colors('teal')
 			.dimension(cluster)
 			.group(clusterSizes)
 			.centerBar(false)
@@ -995,7 +919,7 @@ div.notes {
 				renderAll(); 
 				})
 			.xAxis().ticks(5);		
-		
+
 		// Render the initial lists.
 		var list = d3.selectAll(".list")
 		  .data([caseList]);
