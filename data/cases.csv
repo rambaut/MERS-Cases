@@ -1,4 +1,4 @@
-2,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hospitalized,reported,death,discharged,comorbidity,severity,outcome,clinical,cluster,Cauchemez cluster,HCW,contact_with,contact,secondary,suspected,notes,citation,citation2,sequence,patient,Column1
+number,FT,case,code,gender,age,country,city,district,hospital,exposure,onset,hospitalized,reported,death,discharged,comorbidity,severity,outcome,clinical,cluster,Cauchemez cluster,HCW,contact_with,contact,secondary,suspected,notes,citation,citation2,sequence,patient,Column1
 1,2,,25M,M,25,Jordan,Zarqa,,,,2012-03-21,2012-04-04,,2012-04-25,,,,fatal,fatal,A,4,TRUE,,health care worker,,,,http://applications.emro.who.int/emhj/v19/Supp1/EMHJ_2013_19_Supp1_S12_S18.pdf,,,,
 2,,,30M,M,30,Jordan,Zarqa,,,,2012-03-30,2012-04-08,,,,,CCU,,clinical,A,,TRUE,,health care worker,TRUE,TRUE,probable,http://applications.emro.who.int/emhj/v19/Supp1/EMHJ_2013_19_Supp1_S12_S18.pdf,,,,
 3,1,,40F,F,40,Jordan,Zarqa,,,,2012-04-02,2012-04-09,,2012-04-19,,,,fatal,fatal,A,4,TRUE,,health care worker,TRUE,,,http://applications.emro.who.int/emhj/v19/Supp1/EMHJ_2013_19_Supp1_S12_S18.pdf,,,,
