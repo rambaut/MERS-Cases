@@ -615,7 +615,13 @@ div.notes {
 			cases.push(d);
 		}
 	
-		if (d.cluster !== null && d.cluster.length > 0) {
+		if ((d.cluster !== null && d.cluster.length > 0) || d.secondary === "TRUE") {
+			if (d.cluster === undefined || d.cluster === null || d.cluster.length === 0) {
+				// if there is no cluster defined but is a secondary
+				// create a new cluster label based on the number
+				d.cluster = "#" + d.number;
+			}
+			
 			if (d.cluster in clusters) {
 				clusters[d.cluster].count ++;			
 			} else {
@@ -674,6 +680,10 @@ div.notes {
 					d.waitingTimeOnset = dateDiffInDays(lastOnset, d.date);
 				}
   				lastOnset = d.date;
+  			}
+  			
+  			if (d.cluster !== null && d.cluster.count === 1) {
+  				d.cluster.count = 2;
   			}
 			console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.country + " [" + d.dateType + "], "  + formatDate(d.date) + ", " + d.waitingTime + ", " + d.waitingTimeOnset );
 	  	});
@@ -976,6 +986,7 @@ div.notes {
 								(d.death !== null ? "<li>Death: " + formatPrettyDate(d.death) + "</li>" : "") +
 								(d.reported !== null ? "<li>Reported: " + formatPrettyDate(d.reported) + "</li>" : "") +
 								"</ul>" +
+								(d.cluster !== null ? "<p>Cluster "+d.cluster.name+"</p>" : "") +
 								(d.notes !== null && d.notes.length > 0 ? "<p>"+d.notes+"</p>" : "") +
 								"<p>" + 
 								(d.patient !== null && d.patient.length > 0  ? "<a target=\"_blank\" href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
@@ -1053,18 +1064,19 @@ div.notes {
 				  		(d.city !== null ? d.city.name : "unknown") + "<br>" + 
 				  		(d.age < 0 ? "?" : d.age) + ", " + d.gender + 
 				  		", Date: " + formatPrettyDate(d.date) + " (" + d.dateType + ")</h3>" +
-				  	(d.FT != null && d.FT.length > 0 ? "<p><a target=\"_blank\" href=\"http://www.flutrackers.com/forum/showthread.php?t=205075\">FluTrackers case: #" + d.FT + "</a></p>" : "") + 
+				  	(d.FT !== null && d.FT.length > 0 ? "<p><a target=\"_blank\" href=\"http://www.flutrackers.com/forum/showthread.php?t=205075\">FluTrackers case: #" + d.FT + "</a></p>" : "") + 
 				  	"<ul>" +
-				  	(d.onset != null ? "<li>Onset: " + formatPrettyDate(d.onset) : "</li>") + 
-				  	(d.hospitalized != null ? "<li>Hospitalized: " + formatPrettyDate(d.hospitalized) + "</li>" : "") +
-				  	(d.death != null ? "<li>Death: " + formatPrettyDate(d.death) + "</li>" : "") +
-				  	(d.reported != null ? "<li>Reported: " + formatPrettyDate(d.reported) + "</li>" : "") +
+				  	(d.onset !== null ? "<li>Onset: " + formatPrettyDate(d.onset) : "</li>") + 
+				  	(d.hospitalized !== null ? "<li>Hospitalized: " + formatPrettyDate(d.hospitalized) + "</li>" : "") +
+				  	(d.death !== null ? "<li>Death: " + formatPrettyDate(d.death) + "</li>" : "") +
+				  	(d.reported !== null ? "<li>Reported: " + formatPrettyDate(d.reported) + "</li>" : "") +
 				    "</ul>" +
-					(d.notes != null && d.notes.length > 0 ? "<p>"+d.notes+"</p>" : "") +
+					(d.cluster !== null ? "<p>Cluster "+d.cluster.name+"</p>" : "") +
+					(d.notes !== null && d.notes.length > 0 ? "<p>"+d.notes+"</p>" : "") +
 				  	"<p>" + 
-				  	(d.patient != null && d.patient.length > 0  ? "<a target=\"_blank\" href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
-				  	(d.citation != null && d.citation.length > 0 ? "<a target=\"_blank\" href=\""+d.citation+"\">Reference</a>" : "") +
-				  	(d.citation2 != null && d.citation2.length > 0 ? " | <a target=\"_blank\" href=\""+d.citation2+"\">Secondary Reference</a>" : "") + "</p>" +
+				  	(d.patient !== null && d.patient.length > 0  ? "<a target=\"_blank\" href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
+				  	(d.citation !== null && d.citation.length > 0 ? "<a target=\"_blank\" href=\""+d.citation+"\">Reference</a>" : "") +
+				  	(d.citation2 !== null && d.citation2.length > 0 ? " | <a target=\"_blank\" href=\""+d.citation2+"\">Secondary Reference</a>" : "") + "</p>" +
 				  "')"; });
 
 				individualEnter.append("div")
