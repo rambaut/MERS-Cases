@@ -6,3 +6,9 @@ data/cases.xlsx
 data/~$cases.xlsx
 
 .gitignore
+
+.idea/.name
+
+*.xml
+
+*.iml
