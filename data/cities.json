@@ -4,10 +4,12 @@
 { "name": "Al-Ahsa", "province": "KSA", "coordinates": [49.6219, 25.4294] },
 { "name": "Al-Hofuf", "province": "KSA", "coordinates": [49.5833, 25.3833] },
 { "name": "Dammam", "province": "KSA", "coordinates": [50.2000, 26.2833] },
+{ "name": "Khobar", "province": "KSA", "coordinates": [50.2000, 26.2833] },
 { "name": "Al-Qassim Province", "province": "KSA", "coordinates": [43.0000, 26.0000] },
 { "name": "Buraidah", "province": "KSA", "coordinates": [43.9667, 26.3333] },
 { "name": "Jubail", "province": "KSA", "coordinates": [49.6667, 27.0000] },
 { "name": "Asir Province", "province": "KSA", "coordinates": [43.0000, 19.0000] },
+{ "name": "Khamis Mushait", "province": "KSA", "coordinates": [42.7333, 18.3000] },
 { "name": "Hafr Al-Batin", "province": "KSA", "coordinates": [45.9636, 28.4342] },
 { "name": "Wadi al-Dawasir", "province": "KSA", "coordinates": [45.1994, 20.5042] },
 { "name": "Taif", "province": "KSA", "coordinates": [40.4167, 21.2667] },
@@ -16,6 +18,7 @@
 { "name": "Madinah", "province": "KSA", "coordinates": [39.6000, 24.4667] },
 { "name": "Riyadh", "province": "KSA", "coordinates": [46.724167, 24.711667] },
 { "name": "Eastern Province", "province": "KSA", "coordinates": [50.2000, 26.2833] },
+{ "name": "Qatif", "province": "KSA", "coordinates": [49.9960, 26.5560] },
 { "name": "Al Jawf Province", "province": "KSA", "coordinates": [40.2, 29.969722] }, 	
 { "name": "Jeddah", "province": "KSA", "coordinates": [39.172989, 21.543489] },
 { "name": "Doha", "province": "Qatar", "coordinates": [51.522476, 25.280282] },
@@ -27,5 +30,6 @@
 { "name": "Florence", "province": "Italy", "coordinates": [11.2536, 43.7717] },
 { "name": "Muscat", "province": "Oman", "coordinates": [58.5400, 23.6100] },
 { "name": "Nizwa", "province": "Oman", "coordinates": [57.5333, 22.9333] },
+{ "name": "Adam", "province": "Oman", "coordinates": [57.5333, 22.3833] },
 { "name": "Kuwait City", "province": "Kuwait", "coordinates": [47.9783, 29.3697] }
 ]
