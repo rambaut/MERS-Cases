@@ -148,7 +148,7 @@
 	
 	 });
   	  	
-	  var lagGroupSize = 4;
+	  var lagGroupSize = 1;
 
 		// Create the crossfilter for the relevant dimensions and groups.
 		var crossFilter = crossfilter(cases),
@@ -167,9 +167,9 @@
 	//			return d.key;
 	//			})
 			.elasticY(true)
-			.gap(-5)
-			.x(d3.scale.linear().domain([0, 120]))
-			.xAxis().ticks(100 / (lagGroupSize * 2));
+			.gap(0)
+			.x(d3.scale.linear().domain([0, 55]))
+			.xAxis().ticks(10);
 
 			dc.renderAll();
 
