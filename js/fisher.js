@@ -115,7 +115,7 @@ function fishersExact(f11, f12, f21, f22) {
 	}
   	var p = Sum(p1,p2);
   	
-  	if (p < 0.0001) {
+  	if (isNaN(p) || p < 0.0001) {
 	  	results.pValue = "P < 0.0001";
   	} else if (p < 0.001) {
   		results.pValue = "P < 0.001";

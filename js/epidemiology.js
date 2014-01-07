@@ -1,4 +1,4 @@
-(function () {
+epidemic = (function () {
     "use strict";
 
     var epidemic = {};
@@ -267,36 +267,38 @@
         var MAX_VALUE = 100;
 
         var parameter = epidemic.parameters[name];
+        select.append('<label for="' + name + '_text" class="label">' + parameter.label + ':</label>');
+        select.append('<input type="text" name="' + name + '_text" id="' + name + '_text" class="text"></edit>');
+        select.append('<div id="' + name + '_slider" class="slider"></div>');
+        select.append('<button id="' + name + '_reset" class="reset">Reset from data</button>');
+
         var text = $( "#" + name + "_text");
         var slider = $( "#" + name + "_slider");
         var reset = $( "#" + name + "_reset");
 
-        select.append('<label for="' + name + '_text" class="label">' + parameter.label + ':</label>');
-        select.append('<input type="text" name="' + name + '_text" id="' + name + '_text" class="text"></edit>');
-        select.append('<div id="' + name + '_slider" class="slider"></div>');
-        select.append('<button id="' + name + '_reset" class="reset">Reset from data</div>');
-
-
         var initialValue = parameter.value;
 
-        text.val(initialValue);
+        text
+        	.val(initialValue);
+        	
         epidemic[name] = initialValue;
 
-        slider.slider({
-            min: 0.0,
-            max: MAX_VALUE,
-//			value: initialValue * MAX_VALUE,
-            value: initialValue,
-            slide: function( event, ui ) {
-//				var value = ui.value / MAX_VALUE;
-                var value = ui.value;
-                text.val(value);
-                epidemic.setParameter(name, value);
-                epidemic.update();
-            }
-        });
+        slider
+        	.slider({
+				min: 0.0,
+				max: MAX_VALUE,
+	//			value: initialValue * MAX_VALUE,
+				value: initialValue,
+				slide: function( event, ui ) {
+	//				var value = ui.value / MAX_VALUE;
+					var value = ui.value;
+					text.val(value);
+					epidemic.setParameter(name, value);
+					epidemic.update();
+				}
+			});
 
-        $( "#" + name + "_reset" )
+        reset
             .click(function( event ) {
                 text.val(initialValue);
 //				slider.slider("value", initialValue * MAX_VALUE);
