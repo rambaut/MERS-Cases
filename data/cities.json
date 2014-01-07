@@ -5,6 +5,7 @@
 { "name": "Al-Hofuf", "province": "KSA", "coordinates": [49.5833, 25.3833] },
 { "name": "Dammam", "province": "KSA", "coordinates": [50.2000, 26.2833] },
 { "name": "Khobar", "province": "KSA", "coordinates": [50.2000, 26.2833] },
+{ "name": "Dhahran", "province": "KSA", "coordinates": [50.1500, 26.2667] },
 { "name": "Al-Qassim Province", "province": "KSA", "coordinates": [43.0000, 26.0000] },
 { "name": "Buraidah", "province": "KSA", "coordinates": [43.9667, 26.3333] },
 { "name": "Jubail", "province": "KSA", "coordinates": [49.6667, 27.0000] },
