@@ -989,7 +989,7 @@ div.notes {
 								(d.cluster !== null ? "<p>Cluster "+d.cluster.name+"</p>" : "") +
 								(d.notes !== null && d.notes.length > 0 ? "<p>"+d.notes+"</p>" : "") +
 								"<p>" + 
-								(d.patient !== null && d.patient.length > 0  ? "<a target=\"_blank\" href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
+								(d.patient !== null && d.patient !== undefined && d.patient.length > 0  ? "<a target=\"_blank\" href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
 								(d.citation !== null && d.citation.length > 0 ? "<a target=\"_blank\" href=\""+d.citation+"\">Reference</a>" : "") +
 								(d.citation2 !== null && d.citation2.length > 0 ? " | <a target=\"_blank\" href=\""+d.citation2+"\">Secondary Reference</a>" : "") + "</p>";
 							var marker = L.marker(L.latLng(city.coordinates[1], city.coordinates[0]), { title: title });
@@ -1074,7 +1074,7 @@ div.notes {
 					(d.cluster !== null ? "<p>Cluster "+d.cluster.name+"</p>" : "") +
 					(d.notes !== null && d.notes.length > 0 ? "<p>"+d.notes+"</p>" : "") +
 				  	"<p>" + 
-				  	(d.patient !== null && d.patient.length > 0  ? "<a target=\"_blank\" href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
+				  	(d.patient !== null && d.patient !== undefined && d.patient.length > 0  ? "<a target=\"_blank\" href=\""+d.citation+"\">Patient "+ d.patient +"</a> in " : "") +				  
 				  	(d.citation !== null && d.citation.length > 0 ? "<a target=\"_blank\" href=\""+d.citation+"\">Reference</a>" : "") +
 				  	(d.citation2 !== null && d.citation2.length > 0 ? " | <a target=\"_blank\" href=\""+d.citation2+"\">Secondary Reference</a>" : "") + "</p>" +
 				  "')"; });
