@@ -441,6 +441,10 @@ div.reference {
 					<span class="title">By contact</span>
 					<span class="reset title" style="display: none;">| <a href="javascript:contactChart.filterAll();dc.redrawAll();">reset</a></span>
 				</div>
+				<div id="animal-chart" class="dc-chart inline-div align-bottom">
+					<span class="title">Animal Contact</span>
+					<span class="reset title" style="display: none;">| <a href="javascript:animalChart.filterAll();dc.redrawAll();">reset</a></span>
+				</div>
 				<div id="status-chart" class="dc-chart inline-div align-bottom">
 					<span class="title">By status</span>
 					<span class="reset title" style="display: none;">| <a href="javascript:statusChart.filterAll();dc.redrawAll();">reset</a></span>
@@ -522,6 +526,7 @@ div.reference {
 	var severityChart = dc.rowChart("#severity-chart");
 	var clusterSizeChart = dc.barChart("#cluster-size-chart");
 	var contactChart = dc.rowChart("#contact-chart");
+	var animalChart = dc.rowChart("#animal-chart");
 	var statusChart = dc.rowChart("#status-chart");
 	var dateTypeChart = dc.rowChart("#date-type-chart");
 
@@ -732,6 +737,8 @@ div.reference {
 		  ageGroups2 = age.group(function(d) { return d; }),
 		  contact = crossFilter.dimension(function(d) { return d.contact; }),
 		  contactTypes = contact.group(function(d) { return d; }),
+		  animals = crossFilter.dimension(function(d) { return d.animal_contact; }),
+		  animalTypes = animals.group(function(d) { return d; }),
 		  cluster = crossFilter.dimension(function(d) { return (d.cluster != null ? d.cluster.count : 1); });
 		  //clusterSizes = cluster.group(function(d) { return d; });
 		  clusterSizes = cluster.group().reduceSum(function(d) { return (d.cluster != null ? 1 / d.cluster.count : 1); }),
@@ -902,6 +909,24 @@ div.reference {
 			.margins({top: 20, right: 0, bottom: 20, left: 20})
 			.group(contactTypes)
 			.dimension(contact)
+			.ordinalColors(['#3D5200', '#6B8F00', '#99CC00', '#B8DB4D'])
+			.label(function (d) {
+				return d.value + " " + d.key; 
+			})
+			.title(function(d) {return d.value;})
+			.elasticX(false)
+			.on("filtered", function() { 
+				renderAll(); 
+				})
+			.xAxis().ticks(5);
+		
+		animalChart
+			.transitionDuration(0)
+			.width(140)
+			.height(150)
+			.margins({top: 20, right: 0, bottom: 20, left: 20})
+			.group(animalTypes)
+			.dimension(animals)
 			.ordinalColors(['#3D5200', '#6B8F00', '#99CC00', '#B8DB4D'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
