@@ -635,6 +635,16 @@ div.reference {
 			d.genderCode = 3;
 		}
 		
+		if (d.camel_contact === 'TRUE') {
+			d.animal = "Camels";
+		} else if (d.animal_contact === 'TRUE') {
+			d.animal = "Other";
+		} else if (d.animal_contact === 'FALSE') {
+			d.animal = "None";
+		} else {
+			d.animal = "Unknown";
+		}
+		
 		if (d.date !== null) {
 			cases.push(d);
 		}
@@ -737,7 +747,7 @@ div.reference {
 		  ageGroups2 = age.group(function(d) { return d; }),
 		  contact = crossFilter.dimension(function(d) { return d.contact; }),
 		  contactTypes = contact.group(function(d) { return d; }),
-		  animals = crossFilter.dimension(function(d) { return d.animal_contact; }),
+		  animals = crossFilter.dimension(function(d) { return d.animal; }),
 		  animalTypes = animals.group(function(d) { return d; }),
 		  cluster = crossFilter.dimension(function(d) { return (d.cluster != null ? d.cluster.count : 1); });
 		  //clusterSizes = cluster.group(function(d) { return d; });
@@ -909,7 +919,7 @@ div.reference {
 			.margins({top: 20, right: 0, bottom: 20, left: 20})
 			.group(contactTypes)
 			.dimension(contact)
-			.ordinalColors(['#3D5200', '#6B8F00', '#99CC00', '#B8DB4D'])
+			.ordinalColors(['#008B45', '#00CD66', '#00EE76', '#00FF7F'])
 			.label(function (d) {
 				return d.value + " " + d.key; 
 			})
