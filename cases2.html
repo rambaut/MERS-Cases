@@ -141,6 +141,12 @@ h1, h2 {
   text-overflow: ellipsis;
 }
 
+div.number {
+  width: 40px;
+  padding-right: 10px;
+  text-align: left;
+}
+
 div.onset,
 div.death {
   width: 60px;
@@ -441,6 +447,7 @@ div.notes {
 				<div id="lists" class="block-div">
 					<div id="case-list-header">
 						<div class="header title">
+							<div class="number">#</div>
 							<div class="onset">Date</div>
 							<div class="death">Death</div>
 							<div class="age">Age</div>
@@ -1078,6 +1085,10 @@ div.notes {
 				  	(d.citation !== null && d.citation.length > 0 ? "<a target=\"_blank\" href=\""+d.citation+"\">Reference</a>" : "") +
 				  	(d.citation2 !== null && d.citation2.length > 0 ? " | <a target=\"_blank\" href=\""+d.citation2+"\">Secondary Reference</a>" : "") + "</p>" +
 				  "')"; });
+
+				individualEnter.append("div")
+				  .attr("class", "number")
+				  .text(function(d) { return d.number; });
 
 				individualEnter.append("div")
 //				  .attr("title", function(d) { return "Date given: " + d.dateType; })
