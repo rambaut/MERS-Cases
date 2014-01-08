@@ -99,23 +99,24 @@ h1, h2 {
   width: 100%; 
   overflow: auto; 
   max-height:1200px; 
-  margin-right: 18px;
   display: block;
 }
 
 #case-list .month {
+  width: 100px; 
   margin-bottom: .4em;
-  font-size: 14px;
+  font-size: 13px;
+  text-align: right;
+  padding-right: 10px;
 }
 
 #case-list .individual {
   margin-left: 100px;
-  padding-left: 10px;
   line-height: 1.5em;
   background: #eee;
   width: 780px;
   margin-bottom: 1px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 #case-list-header .header {
@@ -123,8 +124,7 @@ h1, h2 {
   padding: 0px;
   margin-left: 100px;
   padding-left: 10px;
-  width: 780px;
-  font-size: 14px;
+  font-size: 11px;
 }
 
 #case-list .individual div {
@@ -142,45 +142,50 @@ h1, h2 {
 }
 
 div.number {
-  width: 40px;
-  padding-right: 10px;
+  width: 35px;
+  padding-left: 0px;
+  margin-left: 0px;
   text-align: left;
 }
 
 div.onset,
 div.death {
   width: 60px;
-  padding-right: 10px;
+  padding-left: 10px;
   text-align: left;
 }
 
 div.date {
   width: 60px;
-  padding-right: 10px;
+  padding-left: 10px;
   text-align: left;
   color: #888888;
 }
 
 div.age,
 div.gender {
-  width: 40px;
-  padding-right: 10px;
+  width: 20px;
+  padding-left: 10px;
   text-align: left;
 }
 
 div.country,
 div.city {
-  width: 100px;
-  padding-right: 10px;
+  width: 90px;
+  padding-left: 10px;
   text-align: left;
 }
 
 div.notes {
   color: #999;
   width: 260px;
-  padding-right: 10px;
+  padding-left: 10px;
   text-align: left;
   font: 10px;
+}
+
+div.reference {
+  width: 40px;
 }
 
 #data-count {
@@ -451,7 +456,7 @@ div.notes {
 							<div class="onset">Date</div>
 							<div class="death">Death</div>
 							<div class="age">Age</div>
-							<div class="gender">Gender</div>
+							<div class="gender">M/F</div>
 							<div class="country">Country</div>
 							<div class="city">City</div>
 						</div>
@@ -1120,7 +1125,7 @@ div.notes {
 				  .text(function(d) { return d.notes; });
 
 				individualEnter.append("div")
-				  .attr("class", "ref")
+				  .attr("class", "reference")
 				  .append("a")
 				  .attr("href", function(d) { return d.citation; })
 				  .attr("target", "_blank")
