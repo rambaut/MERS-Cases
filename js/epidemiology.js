@@ -307,7 +307,42 @@ epidemic = (function () {
     };
 
     epidemic.update = function() {
+    	var alpha = epidemic.parameters.prim_co_sev.value;
+    	var beta = epidemic.parameters.sec_co_sev.value;
 
+    	var gamma = epidemic.parameters.prim_h_sev.value;
+    	var delta = epidemic.parameters.sec_h_sev.value;
+    	
+    	var epsilon = epidemic.parameters.prim_co_ns.value;
+    	var zeta = epidemic.parameters.sec_co_ns.value;
+
+    	var eta = epidemic.parameters.prim_h_ns.value;
+    	var theta = epidemic.parameters.sec_h_ns.value;
+    	
+    	if (case1) {
+    		var X = epidemic.parameters.prop_sec_co.value;
+    	
+    		var Dsec = (zeta - ((zeta + theta) * X)) / (((beta + delta) * X) - beta);
+    	
+    		P_sev_sec_given_co = beta / (beta + (zeta / Dsec));
+    	    P_sev_sec_given_h = delta / (delta + (theta / Dsec));
+		
+		} else if (case2) {
+			Dsec = Y;
+		
+		} else if (case3) {
+			Z = Pprim_co;
+		}
+		
+		Tsec_co = beta + (zeta / Dsec);
+		Tsec_h = delta + (theta / Dsec);
+		
+		Psec_co = Tsec_co / (Tsec_co + Tsec_h);
+
+		Tprim_co = alpha + (epsilon / Dco);
+		Tprim_h = gamma + (eta / Dh);
+		
+		Pprim_co = Tprim_co / (Tprim_co + Tprim_h);
     };
 
     return epidemic

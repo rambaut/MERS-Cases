@@ -33,5 +33,7 @@
 { "name": "Muscat", "province": "Oman", "coordinates": [58.5400, 23.6100] },
 { "name": "Nizwa", "province": "Oman", "coordinates": [57.5333, 22.9333] },
 { "name": "Adam", "province": "Oman", "coordinates": [57.5333, 22.3833] },
+{ "name": "Al-Batinah North", "province": "Oman", "coordinates": [56.7299, 24.3420] },
+{ "name": "Sohar", "province": "Oman", "coordinates": [56.7299, 24.3420] },
 { "name": "Kuwait City", "province": "Kuwait", "coordinates": [47.9783, 29.3697] }
 ]
