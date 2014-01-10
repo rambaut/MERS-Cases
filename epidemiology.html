@@ -87,7 +87,7 @@
 	
 	.label 
 	{
-		width: 140px;
+		width: 280px;
 		text-align: right;
 		display:inline-block;
 		border: none;
@@ -117,6 +117,28 @@
 		margin-left: 10px;
 		vertical-align: middle;
 	}
+
+	.output 
+	{
+		width: 500px;
+		text-align: right;
+		display:inline-block;
+		border: none;
+		vertical-align: middle;
+		font-size: 11pt;
+	}
+	.value 
+	{
+		width: 140px;
+		text-align: left;
+		display:inline-block;
+		border: none;
+		margin-left: 20px;
+		vertical-align: middle;
+		font-size: 11pt;
+		font-weight: 400;
+	}
+
 </style>
 
 <div id="body">
@@ -125,6 +147,7 @@
 		<div class="panelcontent">
 			<div id="model">
 				<div id="parameters"></div>
+				<hr />
 				<div id="outputs"></div>
 			</div>
 		</div>
@@ -140,6 +163,7 @@
 <script src="js/ui/jquery.ui.widget.js"></script>
 <script src="js/ui/jquery.ui.mouse.js"></script>
 <script src="js/ui/jquery.ui.slider.js"></script>
+<script src="js/ui/jquery-ui-plugins-0.0.16.min.js"></script>
 <script src="js/queue.min.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/collabsible.js"></script>

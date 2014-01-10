@@ -9,60 +9,132 @@ epidemic = (function () {
         formatPrettyDate = d3.time.format("%d %b"),
         formatMonth = d3.time.format("%b %Y");
 
-    epidemic.parameters = {
-        "prim_co_sev": {
-            label: "Severe primary cases<br />with comorbidities",
+	// input data
+    epidemic.prim_co_sev; // Observed number of severe primary infections in people with comorbidities
+    epidemic.prim_co_ns; // Observed number of mild primary infections in people with comorbidities
+    epidemic.prim_h_sev; // Observed number of severe primary infections in people without comorbidities
+    epidemic.prim_h_ns; // Observed number of mild primary infections in people without comorbidities
+    epidemic.sec_co_sev; // Observed number of severe secondary infections in people with comorbidities
+    epidemic.sec_co_ns; // Observed number of mild secondary infections in people with comorbidities
+	epidemic.sec_h_sev; // Observed number of severe secondary infections in people without comorbidities
+    epidemic.sec_h_ns; // Observed number of mild secondary infections in people without comorbidities
+
+    epidemic.parameters = [
+       {
+       		key:  "prim_co_sev",
+            label: "Severe primary cases with comorbidities",
             description: "Observed number of severe primary infections in people with comorbidities.",
             value: 57
         },
-        "prim_co_ns": {
-            label: "Mild primary cases<br />with comorbidities",
+        {
+        	key: "prim_co_ns",
+            label: "Mild primary cases with comorbidities",
             description: "Observed number of mild primary infections in people with comorbidities.",
             value: 1
         },
-        "prim_h_sev": {
-            label: "Severe primary cases<br />without comorbidities",
+        {
+        	key: "prim_h_sev",
+            label: "Severe primary cases without comorbidities",
             description: "Observed number of severe primary infections in people without comorbidities.",
             value: 25
         },
-        "prim_h_ns": {
-            label: "Mild primary cases<br />without comorbidities",
+        {
+        	key: "prim_h_ns",
+            label: "Mild primary cases without comorbidities",
             description: "Observed number of mild primary infections in people without comorbidities.",
             value: 2
         },
-        "sec_co_sev": {
-            label: "Severe secondary cases<br />with comorbidities",
+        {
+        	key: "sec_co_sev",
+            label: "Severe secondary cases with comorbidities",
             description: "Observed number of severe secondary infections in people with comorbidities.",
             value: 27
         },
-        "sec_co_ns": {
-            label: "Mild secondary cases<br />with comorbidities",
+        {
+        	key: "sec_co_ns",
+            label: "Mild secondary cases with comorbidities",
             description: "Observed number of mild secondary infections in people with comorbidities.",
             value: 1
         },
-        "sec_h_sev": {
-            label: "Severe secondary cases<br />without comorbidities",
+        {
+        	key: "sec_h_sev",
+            label: "Severe secondary cases without comorbidities",
             description: "Observed number of severe secondary infections in people without comorbidities.",
             value: 29
         },
-        "sec_h_ns": {
-            label: "Mild secondary cases<br />without comorbidities",
+       {
+       		key: "sec_h_ns",
+            label: "Mild secondary cases without comorbidities",
             description: "Observed number of mild secondary infections in people without comorbidities.",
             value: 40
         }
-    };
+    ];
+	
+	// computed outputs 
+	epidemic.P_co_primary = 0.2; // fraction of primary cases with comorbidity
+	
+	epidemic.P_co_secondary = 0.1; //fraction of secondary cases with comorbidity
 
-    epidemic.outputs = {
-        "prim_obs": {
-            label: "Observed primary cases",
-            value: null
+	epidemic.P_detect_sec = 0.5; // the chance of discovery of (mild) secondary cases through contact tracing
+
+	epidemic.P_sev_given_co; // probability of severe disease given comorbidity
+	epidemic.P_sev_given_h; // probability of severe disease given previously healthy
+
+	epidemic.T_sec_co; // total secondary cases with comorbidiites
+	epidemic.T_sec_h;  // total secondary cases that were previously healthy
+
+	epidemic.P_detect_co; //chance of discovery of (mild) primary cases in people with comorbidities
+	epidemic.P_detect_h; // chance of discovery of (mild) primary cases in people who were healthy
+
+	epidemic.T_prim_co; // total primary cases with comorbidiites
+	epidemic.T_prim_h; // total primary cases that were previously healthy
+
+    epidemic.outputs = [
+        {
+        	key: "P_co_primary",
+            label: "fraction of primary cases with comorbidity",
         },
-        "prim_unobs": {
-            label: "Undetected primary cases",
-            value: null
+        {
+        	key: "P_co_secondary",
+            label: "fraction of secondary cases with comorbidity",
+        },
+        {
+        	key: "P_detect_sec",
+            label: "the chance of discovery of (mild) secondary cases through contact tracing",
+        },
+        {
+        	key: "P_detect_co",
+            label: "chance of discovery of (mild) primary cases in people with comorbidities",
+        },
+        {
+        	key: "P_detect_h",
+            label: "chance of discovery of (mild) primary cases in people who were healthy",
+        },
+        {
+        	key: "P_sev_given_co",
+            label: "probability of severe disease given comorbidity",
+        },
+        {
+        	key: "P_sev_given_h",
+            label: "probability of severe disease given previously healthy",
+        },
+        {
+        	key: "T_sec_co",
+            label: "total secondary cases with comorbidities",
+        },
+        {
+        	key: "T_sec_h",
+            label: "total secondary cases that were previously healthy",
+        },
+        {
+        	key: "T_prim_co",
+            label: "total primary cases with comorbidities",
+        },
+        {
+        	key: "T_prim_h",
+            label: "total primary cases that were previously healthy",
         }
-   };
-
+   ];
 
     /*
     Create the crossfilter from the case data
@@ -205,68 +277,33 @@ epidemic = (function () {
 */
 
         var destination = $( "#" + parametersDestination );
-        var name;
-        for (name in epidemic.parameters) {
-            var parameter = epidemic.parameters[name];
-            destination.append( '<div id="' + name + '" class="parameter" title="' + parameter.description + '"></label>' );
-            var select = $( "#" + name );
-            epidemic.setupParameter(select, name);
+        for (var i = 0; i < epidemic.parameters.length; i++) {
+            var parameter = epidemic.parameters[i];
+            destination.append( '<div id="' + parameter.key + '" class="parameter" title="' + parameter.description + '"></label>' );
+            var select = $( "#" + parameter.key );
+            epidemic.setupParameter(select, parameter);
         }
 
-        nv.addGraph(function() {
-            var chart = nv.models.discreteBarChart()
-              .x(function(d) { return d.label })
-              .y(function(d) { return d.value })
-              .staggerLabels(true)
-              .tooltips(false)
-              .showValues(true);
+        destination = $( "#" + outputsDestination );
+        for (var i = 0; i < epidemic.outputs.length; i++) {
+            var output = epidemic.outputs[i];
+            destination.append( '<div id="' + output.key + '" class="parameter" title="' + output.label + '"></label>' );
+            var select = $( "#" + output.key );
+            epidemic.setupOutput(select, output);
+        }
 
-            destination = $( "#" + outputsDestination );
-            destination.append( '<svg style="width:200px; height:200px;"></svg>' );
-
-            d3.select('#' + outputsDestination + ' svg')
-              .datum(binaryData(epidemic.outputs['']))
-            .transition().duration(500)
-              .call(chart);
-
-            nv.utils.windowResize(chart.update);
-
-            return chart;
-        });
-
+		epidemic.update();
     }; // function initialize(caseData)
 
-    function binaryData(name, label1, value1, label2, value2) {
-        return [
-            {
-                key: name,
-                values: [
-                    {
-                        "label" : label1,
-                        "value" : value1
-                    },
-                    {
-                        "label" : label2,
-                        "value" : value2
-                    }
-                ]
-            }
-        ];
-    }
-
-    epidemic.getParameter = function(name) {
-        return epidemic.parameters[name].value;
-    };
-
     epidemic.setParameter = function(name, value) {
-        epidemic.parameters[name] = value;
+        epidemic[name] = value;
         epidemic.update();
     };
 
-    epidemic.setupParameter = function(select, name) {
+    epidemic.setupParameter = function(select, parameter) {
         var MAX_VALUE = 100;
 
-        var parameter = epidemic.parameters[name];
+		var name = parameter.key;
         select.append('<label for="' + name + '_text" class="label">' + parameter.label + ':</label>');
         select.append('<input type="text" name="' + name + '_text" id="' + name + '_text" class="text"></edit>');
         select.append('<div id="' + name + '_slider" class="slider"></div>');
@@ -279,7 +316,15 @@ epidemic = (function () {
         var initialValue = parameter.value;
 
         text
-        	.val(initialValue);
+        	.textinput({'filter': 'digits'}) // 'numeric' for floats
+        	.val(initialValue)
+        	.change(function() {
+				var value = text.val();
+				slider.slider("value", value);
+				epidemic.setParameter(name, value);
+				epidemic.update();
+				epidemic.update();
+			});
         	
         epidemic[name] = initialValue;
 
@@ -303,47 +348,78 @@ epidemic = (function () {
                 text.val(initialValue);
 //				slider.slider("value", initialValue * MAX_VALUE);
                 slider.slider("value", initialValue);
-            });
+ 				epidemic.setParameter(name, initialValue);
+				epidemic.update();
+           });
     };
 
-    epidemic.update = function() {
-    	var alpha = epidemic.parameters.prim_co_sev.value;
-    	var beta = epidemic.parameters.sec_co_sev.value;
+    epidemic.setupOutput = function(select, output) {
+		var name = output.key;
+        select.append('<div class="output">' + output.label + ': </div><div id="' + name + '_text" class="value"></div>');
+    };
 
-    	var gamma = epidemic.parameters.prim_h_sev.value;
-    	var delta = epidemic.parameters.sec_h_sev.value;
-    	
-    	var epsilon = epidemic.parameters.prim_co_ns.value;
-    	var zeta = epidemic.parameters.sec_co_ns.value;
+    epidemic.updateOutputs = function() {
+        for (var i = 0; i < epidemic.outputs.length; i++) {
+        	var key = epidemic.outputs[i].key;
+            var value = epidemic[key];
+            $( "#" + key + '_text' ).text(value.toPrecision(3));
+        }
+    };
+    
+	epidemic.update = function() {
+		var known  = 1;
+		
+		var alpha = epidemic.prim_co_sev; // number of primary cases with comorbidity and severe disease
+		var beta = epidemic.sec_co_sev; // number of secondary cases with comorbidity and severe disease
 
-    	var eta = epidemic.parameters.prim_h_ns.value;
-    	var theta = epidemic.parameters.sec_h_ns.value;
-    	
-    	if (case1) {
-    		var X = epidemic.parameters.prop_sec_co.value;
-    	
-    		var Dsec = (zeta - ((zeta + theta) * X)) / (((beta + delta) * X) - beta);
-    	
-    		P_sev_sec_given_co = beta / (beta + (zeta / Dsec));
-    	    P_sev_sec_given_h = delta / (delta + (theta / Dsec));
-		
-		} else if (case2) {
-			Dsec = Y;
-		
-		} else if (case3) {
-			Z = Pprim_co;
+		var gamma = epidemic.prim_h_sev; // number of primary cases previously healthy and with severe disease
+		var delta = epidemic.sec_h_sev; // number of secondary cases previously healthy and with severe disease
+
+		var epsilon = epidemic.prim_co_ns; // number of primary cases with comorbidity and with mild disease
+		var zeta = epidemic.sec_co_ns; // number of secondary cases with comorbidity and with mild disease
+
+		var eta = epidemic.prim_h_ns; // number of primary cases previously healthy and with mild disease
+		var theta = epidemic.sec_h_ns; // number of secondary cases previously healthy and with mild disease
+
+		if (known === 1 || known ===3) {
+			if (known === 3) {
+				var Z = epidemic.P_co_primary; // fraction of primary cases with comorbidity
+
+				//fraction of secondary cases with comorbidity
+				epidemic.P_co_secondary = beta / (beta + ((delta * alpha * (1 - Z)) / (gamma * Z))); 				
+			} else {
+				var X = epidemic.P_co_secondary; // fraction of secondary cases with comorbidity
+
+				// fraction of primary cases with comorbidity
+				epidemic.P_co_primary = (alpha*delta*X)/(beta*gamma + alpha*delta*X - beta*X*gamma); 
+			}
+
+			// the chance of discovery of (mild) secondary cases through contact tracing
+			epidemic.P_detect_sec = (zeta - ((zeta + theta) * epidemic.P_co_secondary)) / (((beta + delta) * epidemic.P_co_secondary) - beta);
+
+		} else if (known === 2) {
+			//fraction of secondary cases with comorbidity
+			epidemic.P_co_secondary = (beta*Dsec + zeta)/((beta+delta)*epidemic.P_detect_sec + zeta + theta); 
+			
+			// fraction of primary cases with comorbidity
+			epidemic.P_co_primary = (alpha*delta*P_co_secondary) /
+									(beta*gamma + alpha*delta*epidemic.P_co_secondary - beta*epidemic.P_co_secondary*gamma); 
 		}
-		
-		Tsec_co = beta + (zeta / Dsec);
-		Tsec_h = delta + (theta / Dsec);
-		
-		Psec_co = Tsec_co / (Tsec_co + Tsec_h);
 
-		Tprim_co = alpha + (epsilon / Dco);
-		Tprim_h = gamma + (eta / Dh);
-		
-		Pprim_co = Tprim_co / (Tprim_co + Tprim_h);
-    };
+		epidemic.P_sev_given_co = beta / (beta + (zeta / epidemic.P_detect_sec)); // probability of severe disease given comorbidity
+		epidemic.P_sev_given_h = delta / (delta + (theta / epidemic.P_detect_sec)); // probability of severe disease given previously healthy
+
+		epidemic.T_sec_co = beta + (zeta / epidemic.P_detect_sec); // total secondary cases with comorbidiites
+		epidemic.T_sec_h = delta + (theta / epidemic.P_detect_sec);  // total secondary cases that were previously healthy
+
+		epidemic.P_detect_co = (epsilon * epidemic.P_sev_given_co) / (alpha * (1 - epidemic.P_sev_given_co)); //chance of discovery of (mild) primary cases in people with comorbidities
+		epidemic.P_detect_h = (eta * epidemic.P_sev_given_h) / (gamma * (1 - epidemic.P_sev_given_h)); // chance of discovery of (mild) primary cases in people who were healthy
+
+		epidemic.T_prim_co = alpha + (epsilon / epidemic.P_detect_co); // total primary cases with comorbidiites
+		epidemic.T_prim_h = gamma + (eta / epidemic.P_detect_h); // total primary cases that were previously healthy
+
+		epidemic.updateOutputs();
+	};
 
     return epidemic
 }());
