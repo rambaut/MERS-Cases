@@ -410,10 +410,12 @@ epidemic = (function () {
 				max: MAX_VALUE,
 				value: initialValue * MAX_VALUE,
 				slide: function( event, ui ) {
-					var value = ui.value / MAX_VALUE;
-					text.val(value);
-        			epidemic[name] = value;
-					epidemic.update(name);
+	        		if (!updating) {
+						var value = ui.value / MAX_VALUE;
+						text.val(value);
+						epidemic[name] = value;
+						epidemic.update(name);
+					}
 				}
 			});
 
@@ -429,7 +431,7 @@ epidemic = (function () {
         for (var i = 0; i < epidemic.knowns.length; i++) {
         	var key = epidemic.knowns[i].key;
             var value = epidemic[key];
-            $( "#" + key + '_known_text' ).text(value.toPrecision(3));
+            $( "#" + key + '_known_text' ).val(value.toPrecision(3));
             $( "#" + key + '_slider' ).slider("value", value * MAX_VALUE);
         }
         updating = false;
