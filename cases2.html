@@ -58,6 +58,13 @@ h1, h2 {
     cursor: pointer;
 }
 
+.dc-chart g.row text {
+	fill: black;
+    font-family: Helvetica,Arial,sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+}
+
 .reset {
   color: #888;
 }
@@ -66,10 +73,11 @@ h1, h2 {
   color: #888;
 }
 
-.axis path, .axis line {
+.dc-chart .axis path, .axis line {
   fill: none;
   stroke: #000;
-  shape-rendering: crispEdges;
+  stroke-width: 1;
+  shape-rendering:auto;
 }
 
 .axis text {

@@ -70,13 +70,33 @@ epidemic = (function () {
         }
     ];
 	
-	// computed outputs 
-	epidemic.P_co_primary = 0.2; // fraction of primary cases with comorbidity
-	
+	// Alternative known values
+	epidemic.P_co_primary = 0.2; // fraction of primary cases with comorbidity	
 	epidemic.P_co_secondary = 0.1; //fraction of secondary cases with comorbidity
-
 	epidemic.P_detect_sec = 0.5; // the chance of discovery of (mild) secondary cases through contact tracing
 
+    epidemic.knowns = [
+        { // case 3
+        	key: "P_co_primary",
+            label: "fraction of primary cases with comorbidity",
+            description: "What proportion of population exposed as primary cases have comorbidity",
+            value: 0.2
+        },
+        { // case 1
+        	key: "P_co_secondary",
+            label: "fraction of secondary cases with comorbidity",
+            description: "What proportion of people exposed as secondary cases have comorbidity",
+            value: 0.1
+        },
+        {
+        	key: "P_detect_sec",
+            label: "the chance of discovery of (mild) secondary cases",
+            description: "What is the rate of discovery of secondary cases through contact tracing",
+            value: 0.9
+      }
+   ];
+
+	// computed outputs 
 	epidemic.P_sev_given_co; // probability of severe disease given comorbidity
 	epidemic.P_sev_given_h; // probability of severe disease given previously healthy
 
@@ -139,7 +159,7 @@ epidemic = (function () {
     /*
     Create the crossfilter from the case data
     */
-    epidemic.initialize = function(caseData, parametersDestination, outputsDestination) {
+    epidemic.initialize = function(caseData, parametersDestination, knownsDestination, outputsDestination) {
 
         epidemic.cases = [];
         epidemic.clusters = {};
@@ -279,26 +299,29 @@ epidemic = (function () {
         var destination = $( "#" + parametersDestination );
         for (var i = 0; i < epidemic.parameters.length; i++) {
             var parameter = epidemic.parameters[i];
-            destination.append( '<div id="' + parameter.key + '" class="parameter" title="' + parameter.description + '"></label>' );
+            destination.append( '<div id="' + parameter.key + '" class="parameter" title="' + parameter.description + '"></div>' );
             var select = $( "#" + parameter.key );
             epidemic.setupParameter(select, parameter);
+        }
+
+        destination = $( "#" + knownsDestination );
+        for (var i = 0; i < epidemic.knowns.length; i++) {
+            var known = epidemic.knowns[i];
+            destination.append( '<div id="' + known.key + '_known" class="parameter" title="' + known.description + '"></div>' );
+            var select = $( "#" + known.key + "_known");
+            epidemic.setupKnown(select, known);
         }
 
         destination = $( "#" + outputsDestination );
         for (var i = 0; i < epidemic.outputs.length; i++) {
             var output = epidemic.outputs[i];
-            destination.append( '<div id="' + output.key + '" class="parameter" title="' + output.label + '"></label>' );
+            destination.append( '<div id="' + output.key + '" class="parameter" title="' + output.label + '"></div>' );
             var select = $( "#" + output.key );
             epidemic.setupOutput(select, output);
         }
 
 		epidemic.update();
     }; // function initialize(caseData)
-
-    epidemic.setParameter = function(name, value) {
-        epidemic[name] = value;
-        epidemic.update();
-    };
 
     epidemic.setupParameter = function(select, parameter) {
         var MAX_VALUE = 100;
@@ -321,8 +344,7 @@ epidemic = (function () {
         	.change(function() {
 				var value = text.val();
 				slider.slider("value", value);
-				epidemic.setParameter(name, value);
-				epidemic.update();
+        		epidemic[name] = value;
 				epidemic.update();
 			});
         	
@@ -338,7 +360,7 @@ epidemic = (function () {
 	//				var value = ui.value / MAX_VALUE;
 					var value = ui.value;
 					text.val(value);
-					epidemic.setParameter(name, value);
+        			epidemic[name] = value;
 					epidemic.update();
 				}
 			});
@@ -348,27 +370,87 @@ epidemic = (function () {
                 text.val(initialValue);
 //				slider.slider("value", initialValue * MAX_VALUE);
                 slider.slider("value", initialValue);
- 				epidemic.setParameter(name, initialValue);
+        		epidemic[name] = initialValue;
 				epidemic.update();
            });
     };
 
-    epidemic.setupOutput = function(select, output) {
-		var name = output.key;
-        select.append('<div class="output">' + output.label + ': </div><div id="' + name + '_text" class="value"></div>');
+	var MAX_VALUE = 1000.0;
+	var updating = false;
+
+    epidemic.setupKnown = function(select, known) {
+
+		var name = known.key;
+        select.append('<label for="' + name + '_known_text" class="label">' + known.label + ':</label>');
+        select.append('<input type="text" name="' + name + '_known_text" id="' + name + '_known_text" class="text"></edit>');
+        select.append('<div id="' + name + '_slider" class="slider"></div>');
+
+        var text = $( "#" + name + "_known_text");
+        var slider = $( "#" + name + "_slider");
+
+        var initialValue = known.value;
+
+        text
+        	.textinput({'filter': 'numeric'})
+        	.val(initialValue)
+        	.change(function() {
+        		if (!updating) {
+					var value = text.val();
+					slider.slider("value", value);
+					epidemic[name] = value;
+					epidemic.update(name);
+				}
+			});
+        	
+        epidemic[name] = initialValue;
+
+        slider
+        	.slider({
+				min: 0.0,
+				max: MAX_VALUE,
+				value: initialValue * MAX_VALUE,
+				slide: function( event, ui ) {
+					var value = ui.value / MAX_VALUE;
+					text.val(value);
+        			epidemic[name] = value;
+					epidemic.update(name);
+				}
+			});
+
     };
 
-    epidemic.updateOutputs = function() {
+    epidemic.setupOutput = function(select, output) {
+		var name = output.key;
+        select.append('<div class="output">' + output.label + ': </div><div id="' + name + '_output_text" class="value"></div>');
+    };
+
+    epidemic.updateKnowns = function() {
+    	updating = true;
+        for (var i = 0; i < epidemic.knowns.length; i++) {
+        	var key = epidemic.knowns[i].key;
+            var value = epidemic[key];
+            $( "#" + key + '_known_text' ).text(value.toPrecision(3));
+            $( "#" + key + '_slider' ).slider("value", value * MAX_VALUE);
+        }
+        updating = false;
+    };
+
+   epidemic.updateOutputs = function() {
         for (var i = 0; i < epidemic.outputs.length; i++) {
         	var key = epidemic.outputs[i].key;
             var value = epidemic[key];
-            $( "#" + key + '_text' ).text(value.toPrecision(3));
+            $( "#" + key + '_output_text' ).text(value.toPrecision(3));
         }
     };
     
-	epidemic.update = function() {
-		var known  = 1;
-		
+    epidemic.lastKnown = "P_co_primary";
+    
+	epidemic.update = function(known) {
+		if (known === undefined) {
+			known = epidemic.lastKnown;
+		} else {
+			epidemic.lastKnown = known;
+		}
 		var alpha = epidemic.prim_co_sev; // number of primary cases with comorbidity and severe disease
 		var beta = epidemic.sec_co_sev; // number of secondary cases with comorbidity and severe disease
 
@@ -381,14 +463,16 @@ epidemic = (function () {
 		var eta = epidemic.prim_h_ns; // number of primary cases previously healthy and with mild disease
 		var theta = epidemic.sec_h_ns; // number of secondary cases previously healthy and with mild disease
 
-		if (known === 1 || known ===3) {
-			if (known === 3) {
-				var Z = epidemic.P_co_primary; // fraction of primary cases with comorbidity
+		if (known === "P_co_secondary" || known === "P_co_primary") {
+			if (known === "P_co_primary") {
+				// Known: fraction of primary cases with comorbidity
+				var Z = epidemic.P_co_primary; 
 
 				//fraction of secondary cases with comorbidity
 				epidemic.P_co_secondary = beta / (beta + ((delta * alpha * (1 - Z)) / (gamma * Z))); 				
 			} else {
-				var X = epidemic.P_co_secondary; // fraction of secondary cases with comorbidity
+				// Known: fraction of secondary cases with comorbidity
+				var X = epidemic.P_co_secondary; 
 
 				// fraction of primary cases with comorbidity
 				epidemic.P_co_primary = (alpha*delta*X)/(beta*gamma + alpha*delta*X - beta*X*gamma); 
@@ -397,13 +481,18 @@ epidemic = (function () {
 			// the chance of discovery of (mild) secondary cases through contact tracing
 			epidemic.P_detect_sec = (zeta - ((zeta + theta) * epidemic.P_co_secondary)) / (((beta + delta) * epidemic.P_co_secondary) - beta);
 
-		} else if (known === 2) {
+		} else if (known === "P_detect_sec") {
+			// Known: the chance of discovery of (mild) secondary cases through contact tracing
+			var Y = epidemic.P_detect_sec;
+		
 			//fraction of secondary cases with comorbidity
-			epidemic.P_co_secondary = (beta*Dsec + zeta)/((beta+delta)*epidemic.P_detect_sec + zeta + theta); 
+			epidemic.P_co_secondary = (beta*Y + zeta)/((beta+delta)*Y + zeta + theta); 
 			
 			// fraction of primary cases with comorbidity
-			epidemic.P_co_primary = (alpha*delta*P_co_secondary) /
+			epidemic.P_co_primary = (alpha*delta*epidemic.P_co_secondary) /
 									(beta*gamma + alpha*delta*epidemic.P_co_secondary - beta*epidemic.P_co_secondary*gamma); 
+		} else {
+			throw Exception("Unknown known type");
 		}
 
 		epidemic.P_sev_given_co = beta / (beta + (zeta / epidemic.P_detect_sec)); // probability of severe disease given comorbidity
@@ -418,6 +507,7 @@ epidemic = (function () {
 		epidemic.T_prim_co = alpha + (epsilon / epidemic.P_detect_co); // total primary cases with comorbidiites
 		epidemic.T_prim_h = gamma + (eta / epidemic.P_detect_h); // total primary cases that were previously healthy
 
+		epidemic.updateKnowns();
 		epidemic.updateOutputs();
 	};
 

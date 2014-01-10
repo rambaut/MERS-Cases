@@ -148,6 +148,8 @@
 			<div id="model">
 				<div id="parameters"></div>
 				<hr />
+				<div id="knowns"></div>
+				<hr />
 				<div id="outputs"></div>
 			</div>
 		</div>
@@ -176,7 +178,7 @@
         var caseFile = "data/cases.csv";
 		
 		d3.csv(caseFile, function(error, caseData) {
-			epidemic.initialize(caseData, "parameters", "outputs");
+			epidemic.initialize(caseData, "parameters", "knowns", "outputs");
 		});		
 		
 	})();	
