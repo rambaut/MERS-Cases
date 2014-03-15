@@ -3,6 +3,7 @@
 { "name": "Zarqa", "province": "Jordan", "coordinates": [37.040034, 31.693654] },
 { "name": "Al-Ahsa", "province": "KSA", "coordinates": [49.6219, 25.4294] },
 { "name": "Al-Hofuf", "province": "KSA", "coordinates": [49.5833, 25.3833] },
+{ "name": "Al-Kharj", "province": "KSA", "coordinates": [47.3000, 24.1500] },
 { "name": "Dammam", "province": "KSA", "coordinates": [50.2000, 26.2833] },
 { "name": "Khobar", "province": "KSA", "coordinates": [50.2000, 26.2833] },
 { "name": "Dhahran", "province": "KSA", "coordinates": [50.1500, 26.2667] },
