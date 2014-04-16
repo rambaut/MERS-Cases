@@ -27,6 +27,7 @@
 { "name": "Dubai", "province": "UAE", "coordinates": [55.3095, 25.2697] },
 { "name": "Sharjah", "province": "UAE", "coordinates": [55.3833, 25.4333] },
 { "name": "Abu Dhabi", "province": "UAE", "coordinates": [54.38, 24.47] },
+{ "name": "Al Ain", "province": "UAE", "coordinates": [55.7447, 24.2075] },
 { "name": "Monastir", "province": "Tunisia", "coordinates": [10.8275, 35.7717] },
 { "name": "Birmingham", "province": "UK", "coordinates": [-1.91, 52.48] },
 { "name": "Valenciennes", "province": "France", "coordinates": [3.5233, 50.3581] },
