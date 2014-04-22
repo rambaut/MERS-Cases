@@ -23,6 +23,7 @@
 { "name": "Qatif", "province": "KSA", "coordinates": [49.9960, 26.5560] },
 { "name": "Al Jawf Province", "province": "KSA", "coordinates": [40.2, 29.969722] }, 	
 { "name": "Jeddah", "province": "KSA", "coordinates": [39.172989, 21.543489] },
+{ "name": "Najran", "province": "KSA", "coordinates": [44.1322, 17.4917] },
 { "name": "Doha", "province": "Qatar", "coordinates": [51.522476, 25.280282] },
 { "name": "Dubai", "province": "UAE", "coordinates": [55.3095, 25.2697] },
 { "name": "Sharjah", "province": "UAE", "coordinates": [55.3833, 25.4333] },
