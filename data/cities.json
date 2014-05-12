@@ -40,5 +40,6 @@
 { "name": "Al-Batinah North", "province": "Oman", "coordinates": [56.7299, 24.3420] },
 { "name": "Sohar", "province": "Oman", "coordinates": [56.7299, 24.3420] },
 { "name": "Sana'a", "province": "Yemen", "coordinates": [44.2064, 15.3483] },
+{ "name": "Shibam", "province": "Yemen", "coordinates": [48.6267, 15.9269] },
 { "name": "Kuwait City", "province": "Kuwait", "coordinates": [47.9783, 29.3697] }
 ]
