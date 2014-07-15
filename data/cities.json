@@ -15,6 +15,7 @@
 { "name": "Khamis Mushait", "province": "KSA", "coordinates": [42.7333, 18.3000] },
 { "name": "Hafr Al-Batin", "province": "KSA", "coordinates": [45.9636, 28.4342] },
 { "name": "Wadi al-Dawasir", "province": "KSA", "coordinates": [45.1994, 20.5042] },
+{ "name": "Arar", "province": "KSA", "coordinates": [41.0167, 30.9833] },
 { "name": "Taif", "province": "KSA", "coordinates": [40.4167, 21.2667] },
 { "name": "Bisha", "province": "KSA", "coordinates": [42.6208, 19.9844] },
 { "name": "Makkah", "province": "KSA", "coordinates": [39.816667, 21.416667] },
