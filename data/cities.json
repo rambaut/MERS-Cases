@@ -14,7 +14,6 @@
 { "name": "Al-Hofuf", "province": "KSA", "coordinates": [49.5833, 25.3833] },
 { "name": "Al-Kharj", "province": "KSA", "coordinates": [47.3000, 24.1500] },
 { "name": "Al Fadilah", "province": "KSA", "coordinates": [47.3000, 24.1500] },
-
 { "name": "Ar Rass", "province": "KSA", "coordinates": [43.5000, 25.8667] },
 { "name": "Al-Qassim Province", "province": "KSA", "coordinates": [43.0000, 26.0000] },
 { "name": "Al-Quway'iyah", "province": "KSA", "coordinates": [45.2656, 24.0464] },
@@ -67,5 +66,6 @@
 { "name": "Unaizah", "province": "KSA", "coordinates": [43.9940, 26.0840] },
 { "name": "Valenciennes", "province": "France", "coordinates": [3.5233, 50.3581] },
 { "name": "Wadi al-Dawasir", "province": "KSA", "coordinates": [45.1994, 20.5042] },
-{ "name": "Zarqa", "province": "Jordan", "coordinates": [37.040034, 31.693654] }
+{ "name": "Zarqa", "province": "Jordan", "coordinates": [37.040034, 31.693654] },
+{ "name": "Seoul", "province": "South Korea", "coordinates": [126.9667, 37.5667] }
 ]
