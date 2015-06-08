@@ -1,7 +1,9 @@
 [
 { "name": "Abu Dhabi", "province": "UAE", "coordinates": [54.38, 24.47] },
+{ "name": "Abqaiq", "province": "KSA", "coordinates": [49.6667, 25.9333] },
 { "name": "Adam", "province": "Oman", "coordinates": [57.5333, 22.3833] },
 { "name": "Afif", "province": "KSA", "coordinates": [42.9203, 23.9100] },
+{ "name": "Al-Aflaj", "province": "KSA", "coordinates": [46.7333, 22.2833] },
 { "name": "Al Ain", "province": "UAE", "coordinates": [55.7447, 24.2075] },
 { "name": "Al Badaya", "province": "KSA", "coordinates": [43.7000, 26.000] },
 { "name": "Al Hawiyah", "province": "KSA", "coordinates": [40.4975, 21.4411] }, 
@@ -38,6 +40,7 @@
 { "name": "Hotat Bani Tamim", "province": "KSA", "coordinates": [46.8845, 23.4868] },
 { "name": "Jeddah", "province": "KSA", "coordinates": [39.172989, 21.543489] },
 { "name": "Jubail", "province": "KSA", "coordinates": [49.6667, 27.0000] },
+{ "name": "Kahnooj", "province": "Iran", "coordinates": [57.7000, 27.9500] },
 { "name": "Kerman", "province": "Iran", "coordinates": [57.0679, 30.2907] },
 { "name": "Khafji", "province": "KSA", "coordinates": [48.5000, 28.4167] },
 { "name": "Khamis Mushait", "province": "KSA", "coordinates": [42.7333, 18.3000] },
@@ -67,5 +70,7 @@
 { "name": "Valenciennes", "province": "France", "coordinates": [3.5233, 50.3581] },
 { "name": "Wadi al-Dawasir", "province": "KSA", "coordinates": [45.1994, 20.5042] },
 { "name": "Zarqa", "province": "Jordan", "coordinates": [37.040034, 31.693654] },
-{ "name": "Seoul", "province": "South Korea", "coordinates": [126.9667, 37.5667] }
+{ "name": "Seoul", "province": "South Korea", "coordinates": [126.9667, 37.5667] },
+{ "name": "Pyeongtaek", "province": "South Korea", "coordinates": [127.1128, 36.9922] },
+{ "name": "Pyeongtaek", "province": "South Korea", "coordinates": [126.9667, 37.5667] }
 ]
