@@ -50,7 +50,6 @@
 { "name": "Madinah", "province": "KSA", "coordinates": [39.6000, 24.4667] },
 { "name": "Makkah", "province": "KSA", "coordinates": [39.816667, 21.416667] },
 { "name": "Monastir", "province": "Tunisia", "coordinates": [10.8275, 35.7717] },
-{ "name": "Muscat", "province": "Oman", "coordinates": [58.5400, 23.6100] },
 { "name": "Najran", "province": "KSA", "coordinates": [44.1322, 17.4917] },
 { "name": "Nizwa", "province": "Oman", "coordinates": [57.5333, 22.9333] },
 { "name": "Qatif", "province": "KSA", "coordinates": [49.9960, 26.5560] },
@@ -66,11 +65,15 @@
 { "name": "Tabuk", "province": "KSA", "coordinates": [36.5833, 28.3833] },
 { "name": "Taif", "province": "KSA", "coordinates": [40.4167, 21.2667] },
 { "name": "Taimah", "province": "KSA", "coordinates": [38.483333, 27.633333] },
+{ "name": "Turaba", "province": "KSA", "coordinates": [41.60, 21.17] },
 { "name": "Unaizah", "province": "KSA", "coordinates": [43.9940, 26.0840] },
 { "name": "Valenciennes", "province": "France", "coordinates": [3.5233, 50.3581] },
 { "name": "Wadi al-Dawasir", "province": "KSA", "coordinates": [45.1994, 20.5042] },
+{ "name": "Muscat", "province": "Oman", "coordinates": [58.5400, 23.6100] },
+{ "name": "Al Dahir", "province": "Oman", "coordinates": [56.64, 23.64] },
 { "name": "Zarqa", "province": "Jordan", "coordinates": [37.040034, 31.693654] },
-{ "name": "Seoul", "province": "South Korea", "coordinates": [126.9667, 37.5667] },
-{ "name": "Pyeongtaek", "province": "South Korea", "coordinates": [127.1128, 36.9922] },
-{ "name": "Pyeongtaek", "province": "South Korea", "coordinates": [126.9667, 37.5667] }
+{ "name": "Daejeon", "province": "South Korea", "coordinates": [127.38, 37.35] },
+{ "name": "Hwaesong", "province": "South Korea", "coordinates": [127.1128, 37.15] },
+{ "name": "Pyeongtaek", "province": "South Korea", "coordinates": [126.80, 36.9922] },
+{ "name": "Seoul", "province": "South Korea", "coordinates": [126.9667, 37.5667] }
 ]
